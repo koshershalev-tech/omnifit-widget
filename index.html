@@ -129,9 +129,26 @@ function bind(){
     render();
   });
 })); $('#prevBtn').addEventListener('click',()=>{ if(state.idx>0){state.idx--; render();}}); $('#nextBtn').addEventListener('click',()=>{ const max=state.data.days.length-1; if(state.idx<max){state.idx++; render();}}); }
-async function load(){ try{ const res=await fetch(GIST_URL,{cache:'no-store'}); const text=await res.text(); if(GIST_URL.includes('output=csv')){ state.data={days:csvToDays(text)}; } else { state.data=await JSON.parse(text); } state.idx=findTodayIndex(state.data.days);}catch(e){ state.data={days:[{date:fmtDateISO(new Date()),physical:'10-min brisk walk, nose breathing.',neurological:'Eyes-closed single-leg 45s/side.',cognitive:'Set one clear intention.',emotional:'2×1-min box-breath.',lifestyle:'½ liter water before coffee.'}]}; state.idx=0; } render(); }
+async function load(){
+  try{
+    // force a fresh CSV each time (Wix iframe cache can be sticky)
+    const url = DATA_URL + (DATA_URL.includes('?') ? '&' : '?') + 'v=' + Date.now();
+    const res = await fetch(url, { cache: 'no-store' });
+    const text = await res.text();
+    state.days = csvToDays(text);
+    state.idx = todayIndex(state.days);
+  }catch(e){
+    console.error('LOAD ERROR', e);
+    // minimal fallback so the card still renders
+    const t = new Date(), y=t.getFullYear(), m=String(t.getMonth()+1).padStart(2,'0'), d=String(t.getDate()).padStart(2,'0');
+    state.days = [{date:`${y}-${m}-${d}`,physical:'10-min brisk walk, nose breathing.',neurological:'Eyes-closed single-leg 45s/side.',cognitive:'Set one intention.',emotional:'2×1-min box-breath.',lifestyle:'½ liter water before coffee.'}];
+    state.idx = 0;
+  }
+  render();
+}
 bind(); load();
 </script>
 </body>
 </html>
+
 
