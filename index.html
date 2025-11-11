@@ -4,28 +4,36 @@
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>OMNIFIT 5-System Widget</title>
 <style>
-:root{--sage:#E6F0D8;--terra:#D95C4C;--ink:#0F172A;--line:#7aa3ff22;--card:#fff;--blue:#78A8FF}
+:root{--sage:#E6F0D8;--card:#fff;--blue:#78A8FF;--line:#7aa3ff22}
 html,body{margin:0;height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 body{background:var(--sage);display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
 #wrap{width:100%;max-width:640px}
-.frame{background:var(--card);border:2px solid #5A8AF3;border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,.08);padding:16px;box-sizing:border-box}
+.frame{background:var(--card);border:2px solid #5A8AF3;border-radius:14px;
+       box-shadow:0 6px 20px rgba(16,24,40,.08);padding:16px;box-sizing:border-box}
 .widget{display:flex;flex-direction:column;gap:12px}
 .header{display:flex;justify-content:center;align-items:center;gap:12px}
-.btn{width:32px;height:32px;border-radius:8px;border:1.5px solid #1112;display:grid;place-items:center;background:#fff;cursor:pointer}
+.btn{width:32px;height:32px;border-radius:8px;border:1.5px solid #1112;
+     display:grid;place-items:center;background:#fff;cursor:pointer}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.title{font-weight:800;font-size:clamp(24px,4.5vw,36px);letter-spacing:.5px;color:#9FC1FF;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
-.tabs{display:flex;flex-wrap:nowrap;justify-content:center;gap:10px;margin:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab{padding:10px 16px;border-radius:10px;border:2px solid #111;cursor:pointer;background:#000;color:#fff;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+.title{font-weight:800;font-size:clamp(24px,4.5vw,36px);color:#9FC1FF;
+       text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.tabs{display:flex;flex-wrap:nowrap;justify-content:center;gap:10px;margin:0;
+      overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:10px 16px;border-radius:10px;border:2px solid #111;cursor:pointer;
+     background:#000;color:#fff;font-weight:800;white-space:nowrap}
 .tab.active{background:#5A8AF3;border-color:#2E5FF0}
 .tab.done::after{content:" ✓";margin-left:6px}
-.subhead{display:flex;justify-content:center;align-items:center;gap:8px;color:#9FC1FF;font-size:18px}
+.subhead{display:flex;justify-content:center;align-items:center;gap:8px;
+         color:#9FC1FF;font-size:18px}
 .bodycard{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
 .h1{font-size:32px;line-height:1.1;margin:6px 0 8px;color:#000;font-weight:900}
 .label{color:#475569;font-size:16px;margin:6px 0}
 .content{font-size:20px;color:#111}
 .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
-.badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;padding:6px 10px;border-radius:999px}
-.check{width:28px;height:28px;border-radius:8px;border:2px solid #DCE7FF;background:#F8FAFF;display:inline-grid;place-items:center;cursor:pointer}
+.badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;
+       padding:6px 10px;border-radius:999px}
+.check{width:28px;height:28px;border-radius:8px;border:2px solid #DCE7FF;background:#F8FAFF;
+       display:inline-grid;place-items:center;cursor:pointer}
 .check.checked{background:#E8F1FF;border-color:#2E5FF0}
 .check.checked::after{content:"✓";font-weight:800;color:#2E5FF0;font-size:16px;line-height:1}
 @media(max-width:420px){.h1{font-size:26px}.content{font-size:18px}}
@@ -61,112 +69,100 @@ body{background:var(--sage);display:flex;align-items:center;justify-content:cent
 
 <script>
 const DATA_URL = "https://raw.githubusercontent.com/koshershalev-tech/omnifit-widget/main/omnifit_data.csv";
-const BASE_DAY_DATE = "2025-11-11";     // your anchor date
-const BASE_DAY_NUMBER = 560;            // day number on that date
+const BASE_DAY_DATE = "2025-11-11";
+const BASE_DAY_NUMBER = 560;
 
-const state = { days: [], idx: 0, system: "physical" };
+const state = { days:[], idx:0, system:"physical" };
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const weekdayName = iso => new Date(iso+"T00:00:00").toLocaleDateString(undefined,{weekday:"long"}).toUpperCase();
 const compact = iso => iso.replaceAll("-","");
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 const doneKey = (d,s)=>`omnifit_done_${d}_${s}`;
-const isDone=(d,s)=>localStorage.getItem(doneKey(d,s))==='1';
-const setDone=(d,s,v)=>{v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s));};
+const isDone = (d,s)=>localStorage.getItem(doneKey(d,s))==='1';
+const setDone = (d,s,v)=>{v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s));};
 
 function csvToDays(t){
-  const r=t.trim().split(/\r?\n/).map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
-  const h=r.shift().map(x=>x.trim().toLowerCase());
-  const i=Object.fromEntries(h.map((x,n)=>[x,n]));
-  return r.map(x=>({
-    date:x[i.date],
-    physical:x[i.physical],
-    neurological:x[i.neurological],
-    cognitive:x[i.cognitive],
-    emotional:x[i.emotional],
-    lifestyle:x[i.lifestyle]
-  })).sort((a,b)=>a.date.localeCompare(b.date));
+ const r = t.trim().split(/\\r?\\n/).map(l=>l.split(/,(?=(?:[^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)/).map(c=>c.replace(/^\\\"|\\\"$/g,'')));
+ const h = r.shift().map(x=>x.trim().toLowerCase());
+ const i = Object.fromEntries(h.map((x,n)=>[x,n]));
+ return r.map(x=>({
+  date:x[i.date],
+  physical:x[i.physical],
+  neurological:x[i.neurological],
+  cognitive:x[i.cognitive],
+  emotional:x[i.emotional],
+  lifestyle:x[i.lifestyle]
+ })).sort((a,b)=>a.date.localeCompare(b.date));
 }
 
 function todayIndex(days){
-  const today = new Date();
-  const iso = today.toISOString().slice(0,10);
-  let idx = days.findIndex(d=>d.date===iso);
-  if(idx<0) idx = 0;
-  return idx;
+ const today = new Date().toISOString().slice(0,10);
+ let idx = days.findIndex(d=>d.date===today);
+ return idx >= 0 ? idx : 0;
+}
+
+function autoDayNumber(){
+ const today = new Date();
+ return BASE_DAY_NUMBER + Math.floor((today - new Date(BASE_DAY_DATE))/86400000);
 }
 
 function render(){
-  const d = state.days[state.idx];
-  if(!d) return;
-
-  // automatic day number based on *current real date*
-  const today = new Date();
-  const diff = Math.floor((today - new Date(BASE_DAY_DATE)) / 86400000);
-  const autoDay = BASE_DAY_NUMBER + diff;
-  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${autoDay}`;
-
-  $("#weekday").textContent = weekdayName(d.date);
-  $("#dateTiny").textContent = compact(d.date);
-
-  const titles = {physical:"Move",neurological:"Control",cognitive:"Focus",emotional:"Regulate",lifestyle:"Integrate"};
-  $("#title").textContent = titles[state.system];
-  $("#content").textContent = d[state.system] || "No entry.";
-  $("#badge").textContent = cap(state.system);
-
-  const done = isDone(d.date,state.system);
-  const chk = $("#completeBtn");
-  chk.classList.toggle("checked",done);
-  $$(".tab").forEach(t=>{
-    const s=t.dataset.tab;
-    t.classList.toggle("done",isDone(d.date,s));
-  });
-
-  $("#prevBtn").disabled = state.idx<=0;
-  $("#nextBtn").disabled = state.idx>=state.days.length-1;
+ const d = state.days[state.idx]; if(!d)return;
+ $("#dayTitle").textContent = `OMNIFIT Daily — Day ${autoDayNumber()}`;
+ $("#weekday").textContent = weekdayName(d.date);
+ $("#dateTiny").textContent = compact(d.date);
+ const titles = {physical:"Move", neurological:"Control", cognitive:"Focus", emotional:"Regulate", lifestyle:"Integrate"};
+ $("#title").textContent = titles[state.system];
+ $("#content").textContent = d[state.system]||"No entry.";
+ $("#badge").textContent = cap(state.system);
+ const done = isDone(d.date,state.system);
+ const chk = $("#completeBtn");
+ chk.classList.toggle("checked",done);
+ $$(".tab").forEach(t=>{
+  const s = t.dataset.tab;
+  t.classList.toggle("done",isDone(d.date,s));
+ });
+ $("#prevBtn").disabled = state.idx<=0;
+ $("#nextBtn").disabled = state.idx>=state.days.length-1;
 }
 
 function bind(){
-  $$(".tab").forEach(b=>b.addEventListener("click",()=>{
-    $$(".tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    state.system = b.dataset.tab;
-    render();
-  }));
-  $("#prevBtn").addEventListener("click",()=>{
-    if(state.idx>0){state.idx--;render();}
-  });
-  $("#nextBtn").addEventListener("click",()=>{
-    if(state.idx<state.days.length-1){state.idx++;render();}
-  });
-  $("#completeBtn").addEventListener("click",()=>{
-    const d = state.days[state.idx];
-    const s = state.system;
-    setDone(d.date,s,!isDone(d.date,s));
-    render();
-  });
+ $$(".tab").forEach(b=>b.addEventListener("click",()=>{
+  $$(".tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  state.system=b.dataset.tab;
+  render();
+ }));
+ $("#prevBtn").addEventListener("click",()=>{
+  if(state.idx>0){state.idx--;render();}
+ });
+ $("#nextBtn").addEventListener("click",()=>{
+  if(state.idx<state.days.length-1){state.idx++;render();}
+ });
+ $("#completeBtn").addEventListener("click",()=>{
+  const d=state.days[state.idx];
+  const s=state.system;
+  setDone(d.date,s,!isDone(d.date,s));
+  render();
+ });
 }
 
 async function load(){
-  try{
-    const res = await fetch(DATA_URL,{cache:'no-store'});
-    const text = await res.text();
-    state.days = csvToDays(text);
-    state.idx = todayIndex(state.days);
-  }catch(e){
-    console.error("LOAD ERROR",e);
-    const t=new Date(),iso=t.toISOString().slice(0,10);
-    state.days=[{date:iso,physical:"10-min brisk walk.",neurological:"Balance 45 s/leg.",cognitive:"1 clear intention.",emotional:"2×1-min box-breath.",lifestyle:"½ liter water before coffee."}];
-    state.idx=0;
-  }
-  render();
+ try{
+  const res = await fetch(DATA_URL,{cache:'no-store'});
+  const text = await res.text();
+  state.days = csvToDays(text);
+  state.idx = todayIndex(state.days);
+ }catch(e){
+  console.error('LOAD ERROR',e);
+  const t=new Date(),iso=t.toISOString().slice(0,10);
+  state.days=[{date:iso,physical:'Walk 10 min',neurological:'Balance 45 s/leg',cognitive:'Set one intention',emotional:'2×1 min box-breath',lifestyle:'Drink ½ L water before coffee'}];
+  state.idx=0;
+ }
+ render();
 }
-
 bind();
 load();
 </script>
 </body>
 </html>
-
-
-
-
