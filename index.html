@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OMNIFIT 5-System Widget</title>
-<style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>OMNIFIT 5‑System Widget</title>
+  <style>
 :root{--sage:#E6F0D8;--terra:#D95C4C;--ink:#0F172A;--line:#7aa3ff22;--card:#fff;--blue:#78A8FF}
 html,body{margin:0;height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-body{background:var(--sage);display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
-#wrap{width:100%;max-width:560px}
-.card{background:var(--card);border:2px solid #5A8AF3;border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,.08);padding:16px;box-sizing:border-box}
-.widget{display:flex;flex-direction:column;gap:12px}
-.header{display:flex;justify-content:center;align-items:center;gap:12px}
-.btn{width:40px;height:40px;border-radius:10px;border:1.5px solid #1112;display:grid;place-items:center;background:#fff;cursor:pointer}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.title{font-weight:800;font-size:40px;letter-spacing:1px;color:#9FC1FF;text-align:center}
-.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0}
+body{background:var(--sage);display:grid;place-items:center;padding:12px;overflow:hidden}
+#omnifit-widget{width:100%;max-width:560px}
+.widget{display:flex;flex-direction:column;gap:12px;background:var(--card);border:2px solid #5A8AF3;border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,.08);padding:16px;box-sizing:border-box;max-width:560px;width:100%;margin:0 auto;overflow:hidden}
+.widget *{box-sizing:border-box}
+.date-wrap{display:flex;justify-content:center;align-items:center;gap:12px}
+.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid #1112;display:grid;place-items:center;background:#fff;cursor:pointer}
+.icon-btn:disabled{opacity:.4;cursor:not-allowed}
+.bigdate{font-weight:800;font-size:40px;letter-spacing:1px;color:#9FC1FF;text-align:center}
+.tabs{display:flex;flex-wrap:nowrap;justify-content:center;gap:10px;margin:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:10px 16px;border-radius:10px;border:2px solid #111;cursor:pointer;background:#000;color:#fff;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+.tab.active{background:#5A8AF3;border-color:#2E5FF0}
+.tab.done::after{content:" ¹3";margin-left:6px}
 .tab{padding:10px 16px;border-radius:10px;border:2px solid #111;cursor:pointer;background:#000;color:#fff;font-weight:800;letter-spacing:.3px}
 .tab.active{background:#5A8AF3;border-color:#2E5FF0}
 .subhead{display:flex;justify-content:center;align-items:center;gap:8px;color:#9FC1FF;font-size:18px}
-.bodycard{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
-.h1{font-size:32px;line-height:1.1;margin:6px 0 8px;color:#000;font-weight:900}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
+.title{font-weight:800;font-size:clamp(28px,5vw,40px);letter-spacing:1px;color:#9FC1FF;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
 .label{color:#475569;font-size:16px;margin:6px 0}
 .content{font-size:20px;color:#111}
 .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;padding:6px 10px;border-radius:999px}
-@media(max-width:420px){.title{font-size:32px}.h1{font-size:26px}.content{font-size:18px}}
 </style>
 </head>
 <body>
-<div id="wrap" class="card">
+<div id="omnifit-widget">
   <div class="widget" aria-live="polite">
-    <!-- Header -->
-    <div class="header">
-      <button id="prevBtn" class="btn" aria-label="Previous day">←</button>
-      <div id="dayTitle" class="title">OMNIFIT Daily — Day 560</div>
-      <button id="nextBtn" class="btn" aria-label="Next day">→</button>
+    <div class="date-wrap">
+      <button id="prevBtn" class="icon-btn" title="Previous day" aria-label="Previous day">&#8592;</button>
+      <div class="bigdate" id="dayTitle">OMNIFIT Daily — Day 560</div>
+      <button id="nextBtn" class="icon-btn" title="Next day" aria-label="Next day">&#8594;</button>
     </div>
-
-    <!-- Tabs -->
     <div class="tabs" role="tablist">
       <button class="tab active" role="tab" data-tab="physical">PHYSICAL</button>
       <button class="tab" role="tab" data-tab="neurological">NEUROLOGICAL</button>
@@ -45,76 +45,74 @@ body{background:var(--sage);display:flex;align-items:center;justify-content:cent
       <button class="tab" role="tab" data-tab="emotional">EMOTIONAL</button>
       <button class="tab" role="tab" data-tab="lifestyle">LIFESTYLE</button>
     </div>
-
-    <!-- Subhead -->
-    <div class="subhead">
-      <span id="weekday">DAY</span>
-      <span id="dateTiny">000000</span>
-    </div>
-
-    <!-- Main card -->
-    <div class="bodycard">
-      <div id="title" class="h1">Move</div>
+    <div class="subhead"><span id="weekday">TUESDAY</span><span id="dateTiny">000000</span></div>
+    <div class="card">
+      <div class="title" id="title">Move</div>
       <div class="label">Today:</div>
-      <div id="content" class="content">Loading…</div>
-      <div class="foot"><span id="badge" class="badge">Physical</span></div>
+      <div class="content" id="content">Loading…</div>
+      <div class="foot"><span id="badge" class="badge">Physical</span><button id="completeBtn" class="badge" style="cursor:pointer">Mark done</button></div>
     </div>
   </div>
 </div>
-
 <script>
-// ===== CONFIG =====
-// Use your PUBLISHED CSV link (ends with .../pub?output=csv)
-const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nLs1K-6nUX1RTtSH1lBQpp0HtQQLr-i-cS2Qzy904M3UVUMlO1HAvk9ijGYtWE691qt1hJrxgc9a/pub?output=csv";
-// Header text:
-const DAY_LABEL = "OMNIFIT Daily — Day 560";
+/* CONFIG */
+const BASE_DAY_DATE = "2025-11-11"; // anchor date for day count
+const BASE_DAY_NUMBER = 560; // day number on anchor date
+const GIST_URL = "https://docs.google.com/spreadsheets/d/e/REPLACE/pub?output=csv"; // or your JSON
 
-// ===== HELPERS =====
-const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const weekdayName = iso => new Date(iso+'T00:00:00').toLocaleDateString(undefined,{weekday:'long'}).toUpperCase();
-const compact = iso => iso.replaceAll('-','');
-const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+/* LOGIC */
+const state={data:{days:[]},idx:0,system:'physical'};
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const weekdayEl=$('#weekday'), dateTiny=$('#dateTiny'), titleEl=$('#title'), contentEl=$('#content'), badgeEl=$('#badge');
+// done-state helpers (persist per day & system)
+const doneKey = (date,sys)=>`omnifit_done_${date}_${sys}`;
+const isDone  = (date,sys)=>localStorage.getItem(doneKey(date,sys))==='1';
+const setDone = (date,sys,val)=>{ if(val) localStorage.setItem(doneKey(date,sys),'1'); else localStorage.removeItem(doneKey(date,sys)); };
 
-// Parse CSV to objects
+function fmtDateISO(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`}
+function toCompact(iso){return iso.replaceAll('-','')}
+function weekdayName(iso){return new Date(iso+'T00:00:00').toLocaleDateString(undefined,{weekday:'long'}).toUpperCase()}
+function capital(s){return s.charAt(0).toUpperCase()+s.slice(1)}
 function csvToDays(text){
-  const rows = text.trim().split(/\r?\n/).map(r => r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
-  const head = rows.shift().map(h=>h.trim().toLowerCase());
-  const i = Object.fromEntries(head.map((h,idx)=>[h,idx]));
-  return rows.map(r => ({
-    date: r[i.date],
-    physical: r[i.physical],
-    neurological: r[i.neurological],
-    cognitive: r[i.cognitive],
-    emotional: r[i.emotional],
-    lifestyle: r[i.lifestyle],
+  const rows = text.trim().split(/
+?
+/).map(r=>r.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map(c=>c.replace(/^\"|\"$/g,'')));
+  const hdr = rows.shift().map(h=>h.trim().toLowerCase());
+  const idx = Object.fromEntries(hdr.map((h,i)=>[h,i]));
+  return rows.map(r=>({
+    date:r[idx.date],
+    physical:r[idx.physical],
+    neurological:r[idx.neurological],
+    cognitive:r[idx.cognitive],
+    emotional:r[idx.emotional],
+    lifestyle:r[idx.lifestyle]
   })).sort((a,b)=>a.date.localeCompare(b.date));
-}
-function todayIndex(days){
-  const t = new Date(); const y=t.getFullYear(), m=String(t.getMonth()+1).padStart(2,'0'), d=String(t.getDate()).padStart(2,'0');
-  const iso = `${y}-${m}-${d}`; const k = days.findIndex(x=>x.date===iso);
-  return k>=0 ? k : 0;
-}
-
-// ===== STATE =====
-const state = { days: [], idx: 0, system: 'physical' };
-
-// ===== RENDER =====
+})).sort((a,b)=>a.date.localeCompare(b.date))}
+function findTodayIndex(days){const t=fmtDateISO(new Date());const i=days.findIndex(d=>d.date===t);return i>=0?i:0}
 function render(){
-  const d = state.days[state.idx]; if(!d) return;
-  $('#dayTitle').textContent = DAY_LABEL;
-  $('#weekday').textContent = weekdayName(d.date);
-  $('#dateTiny').textContent = compact(d.date);
-
-  const titles = { physical:'Move', neurological:'Control', cognitive:'Focus', emotional:'Regulate', lifestyle:'Integrate' };
-  $('#title').textContent = titles[state.system];
-  $('#content').textContent = d[state.system] || 'No entry.';
-  $('#badge').textContent = cap(state.system);
-
+  const d = state.data.days[state.idx]; if(!d) return;
+  // Header day number & subhead
+  const deltaDays = Math.round((new Date(d.date+'T00:00:00') - new Date(BASE_DAY_DATE+'T00:00:00'))/86400000);
+  const dayNum = BASE_DAY_NUMBER + deltaDays;
+  document.getElementById('dayTitle').textContent = `OMNIFIT Daily — Day ${dayNum}`;
+  weekdayEl.textContent = weekdayName(d.date);
+  dateTiny.textContent = toCompact(d.date);
+  // Title & content per system
+  const titles={physical:'Move',neurological:'Control',cognitive:'Focus',emotional:'Regulate',lifestyle:'Integrate'};
+  titleEl.textContent = titles[state.system];
+  contentEl.textContent = d[state.system] || 'No entry.';
+  badgeEl.textContent = capital(state.system);
+  // Reflect done states
+  const done = isDone(d.date, state.system);
+  $('#completeBtn').textContent = done ? '✓ Done' : 'Mark done';
+  $$('.tab').forEach(t=>{
+    const sys = t.dataset.tab;
+    t.classList.toggle('done', isDone(d.date, sys));
+  });
+  // Nav buttons
   $('#prevBtn').disabled = state.idx<=0;
-  $('#nextBtn').disabled = state.idx>=state.days.length-1;
-}
-
-// ===== BIND =====
+  $('#nextBtn').disabled = state.idx>=state.data.days.length-1;
+}`; weekdayEl.textContent=weekdayName(d.date); dateTiny.textContent=toCompact(d.date); const titles={physical:'Move',neurological:'Control',cognitive:'Focus',emotional:'Regulate',lifestyle:'Integrate'}; titleEl.textContent=titles[state.system]; contentEl.textContent=d[state.system]||'No entry.'; badgeEl.textContent=capital(state.system); $('#prevBtn').disabled=state.idx<=0; $('#nextBtn').disabled=state.idx>=state.data.days.length-1; }
 function bind(){
   $$('.tab').forEach(b=>b.addEventListener('click',()=>{
     $$('.tab').forEach(x=>x.classList.remove('active'));
@@ -123,31 +121,16 @@ function bind(){
     render();
   }));
   $('#prevBtn').addEventListener('click',()=>{ if(state.idx>0){state.idx--; render();} });
-  $('#nextBtn').addEventListener('click',()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
-}
-
-// ===== LOAD DATA =====
-async function load(){
-  try{
-    const res = await fetch(DATA_URL,{cache:'no-store'});
-    const text = await res.text();
-    state.days = csvToDays(text);
-    state.idx = todayIndex(state.days);
-  }catch(e){
-    // Minimal fallback so widget still shows
-    const today = new Date(); const y=today.getFullYear(), m=String(today.getMonth()+1).padStart(2,'0'), d=String(today.getDate()).padStart(2,'0');
-    state.days = [{date:`${y}-${m}-${d}`,physical:'10-min brisk walk, nose breathing.',neurological:'Eyes-closed single-leg 45s/side.',cognitive:'Set one intention.',emotional:'2×1-min box-breath.',lifestyle:'½ liter water before coffee.'}];
-    state.idx = 0;
-  }
-  render();
-}
-
+  $('#nextBtn').addEventListener('click',()=>{ const max=state.data.days.length-1; if(state.idx<max){state.idx++; render();} });
+  $('#completeBtn').addEventListener('click',()=>{
+    const d = state.data.days[state.idx];
+    const sys = state.system;
+    setDone(d.date, sys, !isDone(d.date, sys));
+    render();
+  });
+})); $('#prevBtn').addEventListener('click',()=>{ if(state.idx>0){state.idx--; render();}}); $('#nextBtn').addEventListener('click',()=>{ const max=state.data.days.length-1; if(state.idx<max){state.idx++; render();}}); }
+async function load(){ try{ const res=await fetch(GIST_URL,{cache:'no-store'}); const text=await res.text(); if(GIST_URL.includes('output=csv')){ state.data={days:csvToDays(text)}; } else { state.data=await JSON.parse(text); } state.idx=findTodayIndex(state.data.days);}catch(e){ state.data={days:[{date:fmtDateISO(new Date()),physical:'10-min brisk walk, nose breathing.',neurological:'Eyes-closed single-leg 45s/side.',cognitive:'Set one clear intention.',emotional:'2×1-min box-breath.',lifestyle:'½ liter water before coffee.'}]}; state.idx=0; } render(); }
 bind(); load();
 </script>
 </body>
 </html>
-
-
-
-
-
