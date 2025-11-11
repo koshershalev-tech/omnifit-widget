@@ -22,7 +22,7 @@ body{background:var(--sage);display:flex;align-items:center;justify-content:cent
 .bodycard{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
 .h1{font-size:32px;line-height:1.1;margin:6px 0 8px;color:#000;font-weight:900}
 .label{color:#475569;font-size:16px;margin:6px 0}
-.content{font-size:20px;color:#111}
+.content{font-size:20px;color:#111; line-height:1.6;}
 .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
 .badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;padding:6px 10px;border-radius:999px}
 .check{width:28px;height:28px;border-radius:8px;border:2px solid #DCE7FF;background:#F8FAFF;display:inline-grid;place-items:center;cursor:pointer}
@@ -96,18 +96,38 @@ function autoDayNumber(){
 
 /* ===== RENDER ===== */
 function render(){
-  const d=state.days[state.idx]; if(!d) return;
-  $("#dayTitle").textContent=`OMNIFIT Daily — Day ${autoDayNumber()}`;
-  $("#weekday").textContent=weekdayName(d.date);
-  $("#dateTiny").textContent=compact(d.date);
-  const titles={physical:"Move",neurological:"Control",cognitive:"Focus",emotional:"Regulate",lifestyle:"Integrate"};
-  $("#title").textContent=titles[state.system];
- $("#content").innerHTML = d[state.system] || "No entry.";
-  $("#badge").textContent=cap(state.system);
-  const done=isDone(d.date,state.system);
-  const chk=$("#completeBtn"); chk.classList.toggle("checked",done);
-  $$(".tab").forEach(t=>{ const s=t.dataset.tab; t.classList.toggle("done",isDone(d.date,s)); });
-  $("#prevBtn").disabled=state.idx<=0; $("#nextBtn").disabled=state.idx>=state.days.length-1;
+  const d = state.days[state.idx]; 
+  if(!d) return;
+
+  // Header (still using autoDayNumber for now)
+  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${autoDayNumber()}`;
+
+  // Subhead
+  $("#weekday").textContent = weekdayName(d.date);
+  $("#dateTiny").textContent = compact(d.date);
+
+  // Section title + system badge
+  const titles = { physical:"Move", neurological:"Control", cognitive:"Focus", emotional:"Regulate", lifestyle:"Integrate" };
+  document.getElementById("title").textContent = titles[state.system];
+  document.getElementById("badge").textContent = cap(state.system);
+
+  // Content: render <br> from CSV (and convert any real \n to <br>)
+  const raw  = d[state.system] || "No entry.";
+  const html = String(raw).replace(/&lt;br\s*\/?&gt;/gi,"<br>").replace(/\n/g,"<br>");
+  document.getElementById("content").innerHTML = html;
+
+  // Checkbox + tab ticks
+  const done = isDone(d.date, state.system);
+  const chk  = document.getElementById("completeBtn");
+  chk.classList.toggle("checked", done);
+  document.querySelectorAll(".tab").forEach(t=>{
+    const sys = t.dataset.tab;
+    t.classList.toggle("done", isDone(d.date, sys));
+  });
+
+  // Nav
+  $("#prevBtn").disabled = state.idx<=0;
+  $("#nextBtn").disabled = state.idx>=state.days.length-1;
 }
 
 /* ===== BIND ===== */
@@ -142,4 +162,5 @@ load();
 </script>
 </body>
 </html>
+
 
