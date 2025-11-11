@@ -47,7 +47,14 @@
       .title{font-size:28px}
       .content{font-size:18px}
     }
-  </style>
+    /* Hard overrides to ignore host (Wix) styles */
+  #omnifit-widget, #omnifit-widget * { box-sizing: border-box; }
+  #omnifit-widget .tabs{ display:flex !important; flex-direction:row !important; flex-wrap:wrap; justify-content:center !important; }
+  #omnifit-widget .date-wrap{ display:flex !important; justify-content:center !important; align-items:center !important; }
+  #omnifit-widget .subhead{ display:flex !important; justify-content:center !important; align-items:center !important; }
+  #omnifit-widget .card{ display:block !important; }
+  #omnifit-widget .bigdate{ text-align:center !important; font-size:44px !important; }
+</style>
 </head>
 <body>
 <div class="widget" id="omnifit-widget" aria-live="polite">
@@ -230,6 +237,3 @@ load();
 </script>
 </body>
 </html>
-
-
-
