@@ -5,75 +5,231 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>OMNIFIT 5‑System Widget</title>
   <style>
-:root{--sage:#E6F0D8;--terra:#D95C4C;--ink:#0F172A;--line:#7aa3ff22;--card:#fff;--blue:#78A8FF}
-html,body{margin:0;height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-body{background:var(--sage);display:grid;place-items:center;padding:12px;overflow:hidden}
-#omnifit-widget{width:100%;max-width:560px}
-.widget{display:flex;flex-direction:column;gap:12px;background:var(--card);border:2px solid #5A8AF3;border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,.08);padding:16px;box-sizing:border-box;max-width:560px;width:100%;margin:0 auto;overflow:hidden}
-.widget *{box-sizing:border-box}
-.date-wrap{display:flex;justify-content:center;align-items:center;gap:12px}
-.icon-btn{width:40px;height:40px;border-radius:10px;border:1.5px solid #1112;display:grid;place-items:center;background:#fff;cursor:pointer}
-.icon-btn:disabled{opacity:.4;cursor:not-allowed}
-.bigdate{font-weight:800;font-size:40px;letter-spacing:1px;color:#9FC1FF;text-align:center}
-.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0}
-.tab{padding:10px 16px;border-radius:10px;border:2px solid #111;cursor:pointer;background:#000;color:#fff;font-weight:800;letter-spacing:.3px}
-.tab.active{background:#5A8AF3;border-color:#2E5FF0}
-.subhead{display:flex;justify-content:center;align-items:center;gap:8px;color:#9FC1FF;font-size:18px}
-.card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px}
-.title{font-size:32px;line-height:1.1;margin:6px 0 8px;color:#000;font-weight:900}
-.label{color:#475569;font-size:16px;margin:6px 0}
-.content{font-size:20px;color:#111}
-.foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-.badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;padding:6px 10px;border-radius:999px}
-</style>
+    :root{
+      /* OMNIFIT brand */
+      --sage:#E6F0D8;            /* background base */
+      --terra:#D95C4C;           /* accent */
+      --ink:#0F172A;             /* near-black */
+      --ink-70:#334155;          /* secondary text */
+      --line:#7aa3ff22;          /* subtle border */
+      --card:#ffffff;            /* card bg */
+      --blue:#78A8FF;            /* light header number tint (from reference mock) */
+    }
+    html,body{height:100%;margin:0;font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";}
+    body{background:var(--sage);display:flex;align-items:center;justify-content:center;padding:8px;overflow:hidden;}
+
+    .widget{max-width:560px;width:100%;margin:0 auto;background:var(--card);border:2px solid #5A8AF3;border-radius:14px;box-shadow:0 6px 20px rgba(16,24,40,.08);padding:18px;box-sizing:border-box;}
+
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .date-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+    .icon-btn{width:44px;height:44px;border-radius:10px;border:1.5px solid #1112;display:grid;place-items:center;background:#fff;cursor:pointer;}
+    .icon-btn:disabled{opacity:.4;cursor:not-allowed}
+    .bigdate{font-weight:800;font-size:44px;letter-spacing:1px;color:#9FC1FF;text-align:center}
+
+    .tabs{display:flex;gap:12px;justify-content:center;margin:8px 0 16px;flex-wrap:wrap;}
+    .tab{padding:10px 18px;border-radius:10px;border:2px solid #111;cursor:pointer;background:#000;color:#fff;font-weight:800;letter-spacing:.3px}
+    .tab.active{background:#5A8AF3;border-color:#2E5FF0}
+
+    .subhead{display:flex;align-items:center;justify-content:center;gap:10px;color:#9FC1FF;font-size:20px;margin:6px 0 8px;text-align:center}
+
+    .card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:18px}
+    .title{font-size:38px;line-height:1.05;margin:6px 0 8px;color:#000;font-weight:900}
+    .label{color:#475569;font-size:18px;margin:6px 0}
+    .content{font-size:22px;color:#111;}
+
+    .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    .badge{font-size:12px;background:#F8FAFF;border:1px solid #DCE7FF;color:#2E5FF0;padding:6px 10px;border-radius:999px}
+
+    /* responsive */
+    @media (max-width:420px){
+      .bigdate{font-size:40px}
+      .tab{padding:8px 12px}
+      .title{font-size:28px}
+      .content{font-size:18px}
+    }
+  </style>
 </head>
 <body>
-<div id="omnifit-widget">
-  <div class="widget" aria-live="polite">
-    <div class="date-wrap">
-      <button id="prevBtn" class="icon-btn" title="Previous day" aria-label="Previous day">&#8592;</button>
-      <div class="bigdate" id="dayTitle">OMNIFIT Daily — Day 560</div>
-      <button id="nextBtn" class="icon-btn" title="Next day" aria-label="Next day">&#8594;</button>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab active" role="tab" data-tab="physical">PHYSICAL</button>
-      <button class="tab" role="tab" data-tab="neurological">NEUROLOGICAL</button>
-      <button class="tab" role="tab" data-tab="cognitive">COGNITIVE</button>
-      <button class="tab" role="tab" data-tab="emotional">EMOTIONAL</button>
-      <button class="tab" role="tab" data-tab="lifestyle">LIFESTYLE</button>
-    </div>
-    <div class="subhead"><span id="weekday">TUESDAY</span><span id="dateTiny">000000</span></div>
-    <div class="card">
-      <div class="title" id="title">Move</div>
-      <div class="label">Today:</div>
-      <div class="content" id="content">Loading…</div>
-      <div class="foot"><span class="badge" id="badge">Physical</span></div>
-    </div>
+<div class="widget" id="omnifit-widget" aria-live="polite">
+  <div class="date-wrap">
+    <button id="prevBtn" class="icon-btn" title="Previous day" aria-label="Previous day">&#8592;</button>
+    <div class="bigdate" id="dayTitle">OMNIFIT Daily — Day 560</div>
+    <button id="nextBtn" class="icon-btn" title="Next day" aria-label="Next day">&#8594;</button>
+  </div>
+    <button id="nextBtn" class="icon-btn" title="Next day" aria-label="Next day">&#8594;</button>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="physical">PHYSICAL</button>
+    <button class="tab" role="tab" data-tab="neurological">NEUROLOGICAL</button>
+    <button class="tab active" role="tab" data-tab="cognitive">COGNITIVE</button>
+    <button class="tab" role="tab" data-tab="emotional">EMOTIONAL</button>
+    <button class="tab" role="tab" data-tab="lifestyle">LIFESTYLE</button>
+  </div>
+
+  <div class="subhead" id="subhead">
+    <span id="weekday">TUESDAY</span>
+    <span id="dateTiny">000000</span>
+  </div>
+
+  <div class="card">
+    <div class="title" id="title">OMNIFIT DAILY</div>
+    <div class="label">Today:</div>
+    <div class="content" id="content">Loading…</div>
+    <div class="foot"><span class="badge" id="badge">Cognitive</span></div>
   </div>
 </div>
+
 <script>
-/* CONFIG */
+/* ==========================
+   CONFIG
+   ========================== */
+// Replace with your RAW GitHub Gist URL (the JSON file). Example placeholder:
+const GIST_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nLs1K-6nUX1RTtSH1lBQpp0HtQQLr-i-cS2Qzy904M3UVUMlO1HAvk9ijGYtWE691qt1hJrxgc9a/pub?output=csv";
+// Day label between arrows:
 const DAY_LABEL = "OMNIFIT Daily — Day 560";
-const GIST_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT3nLs1K-6nUX1RTtSH1lBQpp0HtQQLr-i-cS2Qzy904M3UVUMlO1HAvk9ijGYtWE691qt1hJrxgc9a/pub?output=csv"; // or your JSON
 
-/* LOGIC */
-const state={data:{days:[]},idx:0,system:'physical'};
-const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const weekdayEl=$('#weekday'), dateTiny=$('#dateTiny'), titleEl=$('#title'), contentEl=$('#content'), badgeEl=$('#badge');
+// If the fetch fails, we fall back to the inline SAMPLE_DATA below.
 
-function fmtDateISO(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`}
-function toCompact(iso){return iso.replaceAll('-','')}
-function weekdayName(iso){return new Date(iso+'T00:00:00').toLocaleDateString(undefined,{weekday:'long'}).toUpperCase()}
-function capital(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-function csvToDays(text){const rows=text.trim().split(/
-?
-/).map(r=>r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,''))), hdr=rows.shift().map(h=>h.trim().toLowerCase()); const idx=Object.fromEntries(hdr.map((h,i)=>[h,i])); return rows.map(r=>({date:r[idx.date],physical:r[idx.physical],neurological:r[idx.neurological],cognitive:r[idx.cognitive],emotional:r[idx.emotional],lifestyle:r[idx.lifestyle]})).sort((a,b)=>a.date.localeCompare(b.date))}
-function findTodayIndex(days){const t=fmtDateISO(new Date());const i=days.findIndex(d=>d.date===t);return i>=0?i:0}
-function render(){const d=state.data.days[state.idx]; if(!d) return; $('#dayTitle').textContent=DAY_LABEL; weekdayEl.textContent=weekdayName(d.date); dateTiny.textContent=toCompact(d.date); const titles={physical:'Move',neurological:'Control',cognitive:'Focus',emotional:'Regulate',lifestyle:'Integrate'}; titleEl.textContent=titles[state.system]; contentEl.textContent=d[state.system]||'No entry.'; badgeEl.textContent=capital(state.system); $('#prevBtn').disabled=state.idx<=0; $('#nextBtn').disabled=state.idx>=state.data.days.length-1; }
-function bind(){ $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); state.system=b.dataset.tab; render(); })); $('#prevBtn').addEventListener('click',()=>{ if(state.idx>0){state.idx--; render();}}); $('#nextBtn').addEventListener('click',()=>{ const max=state.data.days.length-1; if(state.idx<max){state.idx++; render();}}); }
-async function load(){ try{ const res=await fetch(GIST_URL,{cache:'no-store'}); const text=await res.text(); if(GIST_URL.includes('output=csv')){ state.data={days:csvToDays(text)}; } else { state.data=await JSON.parse(text); } state.idx=findTodayIndex(state.data.days);}catch(e){ state.data={days:[{date:fmtDateISO(new Date()),physical:'10-min brisk walk, nose breathing.',neurological:'Eyes-closed single-leg 45s/side.',cognitive:'Set one clear intention.',emotional:'2×1-min box-breath.',lifestyle:'½ liter water before coffee.'}]}; state.idx=0; } render(); }
-bind(); load();
+/* ==========================
+   DATA SHAPE (example)
+   ==========================
+{
+  "days": [
+    {"date":"2025-11-25","physical":"Move 10 minutes without your phone.",
+      "neurological":"Balance on one leg, 60s each.",
+      "cognitive":"3‑minute nose‑breathing with full focus.",
+      "emotional":"Cold shower 30s, stay calm.",
+      "lifestyle":"Drink ½ liter of water before coffee."},
+    … more days …
+  ]
+}
+*/
+
+// --- Fallback sample (feel free to edit or delete once your gist is live) ---
+const SAMPLE_DATA = {
+  days: [
+    {date: "2025-11-25", physical:"30 slow squats, breathe through nose.", neurological:"6-sec down push-ups, 5 reps.", cognitive:"Name one sensation per minute during a walk.", emotional:"Write one line: what triggered me today?", lifestyle:"Plan sleep 30 min earlier tonight."},
+    {date: "2025-11-26", physical:"8-min EMOM: 5 air squats + 20s plank.", neurological:"Stand up/sit down slowly x6 (no hands).", cognitive:"3-min timer: single-task breathing only.", emotional:"2x1 min box-breath (4-4-4-4).", lifestyle:"Add 20g protein to breakfast."},
+    {date: "2025-11-27", physical:"Walk 1 km at easy pace.", neurological:"Eyes-closed single‑leg balance, 45s/side.", cognitive:"Before training: set 1 clear intention.", emotional:"Message someone: ‘thank you for…’.", lifestyle:"One colorful plant per plate."}
+  ]
+};
+
+/* ==========================
+   WIDGET LOGIC
+   ========================== */
+const state = {
+  data: SAMPLE_DATA, // will be replaced after fetch
+  idx: 0,
+  system: 'cognitive'
+};
+
+const $ = (s)=>document.querySelector(s);
+const $$ = (s)=>document.querySelectorAll(s);
+const dayTitleEl = document.getElementById('dayTitle');
+const weekdayEl = $('#weekday');
+const dateTiny = $('#dateTiny');
+const titleEl = $('#title');
+const contentEl = $('#content');
+const badgeEl = $('#badge');
+const statusEl = $('#status');
+
+function fmtDateISO(d){
+  const yyyy=d.getFullYear();
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+function toCompact(iso){return iso.replaceAll('-','');}
+function weekdayName(iso){
+  const dt = new Date(iso+'T00:00:00');
+  return dt.toLocaleDateString(undefined,{weekday:'long'}).toUpperCase();
+}
+function capital(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+function findTodayIndex(days){
+  const todayISO = fmtDateISO(new Date());
+  let idx = days.findIndex(d=>d.date===todayISO);
+  if(idx<0) idx = 0; // fallback first entry
+  return idx;
+}
+
+function render(){
+  const days = state.data.days || [];
+  if(!days.length){
+    titleEl.textContent = 'No Data Loaded';
+    contentEl.textContent = 'Add at least one day to your JSON.';
+    return;
+  }
+  const cur = days[state.idx];
+  const iso = cur.date;
+  dayTitleEl.textContent = DAY_LABEL;
+  weekdayEl.textContent = weekdayName(iso);
+  dateTiny.textContent = toCompact(iso);
+
+  // Title: map system → headline
+  // Edit display names here if you want (e.g., Move → Motion)
+  const titles = {
+    physical: 'Move',
+    neurological: 'Control',
+    cognitive: 'Focus',
+    emotional: 'Regulate',
+    lifestyle: 'Integrate'
+  };
+  titleEl.textContent = titles[state.system];
+  contentEl.textContent = (cur[state.system]||'No entry for this system.');
+  badgeEl.textContent = capital(state.system);
+
+  // nav button states
+  $('#prevBtn').disabled = (state.idx<=0);
+  $('#nextBtn').disabled = (state.idx>=days.length-1);
+
+  statusEl.textContent = '';
+}
+
+function bind(){
+  // Tabs
+  $$('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      $$('.tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      state.system = btn.dataset.tab;
+      render();
+    })
+  });
+  // Nav
+  $('#prevBtn').addEventListener('click',()=>{ if(state.idx>0){state.idx--; render();} });
+  $('#nextBtn').addEventListener('click',()=>{ const max=(state.data.days||[]).length-1; if(state.idx<max){state.idx++; render();} });
+}
+
+async function load(){
+  try{
+    const res = await fetch(GIST_URL,{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const json = await res.json();
+    if(Array.isArray(json)){
+      state.data = {days:json}; // allow raw array
+    }else{
+      state.data = json;
+    }
+    // sort by date
+    state.data.days.sort((a,b)=>a.date.localeCompare(b.date));
+    state.idx = findTodayIndex(state.data.days);
+    
+  }catch(e){
+    console.warn('Using fallback data:', e);
+    state.data = SAMPLE_DATA;
+    state.idx = findTodayIndex(state.data.days);
+    
+  }
+  render();
+}
+
+bind();
+load();
 </script>
 </body>
 </html>
+
+
 
