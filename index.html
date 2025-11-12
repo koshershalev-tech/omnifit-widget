@@ -133,19 +133,58 @@ const doneKey=(d,s)=>`omnifit_done_${d}_${s}`;
 const isDone=(d,s)=>localStorage.getItem(doneKey(d,s))==='1';
 const setDone=(d,s,v)=>{ v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s)); };
 
+// Robust CSV parser: handles quotes, commas, and newlines inside cells
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cell = '';
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], next = text[i+1];
+
+    if (ch === '"') {
+      if (inQuotes && next === '"') { cell += '"'; i++; } // escaped quote
+      else { inQuotes = !inQuotes; }
+    } else if (ch === ',' && !inQuotes) {
+      row.push(cell); cell = '';
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (cell.length || row.length) { row.push(cell); rows.push(row); }
+      cell = ''; row = [];
+      // swallow paired \r\n
+      if (ch === '\r' && next === '\n') i++;
+    } else {
+      cell += ch;
+    }
+  }
+  if (cell.length || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
 function csvToDays(text){
-  const rows=text.trim().split(/\r?\n/)
-    .map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
-  const hdr=rows.shift().map(x=>x.trim().toLowerCase());
-  const ix=Object.fromEntries(hdr.map((x,i)=>[x,i]));
-  return rows.map(r=>({
-    date:r[ix.date],
-    physical:r[ix.physical],
-    neurological:r[ix.neurological],
-    cognitive:r[ix.cognitive],
-    emotional:r[ix.emotional],
-    lifestyle:r[ix.lifestyle]
-  })).sort((a,b)=>a.date.localeCompare(b.date));
+  // remove BOM if present
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+  const rows = parseCSV(text);
+  if (!rows.length) return [];
+
+  const header = rows[0].map(h => h.trim().toLowerCase());
+  const ix = Object.fromEntries(header.map((h,i)=>[h,i]));
+
+  const out = [];
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || !row.length) continue;
+    const get = key => (ix[key] != null ? (row[ix[key]] ?? '').trim() : '');
+    const date = get('date');
+    if (!date) continue; // skip broken/empty lines
+    out.push({
+      date,
+      physical:     get('physical'),
+      neurological: get('neurological'),
+      cognitive:    get('cognitive'),
+      emotional:    get('emotional'),
+      lifestyle:    get('lifestyle')
+    });
+  }
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
 }
 
 function todayIndex(days){
@@ -249,5 +288,6 @@ load();
 </script>
 </body>
 </html>
+
 
 
