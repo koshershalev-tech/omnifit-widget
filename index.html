@@ -210,6 +210,15 @@ body {
   /* 5) Safety if container gets tight */
   #wrap{ max-width:94vw; }
 }
+  /* ===== Mobile: scale the whole widget (keep desktop layout) ===== */
+@media (max-width: 500px){
+  html, body{
+    transform: scale(0.85);      /* try 0.90…0.80 to taste */
+    transform-origin: top center; /* anchor the shrink */
+    height: 120vh;                /* extra vertical room after scaling */
+    overflow: visible;            /* avoid cropping inside iframe */
+  }
+}
 </style>
 </head>
 <body>
@@ -391,6 +400,7 @@ load();
 </script>
 </body>
 </html>
+
 
 
 
