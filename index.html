@@ -219,6 +219,13 @@ body {
     overflow: visible;            /* avoid cropping inside iframe */
   }
 }
+/* ===== Auto-fit baseline ===== */
+#wrap{
+  width:640px;           /* baseline desktop layout width */
+  max-width:640px;
+  margin:0 auto;
+  transform-origin: top center; /* we'll scale this element */
+}
 </style>
 </head>
 <body>
@@ -348,7 +355,31 @@ function render(){
   $("#prevBtn").disabled = state.idx<=0;
   $("#nextBtn").disabled = state.idx>=state.days.length-1;
 }
+/* ===== Auto-scale to viewport (keeps desktop layout, just smaller on phones) ===== */
+(function(){
+  const BASE = 640; // must match #wrap width
+  function fit(){
+    // viewport width inside the iframe
+    const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
 
+    // leave ~24px breathing room to avoid edge collision in Wix embeds
+    const scale = Math.min(1, (vw - 24) / BASE);
+
+    const el = document.getElementById('wrap');
+    el.style.transform = `scale(${scale})`;
+
+    // update body height so the iframe doesn’t crop the bottom
+    const rect = el.getBoundingClientRect();
+    document.body.style.height = Math.ceil(rect.height + 24) + 'px';
+  }
+
+  window.addEventListener('resize', fit, { passive:true });
+  window.addEventListener('load', fit);
+
+  // also run after your content renders
+  const _render = render;
+  render = function(){ _render(); fit(); };
+})();
 /* ===== BIND ===== */
 function bind(){
   $$(".tab").forEach(b=>b.addEventListener("click",()=>{
@@ -400,6 +431,7 @@ load();
 </script>
 </body>
 </html>
+
 
 
 
