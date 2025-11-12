@@ -61,71 +61,100 @@ body{background:var(--sage);display:flex;align-items:center;justify-content:cent
 
 <script>
 /* ===== CONFIG (same-origin data!) ===== */
-const DATA_URL = "./omnifit_data.csv";   // <-- the CSV file must be next to index.html
-const BASE_DAY_DATE = "2025-11-11";      // anchor date
-const BASE_DAY_NUMBER = 560;             // day number on that date
+const DATA_URL = "./omnifit_data.csv";   // CSV must sit next to index.html
+const PROGRAM_EPOCH_ISO = "2024-05-13";  // <-- set your true Day 1 date (YYYY-MM-DD)
 
 /* ===== STATE ===== */
 const state = { days:[], idx:0, system:"physical" };
 
 /* ===== HELPERS ===== */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const weekdayName=iso=>new Date(iso+"T00:00:00").toLocaleDateString(undefined,{weekday:"long"}).toUpperCase();
-const compact=iso=>iso.replaceAll("-",""); const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
-const doneKey=(d,s)=>`omnifit_done_${d}_${s}`; const isDone=(d,s)=>localStorage.getItem(doneKey(d,s))==='1';
+
+// Always build Date at local midnight to avoid time-zone drift
+const atMidnight = (iso) => new Date(`${iso}T00:00:00`);
+
+// Day name + compact date for the subhead
+const weekdayName = iso => atMidnight(iso).toLocaleDateString(undefined,{weekday:"long"}).toUpperCase();
+const compact = iso => iso.replaceAll("-","");
+
+// Capitalize "physical" -> "Physical"
+const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+
+// Per-day completion keys
+const doneKey=(d,s)=>`omnifit_done_${d}_${s}`;
+const isDone=(d,s)=>localStorage.getItem(doneKey(d,s))==='1';
 const setDone=(d,s,v)=>{v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s));};
 
-function csvToDays(t){
-  const rows=t.trim().split(/\r?\n/).map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
-  const hdr=rows.shift().map(x=>x.trim().toLowerCase());
-  const ix=Object.fromEntries(hdr.map((x,i)=>[x,i]));
+// CSV → array of {date, physical, neurological, cognitive, emotional, lifestyle}
+function csvToDays(text){
+  const rows = text.trim().split(/\r?\n/)
+    .map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
+  const hdr = rows.shift().map(x=>x.trim().toLowerCase());
+  const ix  = Object.fromEntries(hdr.map((x,i)=>[x,i]));
   return rows.map(r=>({
-    date:r[ix.date], physical:r[ix.physical], neurological:r[ix.neurological],
-    cognitive:r[ix.cognitive], emotional:r[ix.emotional], lifestyle:r[ix.lifestyle]
+    date:r[ix.date],
+    physical:r[ix.physical],
+    neurological:r[ix.neurological],
+    cognitive:r[ix.cognitive],
+    emotional:r[ix.emotional],
+    lifestyle:r[ix.lifestyle]
   })).sort((a,b)=>a.date.localeCompare(b.date));
 }
+
+// Pick today's row if it exists, else first row
 function todayIndex(days){
-  const iso=new Date().toISOString().slice(0,10);
-  const k=days.findIndex(d=>d.date===iso);
-  return k>=0?k:0;
+  const iso = new Date().toISOString().slice(0,10);
+  const k = days.findIndex(d=>d.date===iso);
+  return k>=0 ? k : 0;
 }
-function autoDayNumber(){
-  const today=new Date();
-  return BASE_DAY_NUMBER + Math.floor((today - new Date(BASE_DAY_DATE))/86400000);
+
+/* ===== NEW: Day number from selected date ===== */
+function dayNumberFrom(iso){
+  const start  = atMidnight(PROGRAM_EPOCH_ISO);
+  const target = atMidnight(iso);
+  const diffDays = Math.floor((target - start)/86400000); // 86,400,000 ms in a day
+  return diffDays + 1; // Day 1 on the start date
 }
 
 /* ===== RENDER ===== */
 function render(){
-  const d = state.days[state.idx]; 
+  const d = state.days[state.idx];
   if(!d) return;
 
-  // Header (still using autoDayNumber for now)
-  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${autoDayNumber()}`;
+  // Header — use the SELECTED date, not today
+  const dayNum = dayNumberFrom(d.date);
+  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${dayNum}`;
 
   // Subhead
   $("#weekday").textContent = weekdayName(d.date);
   $("#dateTiny").textContent = compact(d.date);
 
   // Section title + system badge
-  const titles = { physical:"Move", neurological:"Control", cognitive:"Focus", emotional:"Regulate", lifestyle:"Integrate" };
-  document.getElementById("title").textContent = titles[state.system];
-  document.getElementById("badge").textContent = cap(state.system);
+  const titles = {
+    physical:"Move",
+    neurological:"Control",
+    cognitive:"Focus",
+    emotional:"Regulate",
+    lifestyle:"Integrate"
+  };
+  $("#title").textContent = titles[state.system];
+  $("#badge").textContent = cap(state.system);
 
-  // Content: render <br> from CSV (and convert any real \n to <br>)
+  // Body content (support <br> in CSV)
   const raw  = d[state.system] || "No entry.";
   const html = String(raw).replace(/&lt;br\s*\/?&gt;/gi,"<br>").replace(/\n/g,"<br>");
-  document.getElementById("content").innerHTML = html;
+  $("#content").innerHTML = html;
 
   // Checkbox + tab ticks
   const done = isDone(d.date, state.system);
-  const chk  = document.getElementById("completeBtn");
+  const chk  = $("#completeBtn");
   chk.classList.toggle("checked", done);
-  document.querySelectorAll(".tab").forEach(t=>{
+  $$(".tab").forEach(t=>{
     const sys = t.dataset.tab;
     t.classList.toggle("done", isDone(d.date, sys));
   });
 
-  // Nav
+  // Nav buttons
   $("#prevBtn").disabled = state.idx<=0;
   $("#nextBtn").disabled = state.idx>=state.days.length-1;
 }
@@ -134,24 +163,43 @@ function render(){
 function bind(){
   $$(".tab").forEach(b=>b.addEventListener("click",()=>{
     $$(".tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active"); state.system=b.dataset.tab; render();
+    b.classList.add("active");
+    state.system = b.dataset.tab;
+    render();
   }));
-  $("#prevBtn").addEventListener("click",()=>{ if(state.idx>0){state.idx--; render();} });
-  $("#nextBtn").addEventListener("click",()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
-  $("#completeBtn").addEventListener("click",()=>{ const d=state.days[state.idx]; const s=state.system; setDone(d.date,s,!isDone(d.date,s)); render(); });
+
+  $("#prevBtn").addEventListener("click",()=>{
+    if(state.idx>0){ state.idx--; render(); }
+  });
+  $("#nextBtn").addEventListener("click",()=>{
+    if(state.idx<state.days.length-1){ state.idx++; render(); }
+  });
+
+  $("#completeBtn").addEventListener("click",()=>{
+    const d=state.days[state.idx], s=state.system;
+    setDone(d.date, s, !isDone(d.date,s));
+    render();
+  });
 }
 
 /* ===== LOAD (same-origin, Wix-safe) ===== */
 async function load(){
   try{
-    const res = await fetch(DATA_URL, { cache:'no-store' });  // same-origin → allowed in Wix
+    const res = await fetch(DATA_URL, { cache:'no-store' });
     const text = await res.text();
     state.days = csvToDays(text);
     state.idx  = todayIndex(state.days);
   }catch(e){
     console.error('LOAD ERROR', e);
-    const t=new Date(), iso=t.toISOString().slice(0,10);
-    state.days = [{date:iso,physical:'Walk 10 min',neurological:'Balance 45 s/leg',cognitive:'Set one intention',emotional:'2×1 min box-breath',lifestyle:'Drink ½ L water before coffee'}];
+    const iso = new Date().toISOString().slice(0,10);
+    state.days = [{
+      date:iso,
+      physical:'Walk 10 min',
+      neurological:'Balance 45 s/leg',
+      cognitive:'Set one intention',
+      emotional:'2×1 min box-breath',
+      lifestyle:'Drink ½ L water before coffee'
+    }];
     state.idx = 0;
   }
   render();
@@ -162,5 +210,6 @@ load();
 </script>
 </body>
 </html>
+
 
 
