@@ -4,227 +4,62 @@
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>OMNIFIT 5-System Widget</title>
 <style>
-:root {
-  --sage: #E6F0D8;          /* page background */
-  --card: #FFFFFF;          /* widget card */
-  --terra: #D95C4C;         /* OMNIFIT accent (used for done/hover) */
-  --blue: #78A8FF;          /* OMNIFIT secondary accent */
-  --ink: #111111;           /* main text */
-  --muted: #475569;         /* subtext */
-  --line: #DCE7FF;          /* borders */
+:root{
+  --sage:#E6F0D8; --card:#FFFFFF; --terra:#D95C4C; --blue:#78A8FF;
+  --ink:#111111; --muted:#475569; --line:#DCE7FF;
 }
 
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-}
+html,body{margin:0;height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:#E8E6E6;display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
 
-body {
-  background: #E8E6E6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  overflow:hidden;
-}
-
-#wrap {
-  width: 100%;
-  max-width: 640px;
-}
+/* Baseline layout width (desktop design) */
+#wrap{width:640px;max-width:640px;margin:0 auto;transform-origin:top center}
 
 /* Frame */
-.frame {
-  background: var(--card);
-  border: 1.5px solid var(--line);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-  padding: 20px;
-}
+.frame{background:var(--card);border:1.5px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.05);padding:20px}
 
 /* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.btn {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: #fff;
-  display: grid; place-items: center;
-  cursor: pointer;
-  transition: 0.15s;
-}
-.btn:hover { border-color: var(--blue); background: #f6f9ff; }
-.btn:disabled { opacity: .4; cursor: not-allowed; }
-
-.title {
-  font-weight: 800;
-  font-size: clamp(22px, 4vw, 32px);
-  color: var(--blue);
-  text-align: center;
-  white-space: nowrap;
-}
+.header{display:flex;align-items:center;justify-content:center;gap:10px}
+.btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--blue);background:#f6f9ff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.title{font-weight:800;font-size:clamp(22px,4vw,32px);color:var(--blue);text-align:center;white-space:nowrap}
 
 /* Tabs */
-.tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  gap: 8px;
-  margin: 10px 0;
-}
-.tab {
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 2px solid transparent;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.4px;
-  color: #fff;
-  background: #000;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-.tab.active {
-  background: var(--blue);
-  border-color: #5A8AF3;
-}
-.tab.done::after {
-  content: " ✓";
-  color: var(--terra);
-  font-weight: 600;
-}
+.tabs{display:flex;flex-wrap:nowrap;justify-content:center;gap:8px;margin:10px 0}
+.tab{padding:8px 14px;border-radius:999px;border:2px solid transparent;font-weight:700;font-size:13px;letter-spacing:.4px;color:#fff;background:#000;cursor:pointer;transition:.2s ease}
+.tab.active{background:var(--blue);border-color:#5A8AF3}
+.tab.done::after{content:" ✓";color:var(--terra);font-weight:600}
 
-/* Subhead (date) */
-.subhead {
-  text-align: center;
-  font-size: 15px;
-  color: var(--blue);
-  font-weight: 500;
-  margin-bottom: 6px;
-}
+/* Subhead */
+.subhead{text-align:center;font-size:15px;color:var(--blue);font-weight:500;margin-bottom:6px}
 
 /* Body Card */
-.bodycard {
-  background: var(--card);
-  border: 1.5px solid var(--line);
-  border-radius: 14px;
-  padding: 18px;
-  line-height: 1.5;
-  color: var(--ink);
-}
-.h1 {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-.label {
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.content {
-  font-size: 17px;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.badge {
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: #f8faff;
-  color: var(--blue);
-}
-.check {
-  width: 26px; height: 26px;
-  border-radius: 8px;
-  border: 2px solid var(--line);
-  background: #f8faff;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: 0.15s;
-}
-.check.checked {
-  background: #e8f1ff;
-  border-color: var(--blue);
-}
-.check.checked::after {
-  content: "✓";
-  color: var(--blue);
-  font-weight: 700;
-}
-  /* ===== Mobile polish ===== */
-@media (max-width: 420px){
-  /* 1) Reduce outer padding so tabs aren't clipped */
-  .frame{ padding:10px; border-radius:14px; }
+.bodycard{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px;line-height:1.5;color:var(--ink)}
+.h1{font-size:24px;font-weight:800;margin-bottom:4px}
+.label{color:var(--muted);font-weight:600;margin-bottom:4px}
+.content{font-size:17px;color:var(--ink);margin-bottom:10px}
+.foot{display:flex;justify-content:space-between;align-items:center}
+.badge{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#f8faff;color:var(--blue)}
+.check{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:#f8faff;display:grid;place-items:center;cursor:pointer;transition:.15s}
+.check.checked{background:#e8f1ff;border-color:var(--blue)}
+.check.checked::after{content:"✓";color:var(--blue);font-weight:700}
 
-  /* 2) Header layout stays centered, title may wrap to 2 lines */
-  .header{
-    display:grid;
-    grid-template-columns:auto 1fr auto;
-    align-items:center;
-    gap:8px;
-  }
-  .btn{ width:28px; height:28px; }
-  .title{
-    font-size:clamp(18px,5vw,24px);
-    line-height:1.15;
-    white-space:normal;
-    text-align:center;
-  }
-
-  /* 3) Tabs: full-width area with safe inner padding and swipe */
-  .tabs{
-    padding:0 6px;              /* NEW: inner side room */
-    margin:8px 0 6px;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-  }
-  .tabs::-webkit-scrollbar{ display:none; }
-  .tab{
-    flex:0 0 auto;               /* don't squish; allow swipe */
-    padding:8px 12px;
-    font-size:12px;
-    border-radius:999px;
-  }
-
-  /* 4) Date and card sizes a touch smaller for breathing room */
-  .subhead{ font-size:13px; margin:2px 0 8px; }
-  .bodycard{ padding:14px; border-radius:12px; }
-  .h1{ font-size:20px; margin:2px 0 6px; }
-  .content{ font-size:15.5px; line-height:1.5; }
-
-  /* 5) Safety if container gets tight */
-  #wrap{ max-width:94vw; }
-}
-  /* ===== Mobile: scale the whole widget (keep desktop layout) ===== */
-@media (max-width: 500px){
-  html, body{
-    transform: scale(0.85);      /* try 0.90…0.80 to taste */
-    transform-origin: top center; /* anchor the shrink */
-    height: 120vh;                /* extra vertical room after scaling */
-    overflow: visible;            /* avoid cropping inside iframe */
-  }
-}
-/* ===== Auto-fit baseline ===== */
-#wrap{
-  width:640px;           /* baseline desktop layout width */
-  max-width:640px;
-  margin:0 auto;
-  transform-origin: top center; /* we'll scale this element */
+/* Mobile polish (spacing, readable sizes) */
+@media (max-width:420px){
+  .frame{padding:10px;border-radius:14px}
+  .header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}
+  .btn{width:28px;height:28px}
+  .title{font-size:clamp(18px,5vw,24px);line-height:1.15;white-space:normal;text-align:center}
+  .tabs{padding:0 6px;margin:8px 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:8px 12px;font-size:12px;border-radius:999px}
+  .subhead{font-size:13px;margin:2px 0 8px}
+  .bodycard{padding:14px;border-radius:12px}
+  .h1{font-size:20px;margin:2px 0 6px}
+  .content{font-size:15.5px;line-height:1.5}
+  /* keep baseline width on phones; scaling handled by JS */
+  #wrap{width:640px !important;max-width:640px !important}
 }
 </style>
 </head>
@@ -257,37 +92,28 @@ body {
 </div>
 
 <script>
-/* ===== CONFIG (same-origin data!) ===== */
-const DATA_URL = "./omnifit_data.csv";   // CSV must sit next to index.html
-const PROGRAM_EPOCH_ISO = "2024-05-13";  // <-- set your true Day 1 date (YYYY-MM-DD)
+/* ===== CONFIG ===== */
+const DATA_URL = "./omnifit_data.csv";
+const PROGRAM_EPOCH_ISO = "2024-05-13";
 
 /* ===== STATE ===== */
 const state = { days:[], idx:0, system:"physical" };
 
 /* ===== HELPERS ===== */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-
-// Always build Date at local midnight to avoid time-zone drift
-const atMidnight = (iso) => new Date(`${iso}T00:00:00`);
-
-// Day name + compact date for the subhead
+const atMidnight = iso => new Date(`${iso}T00:00:00`);
 const weekdayName = iso => atMidnight(iso).toLocaleDateString(undefined,{weekday:"long"}).toUpperCase();
 const compact = iso => iso.replaceAll("-","");
-
-// Capitalize "physical" -> "Physical"
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
-
-// Per-day completion keys
 const doneKey=(d,s)=>`omnifit_done_${d}_${s}`;
 const isDone=(d,s)=>localStorage.getItem(doneKey(d,s))==='1';
-const setDone=(d,s,v)=>{v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s));};
+const setDone=(d,s,v)=>{ v?localStorage.setItem(doneKey(d,s),'1'):localStorage.removeItem(doneKey(d,s)); };
 
-// CSV → array of {date, physical, neurological, cognitive, emotional, lifestyle}
 function csvToDays(text){
-  const rows = text.trim().split(/\r?\n/)
+  const rows=text.trim().split(/\r?\n/)
     .map(l=>l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'')));
-  const hdr = rows.shift().map(x=>x.trim().toLowerCase());
-  const ix  = Object.fromEntries(hdr.map((x,i)=>[x,i]));
+  const hdr=rows.shift().map(x=>x.trim().toLowerCase());
+  const ix=Object.fromEntries(hdr.map((x,i)=>[x,i]));
   return rows.map(r=>({
     date:r[ix.date],
     physical:r[ix.physical],
@@ -298,130 +124,88 @@ function csvToDays(text){
   })).sort((a,b)=>a.date.localeCompare(b.date));
 }
 
-// Pick today's row if it exists, else first row
 function todayIndex(days){
-  const iso = new Date().toISOString().slice(0,10);
-  const k = days.findIndex(d=>d.date===iso);
-  return k>=0 ? k : 0;
+  const iso=new Date().toISOString().slice(0,10);
+  const k=days.findIndex(d=>d.date===iso);
+  return k>=0?k:0;
 }
 
-/* ===== NEW: Day number from selected date ===== */
 function dayNumberFrom(iso){
-  const start  = atMidnight(PROGRAM_EPOCH_ISO);
-  const target = atMidnight(iso);
-  const diffDays = Math.floor((target - start)/86400000); // 86,400,000 ms in a day
-  return diffDays + 1; // Day 1 on the start date
+  const start=atMidnight(PROGRAM_EPOCH_ISO);
+  const target=atMidnight(iso);
+  const diffDays=Math.floor((target-start)/86400000);
+  return diffDays+1;
 }
 
 /* ===== RENDER ===== */
 function render(){
-  const d = state.days[state.idx];
-  if(!d) return;
+  const d=state.days[state.idx]; if(!d) return;
 
-  // Header — use the SELECTED date, not today
-  const dayNum = dayNumberFrom(d.date);
-  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${dayNum}`;
+  const dayNum=dayNumberFrom(d.date);
+  $("#dayTitle").textContent=`OMNIFIT Daily — Day ${dayNum}`;
 
-  // Subhead
-  $("#weekday").textContent = weekdayName(d.date);
-  $("#dateTiny").textContent = compact(d.date);
+  $("#weekday").textContent=weekdayName(d.date);
+  $("#dateTiny").textContent=compact(d.date);
 
-  // Section title + system badge
-  const titles = {
-    physical:"Move",
-    neurological:"Control",
-    cognitive:"Focus",
-    emotional:"Regulate",
-    lifestyle:"Integrate"
-  };
-  $("#title").textContent = titles[state.system];
-  $("#badge").textContent = cap(state.system);
+  const titles={physical:"Move",neurological:"Control",cognitive:"Focus",emotional:"Regulate",lifestyle:"Integrate"};
+  $("#title").textContent=titles[state.system];
+  $("#badge").textContent=cap(state.system);
 
-  // Body content (support <br> in CSV)
-  const raw  = d[state.system] || "No entry.";
-  const html = String(raw).replace(/&lt;br\s*\/?&gt;/gi,"<br>").replace(/\n/g,"<br>");
-  $("#content").innerHTML = html;
+  const raw=d[state.system]||"No entry.";
+  const html=String(raw).replace(/&lt;br\s*\/?&gt;/gi,"<br>").replace(/\n/g,"<br>");
+  $("#content").innerHTML=html;
 
-  // Checkbox + tab ticks
-  const done = isDone(d.date, state.system);
-  const chk  = $("#completeBtn");
-  chk.classList.toggle("checked", done);
+  const done=isDone(d.date,state.system);
+  const chk=$("#completeBtn");
+  chk.classList.toggle("checked",done);
   $$(".tab").forEach(t=>{
-    const sys = t.dataset.tab;
-    t.classList.toggle("done", isDone(d.date, sys));
+    const sys=t.dataset.tab;
+    t.classList.toggle("done",isDone(d.date,sys));
   });
 
-  // Nav buttons
-  $("#prevBtn").disabled = state.idx<=0;
-  $("#nextBtn").disabled = state.idx>=state.days.length-1;
+  $("#prevBtn").disabled=state.idx<=0;
+  $("#nextBtn").disabled=state.idx>=state.days.length-1;
 }
-/* ===== Auto-scale to viewport (keeps desktop layout, just smaller on phones) ===== */
+
+/* ===== Auto-scale: fit width on phones, desktop unchanged ===== */
 (function(){
-  const BASE = 640; // must match #wrap width
+  const BASE=640; // must match #wrap width
   function fit(){
-    // viewport width inside the iframe
-    const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
-
-    // leave ~24px breathing room to avoid edge collision in Wix embeds
-    const scale = Math.min(1, (vw - 24) / BASE);
-
-    const el = document.getElementById('wrap');
-    el.style.transform = `scale(${scale})`;
-
-    // update body height so the iframe doesn’t crop the bottom
-    const rect = el.getBoundingClientRect();
-    document.body.style.height = Math.ceil(rect.height + 24) + 'px';
+    const vw=Math.min(window.innerWidth, document.documentElement.clientWidth);
+    const scale=Math.min(1, vw/BASE);               // scale down only
+    const el=document.getElementById('wrap');
+    el.style.transform=`scale(${scale})`;
+    const rect=el.getBoundingClientRect();          // includes current scale
+    document.body.style.height=Math.ceil(rect.height+24)+'px';
   }
-
-  window.addEventListener('resize', fit, { passive:true });
-  window.addEventListener('load', fit);
-
-  // also run after your content renders
-  const _render = render;
-  render = function(){ _render(); fit(); };
+  window.addEventListener('resize',fit,{passive:true});
+  window.addEventListener('load',fit);
+  const _render=render; render=function(){ _render(); fit(); };
 })();
+
 /* ===== BIND ===== */
 function bind(){
   $$(".tab").forEach(b=>b.addEventListener("click",()=>{
     $$(".tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    state.system = b.dataset.tab;
-    render();
+    b.classList.add("active"); state.system=b.dataset.tab; render();
   }));
-
-  $("#prevBtn").addEventListener("click",()=>{
-    if(state.idx>0){ state.idx--; render(); }
-  });
-  $("#nextBtn").addEventListener("click",()=>{
-    if(state.idx<state.days.length-1){ state.idx++; render(); }
-  });
-
-  $("#completeBtn").addEventListener("click",()=>{
-    const d=state.days[state.idx], s=state.system;
-    setDone(d.date, s, !isDone(d.date,s));
-    render();
-  });
+  $("#prevBtn").addEventListener("click",()=>{ if(state.idx>0){state.idx--; render();} });
+  $("#nextBtn").addEventListener("click",()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
+  $("#completeBtn").addEventListener("click",()=>{ const d=state.days[state.idx]; const s=state.system; setDone(d.date,s,!isDone(d.date,s)); render(); });
 }
 
-/* ===== LOAD (same-origin, Wix-safe) ===== */
+/* ===== LOAD ===== */
 async function load(){
   try{
-    const res = await fetch(DATA_URL, { cache:'no-store' });
-    const text = await res.text();
-    state.days = csvToDays(text);
-    state.idx  = todayIndex(state.days);
+    const res=await fetch(DATA_URL,{cache:'no-store'});
+    const text=await res.text();
+    state.days=csvToDays(text);
+    state.idx=todayIndex(state.days);
   }catch(e){
-    console.error('LOAD ERROR', e);
-    const iso = new Date().toISOString().slice(0,10);
-    state.days = [{
-      date:iso,
-      physical:'Walk 10 min',
-      neurological:'Balance 45 s/leg',
-      cognitive:'Set one intention',
-      emotional:'2×1 min box-breath',
-      lifestyle:'Drink ½ L water before coffee'
-    }];
-    state.idx = 0;
+    console.error('LOAD ERROR',e);
+    const iso=new Date().toISOString().slice(0,10);
+    state.days=[{date:iso,physical:'Walk 10 min',neurological:'Balance 45 s/leg',cognitive:'Set one intention',emotional:'2×1 min box-breath',lifestyle:'Drink ½ L water before coffee'}];
+    state.idx=0;
   }
   render();
 }
@@ -431,11 +215,3 @@ load();
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
