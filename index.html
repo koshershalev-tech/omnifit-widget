@@ -61,6 +61,16 @@ body{background:#E8E6E6;display:flex;align-items:center;justify-content:center;p
   /* keep baseline width on phones; scaling handled by JS */
   #wrap{width:640px !important;max-width:640px !important}
 }
+  /* Phones: no horizontal padding so scaling can fill width */
+@media (max-width: 600px){
+  html, body { width:100%; overflow-x:hidden; }
+  body{
+    padding: 8px 0 12px 0;   /* ← no left/right padding */
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  }
+}
 </style>
 </head>
 <body>
@@ -172,7 +182,24 @@ function render(){
   const BASE=640; // must match #wrap width
   function fit(){
     const vw=Math.min(window.innerWidth, document.documentElement.clientWidth);
-    const scale=Math.min(1, (vw + 40) / BASE);               // scale down only
+    function fit(){
+  // viewport width inside the iframe
+  const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
+
+  // exact fit to width (no padding on body now, so no guesswork)
+  const scale = Math.min(1, vw / BASE);
+
+  const el = document.getElementById('wrap');
+  el.style.transform = `scale(${scale})`;
+
+  // center it horizontally
+  el.style.marginLeft = 'auto';
+  el.style.marginRight = 'auto';
+
+  // set body height to the scaled height so Wix iframe won’t crop
+  const rect = el.getBoundingClientRect(); // includes scale
+  document.body.style.height = Math.ceil(rect.height + 12) + 'px';
+}
     const el=document.getElementById('wrap');
     el.style.transform=`scale(${scale})`;
     const rect=el.getBoundingClientRect();          // includes current scale
@@ -215,5 +242,6 @@ load();
 </script>
 </body>
 </html>
+
 
 
