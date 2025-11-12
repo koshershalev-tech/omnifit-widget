@@ -172,7 +172,7 @@ function render(){
   const BASE=640; // must match #wrap width
   function fit(){
     const vw=Math.min(window.innerWidth, document.documentElement.clientWidth);
-    const scale=Math.min(1, vw/BASE);               // scale down only
+    const scale=Math.min(1, (vw + 60) / BASE);               // scale down only
     const el=document.getElementById('wrap');
     el.style.transform=`scale(${scale})`;
     const rect=el.getBoundingClientRect();          // includes current scale
@@ -215,3 +215,4 @@ load();
 </script>
 </body>
 </html>
+
