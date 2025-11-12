@@ -9,66 +9,80 @@
   --ink:#111111; --muted:#475569; --line:#DCE7FF;
 }
 
-html,body{margin:0;height:100%;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-body{background:#E8E6E6;display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
+html,body{
+  margin:0; height:100%;
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+body{
+  background:#E8E6E6;
+  display:flex; align-items:center; justify-content:center;
+  padding:12px; overflow:hidden;
+}
 
 /* Baseline layout width (desktop design) */
-#wrap{width:640px;max-width:640px;margin:0 auto;transform-origin:top center}
+#wrap{ width:640px; max-width:640px; margin:0 auto; transform-origin:top center }
 
 /* Frame */
-.frame{background:var(--card);border:1.5px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.05);padding:20px}
+.frame{ background:var(--card); border:1.5px solid var(--line);
+  border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.05); padding:20px }
 
 /* Header */
-.header{display:flex;align-items:center;justify-content:center;gap:10px}
-.btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;transition:.15s}
-.btn:hover{border-color:var(--blue);background:#f6f9ff}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.title{font-weight:800;font-size:clamp(22px,4vw,32px);color:var(--blue);text-align:center;white-space:nowrap}
+.header{ display:flex; align-items:center; justify-content:center; gap:10px }
+.btn{ width:32px; height:32px; border-radius:8px; border:1px solid var(--line);
+  background:#fff; display:grid; place-items:center; cursor:pointer; transition:.15s }
+.btn:hover{ border-color:var(--blue); background:#f6f9ff }
+.btn:disabled{ opacity:.4; cursor:not-allowed }
+.title{ font-weight:800; font-size:clamp(22px,4vw,32px); color:var(--blue);
+  text-align:center; white-space:nowrap }
 
 /* Tabs */
-.tabs{display:flex;flex-wrap:nowrap;justify-content:center;gap:8px;margin:10px 0}
-.tab{padding:8px 14px;border-radius:999px;border:2px solid transparent;font-weight:700;font-size:13px;letter-spacing:.4px;color:#fff;background:#000;cursor:pointer;transition:.2s ease}
-.tab.active{background:var(--blue);border-color:#5A8AF3}
-.tab.done::after{content:" ✓";color:var(--terra);font-weight:600}
+.tabs{ display:flex; flex-wrap:nowrap; justify-content:center; gap:8px; margin:10px 0 }
+.tab{ padding:8px 14px; border-radius:999px; border:2px solid transparent;
+  font-weight:700; font-size:13px; letter-spacing:.4px; color:#fff; background:#000;
+  cursor:pointer; transition:.2s ease }
+.tab.active{ background:var(--blue); border-color:#5A8AF3 }
+.tab.done::after{ content:" ✓"; color:var(--terra); font-weight:600 }
 
 /* Subhead */
-.subhead{text-align:center;font-size:15px;color:var(--blue);font-weight:500;margin-bottom:6px}
+.subhead{ text-align:center; font-size:15px; color:var(--blue); font-weight:500; margin-bottom:6px }
 
 /* Body Card */
-.bodycard{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px;line-height:1.5;color:var(--ink)}
-.h1{font-size:24px;font-weight:800;margin-bottom:4px}
-.label{color:var(--muted);font-weight:600;margin-bottom:4px}
-.content{font-size:17px;color:var(--ink);margin-bottom:10px}
-.foot{display:flex;justify-content:space-between;align-items:center}
-.badge{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#f8faff;color:var(--blue)}
-.check{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);background:#f8faff;display:grid;place-items:center;cursor:pointer;transition:.15s}
-.check.checked{background:#e8f1ff;border-color:var(--blue)}
-.check.checked::after{content:"✓";color:var(--blue);font-weight:700}
+.bodycard{ background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+  padding:18px; line-height:1.5; color:var(--ink) }
+.h1{ font-size:24px; font-weight:800; margin-bottom:4px }
+.label{ color:var(--muted); font-weight:600; margin-bottom:4px }
+.content{ font-size:17px; color:var(--ink); margin-bottom:10px }
+.foot{ display:flex; justify-content:space-between; align-items:center }
+.badge{ font-size:12px; padding:5px 10px; border-radius:999px; border:1px solid var(--line);
+  background:#f8faff; color:var(--blue) }
+.check{ width:26px; height:26px; border-radius:8px; border:2px solid var(--line);
+  background:#f8faff; display:grid; place-items:center; cursor:pointer; transition:.15s }
+.check.checked{ background:#e8f1ff; border-color:var(--blue) }
+.check.checked::after{ content:"✓"; color:var(--blue); font-weight:700 }
 
 /* Mobile polish (spacing, readable sizes) */
 @media (max-width:420px){
-  .frame{padding:10px;border-radius:14px}
-  .header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px}
-  .btn{width:28px;height:28px}
-  .title{font-size:clamp(18px,5vw,24px);line-height:1.15;white-space:normal;text-align:center}
-  .tabs{padding:0 6px;margin:8px 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{flex:0 0 auto;padding:8px 12px;font-size:12px;border-radius:999px}
-  .subhead{font-size:13px;margin:2px 0 8px}
-  .bodycard{padding:14px;border-radius:12px}
-  .h1{font-size:20px;margin:2px 0 6px}
-  .content{font-size:15.5px;line-height:1.5}
+  .frame{ padding:10px; border-radius:14px }
+  .header{ display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px }
+  .btn{ width:28px; height:28px }
+  .title{ font-size:clamp(18px,5vw,24px); line-height:1.15; white-space:normal; text-align:center }
+  .tabs{ padding:0 6px; margin:8px 0 6px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none }
+  .tabs::-webkit-scrollbar{ display:none }
+  .tab{ flex:0 0 auto; padding:8px 12px; font-size:12px; border-radius:999px }
+  .subhead{ font-size:13px; margin:2px 0 8px }
+  .bodycard{ padding:14px; border-radius:12px }
+  .h1{ font-size:20px; margin:2px 0 6px }
+  .content{ font-size:15.5px; line-height:1.5 }
   /* keep baseline width on phones; scaling handled by JS */
-  #wrap{width:640px !important;max-width:640px !important}
+  #wrap{ width:640px !important; max-width:640px !important }
 }
-  /* Phones: no horizontal padding so scaling can fill width */
-@media (max-width: 600px){
-  html, body { width:100%; overflow-x:hidden; }
+
+/* Phones: remove side padding and forbid inner scrollbars */
+@media (max-width:600px){
+  html, body{ width:100%; height:100%; overflow:hidden !important; }
   body{
-    padding: 8px 0 12px 0;   /* ← no left/right padding */
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
+    padding:0;               /* no left/right padding → true fit-to-width scale */
+    display:flex; align-items:flex-start; justify-content:center;
   }
 }
 </style>
@@ -152,29 +166,29 @@ function render(){
   const d=state.days[state.idx]; if(!d) return;
 
   const dayNum=dayNumberFrom(d.date);
-  $("#dayTitle").textContent=`OMNIFIT Daily — Day ${dayNum}`;
+  document.getElementById("dayTitle").textContent=`OMNIFIT Daily — Day ${dayNum}`;
 
-  $("#weekday").textContent=weekdayName(d.date);
-  $("#dateTiny").textContent=compact(d.date);
+  document.getElementById("weekday").textContent=weekdayName(d.date);
+  document.getElementById("dateTiny").textContent=compact(d.date);
 
   const titles={physical:"Move",neurological:"Control",cognitive:"Focus",emotional:"Regulate",lifestyle:"Integrate"};
-  $("#title").textContent=titles[state.system];
-  $("#badge").textContent=cap(state.system);
+  document.getElementById("title").textContent=titles[state.system];
+  document.getElementById("badge").textContent=cap(state.system);
 
   const raw=d[state.system]||"No entry.";
   const html=String(raw).replace(/&lt;br\s*\/?&gt;/gi,"<br>").replace(/\n/g,"<br>");
-  $("#content").innerHTML=html;
+  document.getElementById("content").innerHTML=html;
 
   const done=isDone(d.date,state.system);
-  const chk=$("#completeBtn");
+  const chk=document.getElementById("completeBtn");
   chk.classList.toggle("checked",done);
-  $$(".tab").forEach(t=>{
+  document.querySelectorAll(".tab").forEach(t=>{
     const sys=t.dataset.tab;
     t.classList.toggle("done",isDone(d.date,sys));
   });
 
-  $("#prevBtn").disabled=state.idx<=0;
-  $("#nextBtn").disabled=state.idx>=state.days.length-1;
+  document.getElementById("prevBtn").disabled=state.idx<=0;
+  document.getElementById("nextBtn").disabled=state.idx>=state.days.length-1;
 }
 
 /* ===== Auto-scale: fit width on phones, desktop unchanged ===== */
@@ -182,28 +196,21 @@ function render(){
   const BASE=640; // must match #wrap width
   function fit(){
     const vw=Math.min(window.innerWidth, document.documentElement.clientWidth);
-    function fit(){
-  // viewport width inside the iframe
-  const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
+    // exact fit to width (no padding on mobile body)
+    const scale=Math.min(1, vw/BASE);
 
-  // exact fit to width (no padding on body now, so no guesswork)
-  const scale = Math.min(1, vw / BASE);
-
-  const el = document.getElementById('wrap');
-  el.style.transform = `scale(${scale})`;
-
-  // center it horizontally
-  el.style.marginLeft = 'auto';
-  el.style.marginRight = 'auto';
-
-  // set body height to the scaled height so Wix iframe won’t crop
-  const rect = el.getBoundingClientRect(); // includes scale
-  document.body.style.height = Math.ceil(rect.height + 12) + 'px';
-}
     const el=document.getElementById('wrap');
     el.style.transform=`scale(${scale})`;
-    const rect=el.getBoundingClientRect();          // includes current scale
-    document.body.style.height=Math.ceil(rect.height+24)+'px';
+    el.style.marginLeft='auto';
+    el.style.marginRight='auto';
+
+    // lock page height to scaled widget height → no inner scrollbars
+    const rect=el.getBoundingClientRect(); // includes scale
+    const h=Math.ceil(rect.height + 8);
+    document.body.style.height=h+'px';
+    document.documentElement.style.height=h+'px';
+    document.body.style.overflow='hidden';
+    document.documentElement.style.overflow='hidden';
   }
   window.addEventListener('resize',fit,{passive:true});
   window.addEventListener('load',fit);
@@ -212,13 +219,13 @@ function render(){
 
 /* ===== BIND ===== */
 function bind(){
-  $$(".tab").forEach(b=>b.addEventListener("click",()=>{
-    $$(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
     b.classList.add("active"); state.system=b.dataset.tab; render();
   }));
-  $("#prevBtn").addEventListener("click",()=>{ if(state.idx>0){state.idx--; render();} });
-  $("#nextBtn").addEventListener("click",()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
-  $("#completeBtn").addEventListener("click",()=>{ const d=state.days[state.idx]; const s=state.system; setDone(d.date,s,!isDone(d.date,s)); render(); });
+  document.getElementById("prevBtn").addEventListener("click",()=>{ if(state.idx>0){state.idx--; render();} });
+  document.getElementById("nextBtn").addEventListener("click",()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
+  document.getElementById("completeBtn").addEventListener("click",()=>{ const d=state.days[state.idx]; const s=state.system; setDone(d.date,s,!isDone(d.date,s)); render(); });
 }
 
 /* ===== LOAD ===== */
@@ -242,6 +249,5 @@ load();
 </script>
 </body>
 </html>
-
 
 
