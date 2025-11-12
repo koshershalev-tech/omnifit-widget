@@ -165,6 +165,51 @@ body {
   color: var(--blue);
   font-weight: 700;
 }
+  /* ===== Mobile polish ===== */
+@media (max-width: 420px){
+  /* 1) Reduce outer padding so tabs aren't clipped */
+  .frame{ padding:10px; border-radius:14px; }
+
+  /* 2) Header layout stays centered, title may wrap to 2 lines */
+  .header{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:8px;
+  }
+  .btn{ width:28px; height:28px; }
+  .title{
+    font-size:clamp(18px,5vw,24px);
+    line-height:1.15;
+    white-space:normal;
+    text-align:center;
+  }
+
+  /* 3) Tabs: full-width area with safe inner padding and swipe */
+  .tabs{
+    padding:0 6px;              /* NEW: inner side room */
+    margin:8px 0 6px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+  .tab{
+    flex:0 0 auto;               /* don't squish; allow swipe */
+    padding:8px 12px;
+    font-size:12px;
+    border-radius:999px;
+  }
+
+  /* 4) Date and card sizes a touch smaller for breathing room */
+  .subhead{ font-size:13px; margin:2px 0 8px; }
+  .bodycard{ padding:14px; border-radius:12px; }
+  .h1{ font-size:20px; margin:2px 0 6px; }
+  .content{ font-size:15.5px; line-height:1.5; }
+
+  /* 5) Safety if container gets tight */
+  #wrap{ max-width:94vw; }
+}
 </style>
 </head>
 <body>
@@ -346,6 +391,7 @@ load();
 </script>
 </body>
 </html>
+
 
 
 
