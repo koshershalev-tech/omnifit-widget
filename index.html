@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>OMNIFIT 5-System Widget</title>
 <style>
 :root{
@@ -43,6 +44,17 @@ body{
 .tab.active{ background:var(--blue); border-color:#5A8AF3 }
 .tab.done::after{ content:" ✓"; color:var(--terra); font-weight:600 }
 
+/* Swipe hint (mobile-first: hidden on desktop) */
+.swipeHint{
+  display:none;
+  text-align:center;
+  font-size:11px;
+  font-weight:500;
+  color:var(--muted);
+  margin-top:-2px;
+  margin-bottom:4px;
+}
+
 /* Subhead */
 .subhead{ text-align:center; font-size:15px; color:var(--blue); font-weight:500; margin-bottom:6px }
 
@@ -66,13 +78,16 @@ body{
   .header{ display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px }
   .btn{ width:28px; height:28px }
   .title{ font-size:clamp(18px,5vw,24px); line-height:1.15; white-space:normal; text-align:center }
-  .tabs{ padding:0 6px; margin:8px 0 6px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none }
+  .tabs{ padding:0 6px; margin:8px 0 4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none }
   .tabs::-webkit-scrollbar{ display:none }
   .tab{ flex:0 0 auto; padding:8px 12px; font-size:12px; border-radius:999px }
   .subhead{ font-size:13px; margin:2px 0 8px }
   .bodycard{ padding:14px; border-radius:12px }
   .h1{ font-size:20px; margin:2px 0 6px }
   .content{ font-size:15.5px; line-height:1.5 }
+
+  .swipeHint{ display:block; } /* ← הצגת רמז הסוויפ רק במובייל */
+
   /* keep baseline width on phones; scaling handled by JS */
   #wrap{ width:640px !important; max-width:640px !important }
 }
@@ -81,7 +96,7 @@ body{
 @media (max-width:600px){
   html, body{ width:100%; height:100%; overflow:hidden !important; }
   body{
-    padding:0;               /* no left/right padding → true fit-to-width scale */
+    padding:0;
     display:flex; align-items:flex-start; justify-content:center;
   }
 }
@@ -102,6 +117,10 @@ body{
       <button class="tab" data-tab="emotional">EMOTIONAL</button>
       <button class="tab" data-tab="lifestyle">LIFESTYLE</button>
     </div>
+
+    <!-- NEW: swipe hint line (shows on mobile only) -->
+    <div class="swipeHint">Swipe ◀︎ ▶︎ on the card to switch system</div>
+
     <div class="subhead"><span id="weekday">DAY</span><span id="dateTiny">000000</span></div>
     <div class="bodycard">
       <div id="title" class="h1">Move</div>
@@ -122,6 +141,9 @@ const PROGRAM_EPOCH_ISO = "2024-05-13";
 
 /* ===== STATE ===== */
 const state = { days:[], idx:0, system:"physical" };
+
+/* SYSTEM ORDER for swipe + tab logic */
+const SYSTEMS = ["physical","neurological","cognitive","emotional","lifestyle"];
 
 /* ===== HELPERS ===== */
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -221,13 +243,33 @@ function render(){
   const done=isDone(d.date,state.system);
   const chk=document.getElementById("completeBtn");
   chk.classList.toggle("checked",done);
-  document.querySelectorAll(".tab").forEach(t=>{
+  $$(".tab").forEach(t=>{
     const sys=t.dataset.tab;
     t.classList.toggle("done",isDone(d.date,sys));
   });
 
   document.getElementById("prevBtn").disabled=state.idx<=0;
   document.getElementById("nextBtn").disabled=state.idx>=state.days.length-1;
+}
+
+/* === SYSTEM SWITCHING (tabs + swipe share this) === */
+function setSystem(system){
+  if (!SYSTEMS.includes(system)) return;
+  state.system = system;
+  $$(".tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.tab === system);
+  });
+  render();
+}
+
+function systemOffset(delta){
+  const idx = SYSTEMS.indexOf(state.system);
+  if (idx === -1) return;
+  let next = idx + delta;
+  // wrap-around for smooth carousel feel
+  if (next < 0) next = SYSTEMS.length - 1;
+  if (next >= SYSTEMS.length) next = 0;
+  setSystem(SYSTEMS[next]);
 }
 
 /* ===== Auto-scale: fit width on phones, desktop unchanged ===== */
@@ -258,13 +300,59 @@ function render(){
 
 /* ===== BIND ===== */
 function bind(){
-  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
-    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active"); state.system=b.dataset.tab; render();
+  // tabs click → setSystem
+  $$(".tab").forEach(b=>b.addEventListener("click",()=>{
+    setSystem(b.dataset.tab);
   }));
-  document.getElementById("prevBtn").addEventListener("click",()=>{ if(state.idx>0){state.idx--; render();} });
-  document.getElementById("nextBtn").addEventListener("click",()=>{ if(state.idx<state.days.length-1){state.idx++; render();} });
-  document.getElementById("completeBtn").addEventListener("click",()=>{ const d=state.days[state.idx]; const s=state.system; setDone(d.date,s,!isDone(d.date,s)); render(); });
+
+  document.getElementById("prevBtn").addEventListener("click",()=>{
+    if(state.idx>0){state.idx--; render();}
+  });
+  document.getElementById("nextBtn").addEventListener("click",()=>{
+    if(state.idx<state.days.length-1){state.idx++; render();}
+  });
+  document.getElementById("completeBtn").addEventListener("click",()=>{
+    const d=state.days[state.idx]; const s=state.system;
+    setDone(d.date,s,!isDone(d.date,s)); render();
+  });
+
+  bindSwipe();  // ← swipe listeners
+}
+
+/* ===== SWIPE GESTURE (mobile-style left/right) ===== */
+function bindSwipe(){
+  const zone = document.querySelector(".bodycard");
+  if (!zone) return;
+
+  let startX = 0, startY = 0, tracking = false;
+  const THRESHOLD = 40; // min px distance for swipe
+
+  zone.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    tracking = true;
+  }, {passive:true});
+
+  zone.addEventListener("touchend", e => {
+    if (!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+
+    // horizontal swipe dominance
+    if (Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) {
+        // swipe left → next system
+        systemOffset(+1);
+      } else {
+        // swipe right → previous system
+        systemOffset(-1);
+      }
+    }
+  });
 }
 
 /* ===== LOAD ===== */
@@ -288,6 +376,7 @@ load();
 </script>
 </body>
 </html>
+
 
 
 
