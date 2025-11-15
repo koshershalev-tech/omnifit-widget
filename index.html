@@ -17,16 +17,27 @@ html,body{
 body{
   background:#E8E6E6;
   display:flex; align-items:center; justify-content:center;
-  padding:12px; overflow:hidden;
+  padding:12px;
+  overflow-x:hidden;
+  overflow-y:auto;   /* allow vertical scroll so long content is never cut */
 }
 
 /* Baseline layout width (desktop design) */
-#wrap{ width:640px; max-width:640px; margin:0 auto; transform-origin:top center }
+#wrap{
+  width:640px; max-width:640px;
+  margin:0 auto;
+  transform-origin:top center;
+}
 
 /* Frame */
 .frame{
   background:var(--card); border:1.5px solid var(--line);
-  border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.05); padding:20px
+  border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.05); padding:20px;
+}
+
+/* Widget container (for gestures) */
+.widget{
+  touch-action:none;   /* disable browser scroll/zoom inside widget */
 }
 
 /* Header */
@@ -34,13 +45,13 @@ body{
 .btn{
   width:32px; height:32px; border-radius:8px; border:1px solid var(--line);
   background:#fff; display:grid; place-items:center;
-  cursor:pointer; transition:.15s
+  cursor:pointer; transition:.15s;
 }
 .btn:hover{ border-color:var(--blue); background:#f6f9ff }
 .btn:disabled{ opacity:.4; cursor:not-allowed }
 .title{
   font-weight:800; font-size:clamp(22px,4vw,32px);
-  color:var(--blue); text-align:center; white-space:nowrap
+  color:var(--blue); text-align:center; white-space:nowrap;
 }
 
 /* Subhead */
@@ -101,13 +112,13 @@ body{
 .foot{ display:flex; justify-content:space-between; align-items:center }
 .badge{
   font-size:12px; padding:5px 10px; border-radius:999px;
-  border:1px solid var(--line); background:#f8faff; color:var(--blue)
+  border:1px solid var(--line); background:#f8faff; color:var(--blue);
 }
 .check{
   width:24px; height:24px; border-radius:8px;
   border:2px solid var(--line);
   background:#f8faff;
-  display:grid; place-items:center; cursor:pointer; transition:.15s
+  display:grid; place-items:center; cursor:pointer; transition:.15s;
 }
 .check.checked{ background:#e8f1ff; border-color:var(--blue) }
 .check.checked::after{ content:"✓"; color:var(--blue); font-weight:700 }
@@ -127,12 +138,12 @@ body{
   .frame{ padding:10px; border-radius:14px }
   .header{
     display:grid; grid-template-columns:auto 1fr auto;
-    align-items:center; gap:8px
+    align-items:center; gap:8px;
   }
   .btn{ width:28px; height:28px }
   .title{
     font-size:clamp(18px,5vw,24px);
-    line-height:1.15; white-space:normal; text-align:center
+    line-height:1.15; white-space:normal; text-align:center;
   }
   .subhead{ font-size:13px; margin:6px 0 6px }
   .h1{ font-size:18px }
@@ -142,9 +153,8 @@ body{
   #wrap{ width:640px !important; max-width:640px !important }
 }
 
-/* Phones: remove side padding and forbid inner scrollbars */
+/* Phones: just remove padding, keep scroll allowed */
 @media (max-width:600px){
-  html, body{ width:100%; height:100%; overflow:hidden !important; }
   body{
     padding:0;
     display:flex; align-items:flex-start; justify-content:center;
@@ -265,7 +275,7 @@ const SYSTEMS = ["physical","neurological","cognitive","emotional","lifestyle"];
 const state = { days:[], idx:0, system:"physical" };
 
 /* ===== HELPERS ===== */
-const $ = s => document.querySelector(s);
+const $  = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
 const atMidnight = iso => new Date(`${iso}T00:00:00`);
@@ -275,13 +285,13 @@ const compact = iso => iso.replaceAll("-","");
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 
 const doneKey = (d,s) => `omnifit_done_${d}_${s}`;
-const isDone = (d,s) => localStorage.getItem(doneKey(d,s)) === "1";
+const isDone  = (d,s) => localStorage.getItem(doneKey(d,s)) === "1";
 const setDone = (d,s,v) => {
   v ? localStorage.setItem(doneKey(d,s),"1")
     : localStorage.removeItem(doneKey(d,s));
 };
 
-/* CSV parser (unchanged) */
+/* CSV parser */
 function parseCSV(text) {
   const rows = [];
   let row = [], cell = "";
@@ -339,11 +349,25 @@ function todayIndex(days){
 }
 
 function dayNumberFrom(iso){
-  const start = atMidnight(PROGRAM_EPOCH_ISO);
+  const start  = atMidnight(PROGRAM_EPOCH_ISO);
   const target = atMidnight(iso);
   const diffDays = Math.floor((target-start)/86400000);
   return diffDays + 1;
 }
+
+/* ===== SCALE TO WIDTH (no height lock) ===== */
+function fitWidget(){
+  const BASE = 640;
+  const el = document.getElementById("wrap");
+  if (!el) return;
+
+  const vw = Math.min(window.innerWidth || BASE,
+                      document.documentElement.clientWidth || window.innerWidth || BASE);
+  const scale = Math.min(1, vw / BASE);
+  el.style.transform = `scale(${scale})`;
+}
+window.addEventListener("resize", fitWidget, {passive:true});
+window.addEventListener("load", fitWidget);
 
 /* ===== RENDER ===== */
 function render(){
@@ -352,7 +376,7 @@ function render(){
 
   const dayNum = dayNumberFrom(d.date);
   $("#dayTitle").textContent = `OMNIFIT Daily — Day ${dayNum}`;
-  $("#weekday").textContent = weekdayName(d.date);
+  $("#weekday").textContent  = weekdayName(d.date);
   $("#dateTiny").textContent = compact(d.date);
 
   const titles = {
@@ -370,16 +394,16 @@ function render(){
     const isActiveSys = (sys === state.system);
     container.classList.toggle("active", isActiveSys);
 
-    const panel = container.querySelector(".sys-panel");
-    const titleEl = container.querySelector('[data-role="title"]');
-    const contentEl = container.querySelector('[data-role="content"]');
-    const badgeEl = container.querySelector('[data-role="badge"]');
-    const chkEl = container.querySelector(".check");
+    const panel    = container.querySelector(".sys-panel");
+    const titleEl  = container.querySelector('[data-role="title"]');
+    const contentEl= container.querySelector('[data-role="content"]');
+    const badgeEl  = container.querySelector('[data-role="badge"]');
+    const chkEl    = container.querySelector(".check");
 
     if (titleEl) titleEl.textContent = titles[sys];
     if (badgeEl) badgeEl.textContent = cap(sys);
 
-    const raw = d[sys] || "No entry.";
+    const raw  = d[sys] || "No entry.";
     const html = String(raw)
       .replace(/&lt;br\s*\/?&gt;/gi,"<br>")
       .replace(/\n/g,"<br>");
@@ -387,10 +411,8 @@ function render(){
 
     const done = isDone(d.date, sys);
     if (chkEl) chkEl.classList.toggle("checked", done);
-
     container.classList.toggle("done", done);
 
-    // accordion height
     if (panel){
       if (isActiveSys){
         panel.style.maxHeight = panel.scrollHeight + "px";
@@ -402,9 +424,11 @@ function render(){
 
   $("#prevBtn").disabled = state.idx <= 0;
   $("#nextBtn").disabled = state.idx >= state.days.length - 1;
+
+  fitWidget();
 }
 
-/* ===== SYSTEM / DAY NAVIGATION ===== */
+/* ===== NAVIGATION ===== */
 function setSystem(system){
   if (!SYSTEMS.includes(system)) return;
   state.system = system;
@@ -426,30 +450,6 @@ function dayOffset(delta){
   state.idx = next;
   render();
 }
-
-/* ===== Auto-scale: fit width on phones, desktop unchanged ===== */
-(function(){
-  const BASE = 640;
-  function fit(){
-    const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
-    const scale = Math.min(1, vw/BASE);
-    const el = document.getElementById("wrap");
-    el.style.transform = `scale(${scale})`;
-    el.style.marginLeft = "auto";
-    el.style.marginRight = "auto";
-
-    const rect = el.getBoundingClientRect();
-    const h = Math.ceil(rect.height + 8);
-    document.body.style.height = h + "px";
-    document.documentElement.style.height = h + "px";
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-  }
-  window.addEventListener("resize", fit, {passive:true});
-  window.addEventListener("load", fit);
-  const _render = render;
-  render = function(){ _render(); fit(); };
-})();
 
 /* ===== BIND ===== */
 function bind(){
@@ -493,7 +493,19 @@ function bindGestures(){
     startX = t.clientX;
     startY = t.clientY;
     tracking = true;
-  }, {passive:true});
+  }, {passive:false});
+
+  zone.addEventListener("touchmove", e => {
+    if (!tracking) return;
+    const t = e.touches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+
+    // once it's clearly a swipe → block scrolling
+    if (Math.max(Math.abs(dx), Math.abs(dy)) > 10) {
+      e.preventDefault();
+    }
+  }, {passive:false});
 
   zone.addEventListener("touchend", e => {
     if (!tracking) return;
@@ -513,7 +525,7 @@ function bindGestures(){
       if (dy < 0) systemOffset(+1);   // swipe up → next system
       else        systemOffset(-1);   // swipe down → prev system
     }
-  }, {passive:true});
+  }, {passive:false});
 }
 
 /* ===== LOAD ===== */
@@ -522,7 +534,7 @@ async function load(){
     const res = await fetch(DATA_URL,{cache:"no-store"});
     const text = await res.text();
     state.days = csvToDays(text);
-    state.idx = todayIndex(state.days);
+    state.idx  = todayIndex(state.days);
   }catch(e){
     console.error("LOAD ERROR",e);
     const iso = new Date().toISOString().slice(0,10);
@@ -544,8 +556,4 @@ load();
 </script>
 </body>
 </html>
-
-
-
-
 
