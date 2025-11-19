@@ -3,557 +3,454 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OMNIFIT 5-System Widget</title>
+<title>OMNIFIT Widget V2</title>
+
 <style>
 :root{
-  --sage:#E6F0D8; --card:#FFFFFF; --terra:#D95C4C; --blue:#78A8FF;
-  --ink:#111111; --muted:#475569; --line:#DCE7FF;
+  --sage-light:#E6F0D8;
+  --sage-mid:#BFD4A5;
+  --sage-dark:#8BB076;
+  --border:#DCE7FF;
+  --ink:#111;
+  --muted:#475569;
+  --card:#FFFFFF;
+  --frame-bg:#E8E6E6;
 }
 
+/* page base */
 html,body{
-  margin:0; height:100%;
+  margin:0; padding:0;
+  background:var(--frame-bg);
   font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
 }
 body{
-  background:#E8E6E6;
-  display:flex; align-items:center; justify-content:center;
+  display:flex;
+  justify-content:center;
   padding:12px;
   overflow-x:hidden;
-  overflow-y:auto;   /* allow vertical scroll so long content is never cut */
 }
 
-/* Baseline layout width (desktop design) */
+/* wrapper */
 #wrap{
   width:640px; max-width:640px;
-  margin:0 auto;
+  background:var(--card);
+  border-radius:16px;
+  border:1.5px solid var(--border);
+  box-shadow:0 8px 24px rgba(0,0,0,0.05);
+  padding:20px;
+  box-sizing:border-box;
   transform-origin:top center;
 }
 
-/* Frame */
-.frame{
-  background:var(--card); border:1.5px solid var(--line);
-  border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.05); padding:20px;
-}
-
-/* Widget container (for gestures) */
-.widget{
-  touch-action:none;   /* disable browser scroll/zoom inside widget */
-}
-
-/* Header */
-.header{ display:flex; align-items:center; justify-content:center; gap:10px }
-.btn{
-  width:32px; height:32px; border-radius:8px; border:1px solid var(--line);
-  background:#fff; display:grid; place-items:center;
-  cursor:pointer; transition:.15s;
-}
-.btn:hover{ border-color:var(--blue); background:#f6f9ff }
-.btn:disabled{ opacity:.4; cursor:not-allowed }
-.title{
-  font-weight:800; font-size:clamp(22px,4vw,32px);
-  color:var(--blue); text-align:center; white-space:nowrap;
-}
-
-/* Subhead */
-.subhead{
-  text-align:center; font-size:15px;
-  color:var(--blue); font-weight:500; margin:10px 0 8px;
-}
-
-/* Systems vertical layout */
-.systems{
-  display:flex; flex-direction:column;
-  gap:10px; margin-bottom:4px;
-}
-
-.sys{
-  border-radius:10px;
-  overflow:hidden;
-  border:1px solid transparent;
-  transition:border-color .2s ease, box-shadow .2s ease;
-}
-.sys.active{
-  border-color:var(--blue);
-  box-shadow:0 6px 16px rgba(0,0,0,.06);
-}
-.sys.done .sys-bar::after{
-  content:" ✓"; color:var(--terra); font-weight:600; margin-left:4px;
-}
-
-/* Bar = the “button” */
-.sys-bar{
-  width:100%; border:none; outline:none;
-  background:#000; color:#fff;
-  padding:10px 16px;
-  font-weight:700; letter-spacing:.4px; font-size:14px;
+/* header */
+#headerTitle{
   text-align:center;
-  cursor:pointer;
-  transition:background .2s ease;
-}
-.sys.active .sys-bar{ background:var(--blue); }
-
-/* Panel = collapsible content */
-.sys-panel{
-  background:var(--card);
-  overflow:hidden;
-  max-height:0;
-  transition:max-height .25s ease;
+  font-weight:700;
+  font-size:20px;
+  color:var(--ink);
+  margin-bottom:12px;
 }
 
-/* Body card inside each panel */
-.bodycard{
-  padding:12px 16px 14px 16px;
-  border-top:1px solid var(--line);
-  line-height:1.5; color:var(--ink);
+/* heatmap */
+#heatmap{
+  display:grid;
+  grid-template-rows:repeat(4, 1fr);
+  grid-auto-flow:column;
+  gap:3px;
+  margin:0 auto 16px auto;
+  width:max-content;
 }
-.h1{ font-size:20px; font-weight:800; margin-bottom:4px }
-.label{ color:var(--muted); font-weight:600; margin-bottom:4px }
-.content{ font-size:16px; color:var(--ink); margin-bottom:10px }
-.foot{ display:flex; justify-content:space-between; align-items:center }
-.badge{
-  font-size:12px; padding:5px 10px; border-radius:999px;
-  border:1px solid var(--line); background:#f8faff; color:var(--blue);
+.hm-cell{
+  width:14px; height:14px;
+  border-radius:3px;
+  background:#F2F2F2;
 }
-.check{
-  width:24px; height:24px; border-radius:8px;
-  border:2px solid var(--line);
-  background:#f8faff;
-  display:grid; place-items:center; cursor:pointer; transition:.15s;
-}
-.check.checked{ background:#e8f1ff; border-color:var(--blue) }
-.check.checked::after{ content:"✓"; color:var(--blue); font-weight:700 }
 
-/* Swipe hint (shown on mobile) */
-.swipeHint{
-  display:none;
+/* tab bar */
+#tabs{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.tab{
+  flex:1;
   text-align:center;
-  font-size:11px;
-  font-weight:500;
+  padding:6px 8px;
+  margin:0 4px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  background:#fff;
   color:var(--muted);
-  margin-top:2px;
+  font-weight:600;
+  cursor:pointer;
+  user-select:none;
+  transition:all .2s;
+}
+.tab.active{
+  background:var(--sage-light);
+  color:var(--ink);
+  border-color:var(--sage-light);
 }
 
-/* Mobile polish */
-@media (max-width:420px){
-  .frame{ padding:10px; border-radius:14px }
-  .header{
-    display:grid; grid-template-columns:auto 1fr auto;
-    align-items:center; gap:8px;
-  }
-  .btn{ width:28px; height:28px }
-  .title{
-    font-size:clamp(18px,5vw,24px);
-    line-height:1.15; white-space:normal; text-align:center;
-  }
-  .subhead{ font-size:13px; margin:6px 0 6px }
-  .h1{ font-size:18px }
-  .content{ font-size:15px }
-  .swipeHint{ display:block; }
-
-  #wrap{ width:640px !important; max-width:640px !important }
+/* content card */
+#contentCard{
+  background:white;
+  border-radius:14px;
+  border:1.5px solid #E0E6E2;
+  box-shadow:0 8px 24px rgba(0,0,0,0.05);
+  padding:16px;
+  max-height:58vh;
+  overflow-y:auto;
+  position:relative;
 }
 
-/* Phones: just remove padding, keep scroll allowed */
-@media (max-width:600px){
-  body{
-    padding:0;
-    display:flex; align-items:flex-start; justify-content:center;
-  }
+/* slide animation */
+.slide-enter{
+  opacity:0;
+  transform:translateX(20px);
 }
+.slide-enter-active{
+  opacity:1;
+  transform:translateX(0);
+  transition:all .2s ease-out;
+}
+.slide-exit{
+  opacity:1;
+  transform:translateX(0);
+}
+.slide-exit-active{
+  opacity:0;
+  transform:translateX(-20px);
+  transition:all .2s ease-out;
+}
+
+/* checkmark */
+.checkmark{
+  position:absolute;
+  bottom:14px; right:14px;
+  width:24px; height:24px;
+  border-radius:6px;
+  border:2px solid var(--border);
+  display:flex;
+  align-items:center; justify-content:center;
+  cursor:pointer;
+  background:#fff;
+  transition:.15s;
+}
+.checkmark.checked{
+  background:var(--sage-light);
+  border-color:var(--sage-dark);
+}
+.checkmark.checked::after{
+  content:"✓";
+  color:var(--sage-dark);
+  font-weight:700;
+}
+
+/* header arrows */
+.header-nav{
+  display:flex;
+  justify-content:center;
+  gap:28px;
+  margin-bottom:8px;
+}
+.nav-btn{
+  width:32px; height:32px;
+  border-radius:8px;
+  border:1.5px solid var(--border);
+  background:white;
+  font-size:18px;
+  cursor:pointer;
+  transition:.2s;
+}
+.nav-btn:disabled{
+  opacity:.4; cursor:not-allowed;
+}
+
+/* mobile */
+@media(max-width:480px){
+  #wrap{
+    border-radius:12px;
+    padding:14px;
+  }
+  .tab{ font-size:14px; padding:6px 4px; }
+  #contentCard{ max-height:60vh; }
+  .hm-cell{ width:12px; height:12px; }
+}
+
 </style>
 </head>
+
 <body>
-<div id="wrap" class="frame">
-  <div class="widget" aria-live="polite">
-    <div class="header">
-      <button id="prevBtn" class="btn">←</button>
-      <div id="dayTitle" class="title">OMNIFIT Daily — Day 560</div>
-      <button id="nextBtn" class="btn">→</button>
-    </div>
+<div id="wrap">
 
-    <div class="subhead">
-      <span id="weekday">DAY</span><span id="dateTiny">000000</span>
-    </div>
-
-    <div class="swipeHint">
-      Swipe ▲▼ to switch system · ◀▶ to switch day
-    </div>
-
-    <!-- Vertical systems list -->
-    <div class="systems">
-      <!-- PHYSICAL -->
-      <div class="sys active" data-system="physical">
-        <button class="sys-bar">PHYSICAL</button>
-        <div class="sys-panel">
-          <div class="bodycard">
-            <div class="h1" data-role="title"></div>
-            <div class="label">Today:</div>
-            <div class="content" data-role="content"></div>
-            <div class="foot">
-              <span class="badge" data-role="badge"></span>
-              <button class="check" aria-label="Mark done"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- NEUROLOGICAL -->
-      <div class="sys" data-system="neurological">
-        <button class="sys-bar">NEUROLOGICAL</button>
-        <div class="sys-panel">
-          <div class="bodycard">
-            <div class="h1" data-role="title"></div>
-            <div class="label">Today:</div>
-            <div class="content" data-role="content"></div>
-            <div class="foot">
-              <span class="badge" data-role="badge"></span>
-              <button class="check" aria-label="Mark done"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- COGNITIVE -->
-      <div class="sys" data-system="cognitive">
-        <button class="sys-bar">COGNITIVE</button>
-        <div class="sys-panel">
-          <div class="bodycard">
-            <div class="h1" data-role="title"></div>
-            <div class="label">Today:</div>
-            <div class="content" data-role="content"></div>
-            <div class="foot">
-              <span class="badge" data-role="badge"></span>
-              <button class="check" aria-label="Mark done"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- EMOTIONAL -->
-      <div class="sys" data-system="emotional">
-        <button class="sys-bar">EMOTIONAL</button>
-        <div class="sys-panel">
-          <div class="bodycard">
-            <div class="h1" data-role="title"></div>
-            <div class="label">Today:</div>
-            <div class="content" data-role="content"></div>
-            <div class="foot">
-              <span class="badge" data-role="badge"></span>
-              <button class="check" aria-label="Mark done"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LIFESTYLE -->
-      <div class="sys" data-system="lifestyle">
-        <button class="sys-bar">LIFESTYLE</button>
-        <div class="sys-panel">
-          <div class="bodycard">
-            <div class="h1" data-role="title"></div>
-            <div class="label">Today:</div>
-            <div class="content" data-role="content"></div>
-            <div class="foot">
-              <span class="badge" data-role="badge"></span>
-              <button class="check" aria-label="Mark done"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+  <!-- HEADER NAV -->
+  <div class="header-nav">
+    <button id="prevBtn" class="nav-btn">←</button>
+    <button id="nextBtn" class="nav-btn">→</button>
   </div>
+
+  <!-- DAY + TAG -->
+  <div id="headerTitle">Loading…</div>
+
+  <!-- HEATMAP -->
+  <div id="heatmap"></div>
+
+  <!-- TAB BAR -->
+  <div id="tabs">
+    <div class="tab active" data-tab="micro">Micro Exercise</div>
+    <div class="tab" data-tab="daily">Omnifit Daily</div>
+    <div class="tab" data-tab="motivation">Motivation</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="contentCard"></div>
+
 </div>
 
 <script>
-/* ===== CONFIG ===== */
-const DATA_URL = "./omnifit_data.csv";
-const PROGRAM_EPOCH_ISO = "2024-05-13";
+/* ==========================
+      CONFIG + STATE
+========================== */
+const CSV_URL = "./omnifit_data.csv";
 
-/* ===== STATE ===== */
-const SYSTEMS = ["physical","neurological","cognitive","emotional","lifestyle"];
-const state = { days:[], idx:0, system:"physical" };
+let DAYS = [];
+let index = 0;
+let activeTab = "micro";
 
-/* ===== HELPERS ===== */
-const $  = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
+/* storage keys */
+const KEY_MICRO = date => `omni_micro_${date}`;
+const KEY_MOTIV = date => `omni_motiv_${date}`;
 
-const atMidnight = iso => new Date(`${iso}T00:00:00`);
-const weekdayName = iso =>
-  atMidnight(iso).toLocaleDateString(undefined,{weekday:"long"}).toUpperCase();
-const compact = iso => iso.replaceAll("-","");
-const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
+/* ==========================
+      INITIALIZATION
+========================== */
+fetch(CSV_URL)
+  .then(r=>r.text())
+  .then(csvText=>parseCSV(csvText))
+  .then(rows=>{
+    DAYS = rows;
+    index = findTodayIndex();
+    buildHeatmap();
+    render();
+  })
+  .catch(err=>{
+    console.error("CSV ERROR",err);
+  });
 
-const doneKey = (d,s) => `omnifit_done_${d}_${s}`;
-const isDone  = (d,s) => localStorage.getItem(doneKey(d,s)) === "1";
-const setDone = (d,s,v) => {
-  v ? localStorage.setItem(doneKey(d,s),"1")
-    : localStorage.removeItem(doneKey(d,s));
-};
+/* ==========================
+      CSV PARSER
+========================== */
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l=>l.trim().length>0);
+  const header = lines[0].split(",").map(x=>x.trim().toLowerCase());
+  const idx = key => header.indexOf(key);
 
-/* CSV parser */
-function parseCSV(text) {
-  const rows = [];
-  let row = [], cell = "";
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i], next = text[i+1];
-    if (ch === '"') {
-      if (inQuotes && next === '"') { cell += '"'; i++; }
-      else { inQuotes = !inQuotes; }
-    } else if (ch === "," && !inQuotes) {
-      row.push(cell); cell = "";
-    } else if ((ch === "\n" || ch === "\r") && !inQuotes) {
-      if (cell.length || row.length) { row.push(cell); rows.push(row); }
-      cell = ""; row = [];
-      if (ch === "\r" && next === "\n") i++;
-    } else {
-      cell += ch;
-    }
+  return lines.slice(1).map(line=>{
+    const row = splitCSVLine(line);
+    return {
+      date: row[idx("date")],
+      day_type: row[idx("day_type")],
+      micro: row[idx("micro_exercise")],
+      daily: row[idx("daily_exercise")],
+      motivation: row[idx("motivation")]
+    };
+  });
+}
+function splitCSVLine(line){
+  const out=[], cell=[], chars=[...line];
+  let inQ=false;
+  for(let i=0;i<chars.length;i++){
+    const c=chars[i];
+    if(c=='"'){
+      if(inQ && chars[i+1]=='"'){ cell.push('"'); i++; }
+      else inQ=!inQ;
+    } else if(c=="," && !inQ){
+      out.push(cell.join("")); cell.length=0;
+    } else cell.push(c);
   }
-  if (cell.length || row.length) { row.push(cell); rows.push(row); }
-  return rows;
+  out.push(cell.join(""));
+  return out;
 }
 
-function csvToDays(text){
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-  const rows = parseCSV(text);
-  if (!rows.length) return [];
-
-  const header = rows[0].map(h => h.trim().toLowerCase());
-  const ix = Object.fromEntries(header.map((h,i)=>[h,i]));
-
-  const out = [];
-  for (let r = 1; r < rows.length; r++) {
-    const row = rows[r];
-    if (!row || !row.length) continue;
-    const get = key => (ix[key] != null ? (row[ix[key]] ?? "").trim() : "");
-    const date = get("date");
-    if (!date) continue;
-    out.push({
-      date,
-      physical:     get("physical"),
-      neurological: get("neurological"),
-      cognitive:    get("cognitive"),
-      emotional:    get("emotional"),
-      lifestyle:    get("lifestyle")
-    });
-  }
-  return out.sort((a,b)=>a.date.localeCompare(b.date));
-}
-
-function todayIndex(days){
+/* ==========================
+      TODAY INDEX
+========================== */
+function findTodayIndex(){
   const iso = new Date().toISOString().slice(0,10);
-  const k = days.findIndex(d => d.date === iso);
-  return k >= 0 ? k : 0;
+  const found = DAYS.findIndex(d=>d.date===iso);
+  return found>=0 ? found : DAYS.length-1;
 }
 
-function dayNumberFrom(iso){
-  const start  = atMidnight(PROGRAM_EPOCH_ISO);
-  const target = atMidnight(iso);
-  const diffDays = Math.floor((target-start)/86400000);
-  return diffDays + 1;
+/* ==========================
+      HEADER RENDER
+========================== */
+function renderHeader(){
+  const d = DAYS[index];
+  document.querySelector("#headerTitle").textContent =
+    `Day ${calcDayNumber(d.date)} | ${d.day_type}`;
+}
+function calcDayNumber(dateStr){
+  const epoch = new Date("2024-05-13");
+  const day = new Date(dateStr);
+  return Math.floor((day-epoch)/86400000) + 1;
 }
 
-/* ===== SCALE TO WIDTH (no height lock) ===== */
-function fitWidget(){
-  const BASE = 640;
-  const el = document.getElementById("wrap");
-  if (!el) return;
-
-  const vw = Math.min(window.innerWidth || BASE,
-                      document.documentElement.clientWidth || window.innerWidth || BASE);
-  const scale = Math.min(1, vw / BASE);
-  el.style.transform = `scale(${scale})`;
-}
-window.addEventListener("resize", fitWidget, {passive:true});
-window.addEventListener("load", fitWidget);
-
-/* ===== RENDER ===== */
-function render(){
-  const d = state.days[state.idx];
-  if (!d) return;
-
-  const dayNum = dayNumberFrom(d.date);
-  $("#dayTitle").textContent = `OMNIFIT Daily — Day ${dayNum}`;
-  $("#weekday").textContent  = weekdayName(d.date);
-  $("#dateTiny").textContent = compact(d.date);
-
-  const titles = {
-    physical:"Move",
-    neurological:"Control",
-    cognitive:"Focus",
-    emotional:"Regulate",
-    lifestyle:"Integrate"
-  };
-
-  SYSTEMS.forEach(sys => {
-    const container = document.querySelector(`.sys[data-system="${sys}"]`);
-    if (!container) return;
-
-    const isActiveSys = (sys === state.system);
-    container.classList.toggle("active", isActiveSys);
-
-    const panel    = container.querySelector(".sys-panel");
-    const titleEl  = container.querySelector('[data-role="title"]');
-    const contentEl= container.querySelector('[data-role="content"]');
-    const badgeEl  = container.querySelector('[data-role="badge"]');
-    const chkEl    = container.querySelector(".check");
-
-    if (titleEl) titleEl.textContent = titles[sys];
-    if (badgeEl) badgeEl.textContent = cap(sys);
-
-    const raw  = d[sys] || "No entry.";
-    const html = String(raw)
-      .replace(/&lt;br\s*\/?&gt;/gi,"<br>")
-      .replace(/\n/g,"<br>");
-    if (contentEl) contentEl.innerHTML = html;
-
-    const done = isDone(d.date, sys);
-    if (chkEl) chkEl.classList.toggle("checked", done);
-    container.classList.toggle("done", done);
-
-    if (panel){
-      if (isActiveSys){
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } else {
-        panel.style.maxHeight = "0px";
-      }
+/* ==========================
+      TAB BAR EVENTS
+========================== */
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    const newTab = tab.dataset.tab;
+    if(newTab!==activeTab){
+      activeTab=newTab;
+      updateTabs();
+      slideContent();
     }
   });
-
-  $("#prevBtn").disabled = state.idx <= 0;
-  $("#nextBtn").disabled = state.idx >= state.days.length - 1;
-
-  fitWidget();
-}
-
-/* ===== NAVIGATION ===== */
-function setSystem(system){
-  if (!SYSTEMS.includes(system)) return;
-  state.system = system;
-  render();
-}
-
-function systemOffset(delta){
-  const idx = SYSTEMS.indexOf(state.system);
-  if (idx === -1) return;
-  let next = idx + delta;
-  if (next < 0) next = SYSTEMS.length - 1;
-  if (next >= SYSTEMS.length) next = 0;
-  setSystem(SYSTEMS[next]);
-}
-
-function dayOffset(delta){
-  let next = state.idx + delta;
-  if (next < 0 || next >= state.days.length) return;
-  state.idx = next;
-  render();
-}
-
-/* ===== BIND ===== */
-function bind(){
-  // bar clicks → open/close system
-  $$(".sys-bar").forEach(bar => {
-    bar.addEventListener("click", () => {
-      const sys = bar.closest(".sys").dataset.system;
-      setSystem(sys);
-    });
+});
+function updateTabs(){
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.classList.toggle("active", t.dataset.tab===activeTab);
   });
-
-  // complete buttons
-  $$(".sys .check").forEach(chk => {
-    chk.addEventListener("click", e => {
-      e.stopPropagation();
-      const sys = chk.closest(".sys").dataset.system;
-      const d = state.days[state.idx];
-      setDone(d.date, sys, !isDone(d.date, sys));
-      render();
-    });
-  });
-
-  // prev/next day buttons
-  $("#prevBtn").addEventListener("click", () => dayOffset(-1));
-  $("#nextBtn").addEventListener("click", () => dayOffset(+1));
-
-  bindGestures();
 }
 
-/* ===== GESTURES: vertical = systems, horizontal = days ===== */
-function bindGestures(){
-  const zone = $(".widget");
-  if (!zone) return;
+/* ==========================
+      CONTENT RENDER
+========================== */
+function slideContent(){
+  const card = document.querySelector("#contentCard");
+  const old = card.innerHTML;
 
-  let startX = 0, startY = 0, tracking = false;
-  const THRESHOLD = 40;
+  /* exit animation */
+  card.classList.add("slide-exit");
+  card.classList.add("slide-exit-active");
 
-  zone.addEventListener("touchstart", e => {
-    if (e.touches.length !== 1) return;
-    const t = e.touches[0];
-    startX = t.clientX;
-    startY = t.clientY;
-    tracking = true;
-  }, {passive:false});
+  setTimeout(()=>{
+    card.innerHTML = buildContent();
+    card.classList.remove("slide-exit","slide-exit-active");
+    card.classList.add("slide-enter");
 
-  zone.addEventListener("touchmove", e => {
-    if (!tracking) return;
-    const t = e.touches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
+    setTimeout(()=>{
+      card.classList.remove("slide-enter","slide-enter-active");
+    },200);
+  },180);
 
-    // once it's clearly a swipe → block scrolling
-    if (Math.max(Math.abs(dx), Math.abs(dy)) > 10) {
-      e.preventDefault();
-    }
-  }, {passive:false});
-
-  zone.addEventListener("touchend", e => {
-    if (!tracking) return;
-    tracking = false;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-
-    if (Math.max(Math.abs(dx),Math.abs(dy)) < THRESHOLD) return;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      // horizontal → days
-      if (dx < 0) dayOffset(+1);   // swipe left → next day
-      else        dayOffset(-1);   // swipe right → prev day
-    } else {
-      // vertical → systems
-      if (dy < 0) systemOffset(+1);   // swipe up → next system
-      else        systemOffset(-1);   // swipe down → prev system
-    }
-  }, {passive:false});
+  setTimeout(()=>card.classList.add("slide-enter-active"),20);
 }
 
-/* ===== LOAD ===== */
-async function load(){
-  try{
-    const res = await fetch(DATA_URL,{cache:"no-store"});
-    const text = await res.text();
-    state.days = csvToDays(text);
-    state.idx  = todayIndex(state.days);
-  }catch(e){
-    console.error("LOAD ERROR",e);
-    const iso = new Date().toISOString().slice(0,10);
-    state.days = [{
-      date:iso,
-      physical:"Walk 10 min",
-      neurological:"Balance 45 s/leg",
-      cognitive:"Set one intention",
-      emotional:"2×1 min box-breath",
-      lifestyle:"Drink ½ L water before coffee"
-    }];
-    state.idx = 0;
+function buildContent(){
+  const d = DAYS[index];
+  if(activeTab==="micro"){
+    return `
+      <h3>Micro Daily Exercise</h3>
+      <div>${formatText(d.micro)}</div>
+      <div class="checkmark ${isMicroDone(d.date)?"checked":""}" 
+           onclick="toggleMicro('${d.date}')"></div>
+    `;
   }
-  render();
+  if(activeTab==="daily"){
+    return `
+      <h3>Omnifit Daily</h3>
+      <div>${formatText(d.daily)}</div>
+    `;
+  }
+  if(activeTab==="motivation"){
+    return `
+      <h3>Motivation</h3>
+      <div>${formatText(d.motivation)}</div>
+      <div class="checkmark ${isMotivDone(d.date)?"checked":""}"
+           onclick="toggleMotiv('${d.date}')"></div>
+    `;
+  }
 }
 
-bind();
-load();
+/* formatting */
+function formatText(t){
+  if(!t) return "";
+  return t.replace(/\n/g,"<br>");
+}
+
+/* ==========================
+      LOCAL STORAGE
+========================== */
+function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date))==="1"; }
+function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date))==="1"; }
+
+function toggleMicro(date){
+  const done = !isMicroDone(date);
+  localStorage.setItem(KEY_MICRO(date), done?"1":"0");
+  updateHeatmap();
+  slideContent();
+}
+function toggleMotiv(date){
+  const done = !isMotivDone(date);
+  localStorage.setItem(KEY_MOTIV(date), done?"1":"0");
+  updateHeatmap();
+  slideContent();
+}
+
+/* ==========================
+      HEATMAP
+========================== */
+function buildHeatmap(){
+  const hm = document.querySelector("#heatmap");
+  hm.innerHTML="";
+
+  const total = Math.min(28, DAYS.length);
+  const recent = DAYS.slice(-total);
+
+  recent.forEach(d=>{
+    const cell=document.createElement("div");
+    cell.className="hm-cell";
+    cell.dataset.date=d.date;
+    hm.appendChild(cell);
+  });
+
+  updateHeatmap();
+}
+function updateHeatmap(){
+  const cells = document.querySelectorAll(".hm-cell");
+  cells.forEach(cell=>{
+    const date = cell.dataset.date;
+
+    const score =
+      (isMicroDone(date)?1:0) +
+      (isMotivDone(date)?1:0);
+
+    if(score===0) cell.style.background="#F2F2F2";
+    if(score===1) cell.style.background="var(--sage-light)";
+    if(score===2) cell.style.background="var(--sage-mid)";
+  });
+}
+
+/* ==========================
+      NAVIGATION
+========================== */
+document.querySelector("#prevBtn").addEventListener("click",()=>{
+  if(index>0){
+    index--;
+    render();
+  }
+});
+document.querySelector("#nextBtn").addEventListener("click",()=>{
+  if(index<DAYS.length-1){
+    index++;
+    render();
+  }
+});
+
+function render(){
+  renderHeader();
+  updateTabs();
+  document.querySelector("#contentCard").innerHTML = buildContent();
+}
+
+/* ========================== */
+
 </script>
+
 </body>
 </html>
+
 
