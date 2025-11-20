@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OMNIFIT Widget V2 — JSON</title>
+<title>OMNIFIT Widget V3</title>
 
 <style>
 :root{
@@ -39,7 +39,6 @@ body{
   box-shadow:0 8px 24px rgba(0,0,0,0.05);
   padding:20px;
   box-sizing:border-box;
-  transform-origin:top center;
 }
 
 /* header */
@@ -51,103 +50,7 @@ body{
   margin-bottom:12px;
 }
 
-/* heatmap */
-#heatmap{
-  display:grid;
-  grid-template-rows:repeat(4, 1fr);
-  grid-auto-flow:column;
-  gap:3px;
-  margin:0 auto 16px auto;
-  width:max-content;
-}
-.hm-cell{
-  width:14px; height:14px;
-  border-radius:3px;
-  background:#F2F2F2;
-}
-
-/* tab bar */
-#tabs{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
-.tab{
-  flex:1;
-  text-align:center;
-  padding:6px 8px;
-  margin:0 4px;
-  border-radius:999px;
-  border:1.5px solid var(--border);
-  background:#fff;
-  color:var(--muted);
-  font-weight:600;
-  cursor:pointer;
-  user-select:none;
-  transition:all .2s;
-}
-.tab.active{
-  background:var(--sage-light);
-  color:var(--ink);
-  border-color:var(--sage-light);
-}
-
-/* content card */
-#contentCard{
-  background:white;
-  border-radius:14px;
-  border:1.5px solid #E0E6E2;
-  box-shadow:0 8px 24px rgba(0,0,0,0.05);
-  padding:16px;
-  max-height:58vh;
-  overflow-y:auto;
-  position:relative;
-}
-
-/* slide animation */
-.slide-enter{
-  opacity:0;
-  transform:translateX(20px);
-}
-.slide-enter-active{
-  opacity:1;
-  transform:translateX(0);
-  transition:all .2s ease-out;
-}
-.slide-exit{
-  opacity:1;
-  transform:translateX(0);
-}
-.slide-exit-active{
-  opacity:0;
-  transform:translateX(-20px);
-  transition:all .2s ease-out;
-}
-
-/* checkmark */
-.checkmark{
-  position:absolute;
-  bottom:14px; right:14px;
-  width:24px; height:24px;
-  border-radius:6px;
-  border:2px solid var(--border);
-  display:flex;
-  align-items:center; justify-content:center;
-  cursor:pointer;
-  background:#fff;
-  transition:.15s;
-}
-.checkmark.checked{
-  background:var(--sage-light);
-  border-color:var(--sage-dark);
-}
-.checkmark.checked::after{
-  content:"✓";
-  color:var(--sage-dark);
-  font-weight:700;
-}
-
-/* header arrows */
+/* NAV BUTTONS */
 .header-nav{
   display:flex;
   justify-content:center;
@@ -167,35 +70,137 @@ body{
   opacity:.4; cursor:not-allowed;
 }
 
-/* mobile */
-@media(max-width:480px){
-  #wrap{
-    border-radius:12px;
-    padding:14px;
-  }
-  .tab{ font-size:14px; padding:6px 4px; }
-  #contentCard{ max-height:60vh; }
-  .hm-cell{ width:12px; height:12px; }
+/* HEATMAP */
+#heatmapContainer{
+  margin:0 auto 20px auto;
+  width:fit-content;
 }
+
+/* Month Labels */
+.hm-months{
+  display:flex;
+  font-size:12px;
+  color:#666;
+  margin-left:40px;
+  margin-bottom:6px;
+}
+.hm-month{
+  min-width:50px;
+  text-align:left;
+}
+
+/* row labels */
+.hm-rows{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  margin-right:6px;
+  font-size:12px;
+  color:#666;
+  font-weight:500;
+}
+
+/* grid */
+.hm-wrapper{
+  display:flex;
+}
+.hm-grid{
+  display:grid;
+  grid-auto-flow:column;
+  grid-template-rows:repeat(4, 1fr);
+  gap:3px;
+}
+.hm-cell{
+  width:14px; height:14px;
+  background:#F2F2F2;
+  border-radius:3px;
+}
+
+/* TAB BAR */
+#tabs{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:6px 8px;
+  margin:0 4px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--muted);
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+}
+.tab.active{
+  background:var(--sage-light);
+  color:var(--ink);
+  border-color:var(--sage-light);
+}
+
+/* CARD */
+#contentCard{
+  background:white;
+  border-radius:14px;
+  border:1.5px solid #E0E6E2;
+  box-shadow:0 8px 24px rgba(0,0,0,0.05);
+  padding:16px;
+  max-height:58vh;
+  overflow-y:auto;
+  position:relative;
+}
+
+.checkmark{
+  position:absolute;
+  bottom:14px; right:14px;
+  width:24px; height:24px;
+  border-radius:6px;
+  border:2px solid var(--border);
+  display:flex;
+  align-items:center; justify-content:center;
+  cursor:pointer;
+  background:#fff;
+}
+.checkmark.checked{
+  background:var(--sage-light);
+  border-color:var(--sage-dark);
+}
+.checkmark.checked::after{
+  content:"✓";
+  color:var(--sage-dark);
+  font-weight:700;
+}
+
 </style>
 </head>
-
 <body>
 <div id="wrap">
 
-  <!-- HEADER NAV -->
+  <!-- NAV -->
   <div class="header-nav">
     <button id="prevBtn" class="nav-btn">←</button>
     <button id="nextBtn" class="nav-btn">→</button>
   </div>
 
-  <!-- DAY + TAG -->
+  <!-- HEADER -->
   <div id="headerTitle">Loading…</div>
 
   <!-- HEATMAP -->
-  <div id="heatmap"></div>
+  <div id="heatmapContainer">
+    <div id="heatmapMonths" class="hm-months"></div>
 
-  <!-- TAB BAR -->
+    <div class="hm-wrapper">
+      <div class="hm-rows">
+        <div>Sun</div><div>Tue</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div id="heatmap" class="hm-grid"></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
   <div id="tabs">
     <div class="tab active" data-tab="micro">Micro Exercise</div>
     <div class="tab" data-tab="daily">Omnifit Daily</div>
@@ -208,214 +213,141 @@ body{
 </div>
 
 <script>
-/* ==========================
-      CONFIG + STATE
-========================== */
 const JSON_URL = "./omnifit_data.json";
-
 let DAYS = [];
 let index = 0;
 let activeTab = "micro";
 
-/* storage */
 const KEY_MICRO = date => `omni_micro_${date}`;
 const KEY_MOTIV = date => `omni_motiv_${date}`;
 
-/* ==========================
-      LOAD JSON
-========================== */
 fetch(JSON_URL)
-  .then(r => r.json())
-  .then(data => {
+  .then(r=>r.json())
+  .then(data=>{
     DAYS = data;
-    index = findTodayIndex();
+    index = DAYS.length - 1; // latest day
     buildHeatmap();
     render();
-  })
-  .catch(err => console.error("JSON LOAD ERROR", err));
+  });
 
-/* ==========================
-      TODAY INDEX
-========================== */
-function findTodayIndex(){
-  const iso = new Date().toISOString().slice(0,10);
-  const found = DAYS.findIndex(d => d.date === iso);
-  return found >= 0 ? found : 0;
-}
-
-/* ==========================
-      HEADER
-========================== */
+/* HEADER */
 function renderHeader(){
   const d = DAYS[index];
-  document.querySelector("#headerTitle").textContent =
-    `Day ${calcDayNumber(d.date)} | ${d.day_type}`;
+  const dayNum = calcDayNumber(d.date);
+  document.getElementById("headerTitle").textContent =
+    `Day ${dayNum} | ${d.day_type}`;
 }
-
 function calcDayNumber(dateStr){
   const epoch = new Date("2024-05-13");
-  const day = new Date(dateStr);
-  return Math.floor((day - epoch) / 86400000) + 1;
+  return Math.floor((new Date(dateStr)-epoch)/86400000)+1;
 }
 
-/* ==========================
-      TAB LOGIC
-========================== */
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    const newTab = tab.dataset.tab;
-    if(newTab !== activeTab){
-      activeTab = newTab;
-      updateTabs();
-      slideContent();
-    }
-  });
-});
-
-function updateTabs(){
-  document.querySelectorAll(".tab").forEach(t => {
-    t.classList.toggle("active", t.dataset.tab === activeTab);
-  });
-}
-
-/* ==========================
-      CONTENT RENDER
-========================== */
-function slideContent(){
-  const card = document.querySelector("#contentCard");
-
-  card.classList.add("slide-exit","slide-exit-active");
-
-  setTimeout(() => {
-    card.innerHTML = buildContent();
-    card.classList.remove("slide-exit","slide-exit-active");
-    card.classList.add("slide-enter");
-
-    setTimeout(() => {
-      card.classList.remove("slide-enter","slide-enter-active");
-    }, 200);
-  }, 180);
-
-  setTimeout(() => card.classList.add("slide-enter-active"), 20);
-}
-
+/* CONTENT */
 function buildContent(){
   const d = DAYS[index];
+  if(activeTab==="micro")
+    return contentBlock("Micro Daily Exercise", d.micro, isMicroDone(d.date), ()=>toggleMicro(d.date));
 
-  if(activeTab === "micro"){
-    return `
-      <h3>Micro Daily Exercise</h3>
-      <div>${format(d.micro_exercise)}</div>
-      <div class="checkmark ${isMicroDone(d.date)?"checked":""}"
-           onclick="toggleMicro('${d.date}')"></div>
-    `;
-  }
+  if(activeTab==="daily")
+    return contentBlock("Omnifit Daily", d.daily, false);
 
-  if(activeTab === "daily"){
-    return `
-      <h3>Omnifit Daily</h3>
-      <div>${format(d.daily_exercise)}</div>
-    `;
-  }
-
-  if(activeTab === "motivation"){
-    return `
-      <h3>Motivation</h3>
-      <div>${format(d.motivation)}</div>
-      <div class="checkmark ${isMotivDone(d.date)?"checked":""}"
-           onclick="toggleMotiv('${d.date}')"></div>
-    `;
-  }
+  if(activeTab==="motivation")
+    return contentBlock("Motivation", makeLinks(d.motivation), isMotivDone(d.date), ()=>toggleMotiv(d.date));
 }
 
-function format(t){
+function contentBlock(title, text, showCheck, toggleFn){
+  return `
+    <h3>${title}</h3>
+    <div>${formatText(text)}</div>
+    ${showCheck ? `<div class="checkmark ${isMicroDone ? 'checked':''}" onclick="(${toggleFn})()"></div>` : ""}
+  `;
+}
+
+function formatText(t){
   if(!t) return "";
-  return t.replace(/\n/g,"<br>");
+  return makeLinks(t.replace(/\n/g,"<br>"));
 }
 
-/* ==========================
-      CHECKMARK STORAGE
-========================== */
-function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date)) === "1"; }
-function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date)) === "1"; }
+/* MAKE LINKS CLICKABLE */
+function makeLinks(text){
+  return text.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    '<br><a href="$1" target="_blank" style="color:#2a6;">$1</a>'
+  );
+}
+
+/* LOCAL STORAGE */
+function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date))==="1"; }
+function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date))==="1"; }
 
 function toggleMicro(date){
-  const done = !isMicroDone(date);
-  localStorage.setItem(KEY_MICRO(date), done ? "1" : "0");
-  updateHeatmap();
-  slideContent();
+  localStorage.setItem(KEY_MICRO(date), isMicroDone(date)?"0":"1");
+  updateHeatmap(); render();
 }
-
 function toggleMotiv(date){
-  const done = !isMotivDone(date);
-  localStorage.setItem(KEY_MOTIV(date), done ? "1" : "0");
-  updateHeatmap();
-  slideContent();
+  localStorage.setItem(KEY_MOTIV(date), isMotivDone(date)?"0":"1");
+  updateHeatmap(); render();
 }
 
-/* ==========================
-      HEATMAP
-========================== */
+/* HEATMAP */
 function buildHeatmap(){
-  const hm = document.querySelector("#heatmap");
-  hm.innerHTML = "";
-
-  const total = Math.min(28, DAYS.length);
+  const total = 84; // 12 weeks = 3 months
   const recent = DAYS.slice(-total);
 
-  recent.forEach(d => {
+  const hm = document.getElementById("heatmap");
+  const months = document.getElementById("heatmapMonths");
+
+  hm.innerHTML = "";
+  months.innerHTML = "";
+
+  // month labels every ~4 weeks
+  const uniqueMonths = [...new Set(recent.map(d=>d.date.slice(0,7)))];
+  uniqueMonths.forEach(m=>{
+    months.innerHTML += `<div class="hm-month">${monthName(m.slice(5,7))}</div>`;
+  });
+
+  recent.forEach(d=>{
     const cell = document.createElement("div");
     cell.className = "hm-cell";
-    cell.dataset.date = d.date;
-    hm.appendChild(cell);
-  });
-
-  updateHeatmap();
-}
-
-function updateHeatmap(){
-  const cells = document.querySelectorAll(".hm-cell");
-
-  cells.forEach(cell => {
-    const date = cell.dataset.date;
 
     const score =
-      (isMicroDone(date) ? 1 : 0) +
-      (isMotivDone(date) ? 1 : 0);
+      (isMicroDone(d.date)?1:0) + (isMotivDone(d.date)?1:0);
 
-    if(score === 0) cell.style.background = "#F2F2F2";
-    if(score === 1) cell.style.background = "var(--sage-light)";
-    if(score === 2) cell.style.background = "var(--sage-mid)";
+    if(score===1) cell.style.background="var(--sage-light)";
+    if(score===2) cell.style.background="var(--sage-mid)";
+
+    hm.appendChild(cell);
   });
 }
 
-/* ==========================
-      ARROW NAVIGATION
-========================== */
-document.querySelector("#prevBtn").addEventListener("click", () => {
-  if(index > 0){
-    index--;
-    render();
-  }
-});
+function updateHeatmap(){ buildHeatmap(); }
 
-document.querySelector("#nextBtn").addEventListener("click", () => {
-  if(index < DAYS.length - 1){
-    index++;
+function monthName(n){
+  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parseInt(n)-1];
+}
+
+/* NAV */
+document.getElementById("prevBtn").onclick = ()=>{ if(index>0){ index--; render(); }};
+document.getElementById("nextBtn").onclick = ()=>{ if(index<DAYS.length-1){ index++; render(); }};
+
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.onclick = ()=>{
+    activeTab = tab.dataset.tab;
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
     render();
-  }
+  };
 });
 
 function render(){
   renderHeader();
-  updateTabs();
-  document.querySelector("#contentCard").innerHTML = buildContent();
+  document.getElementById("contentCard").innerHTML = buildContent();
 }
 
 </script>
-
 </body>
 </html>
+
 
 
 
