@@ -10,38 +10,49 @@
   --sage-light:#E6F0D8;
   --sage-mid:#BFD4A5;
   --sage-dark:#8BB076;
+  --card:#FFFFFF;
   --border:#DCE7FF;
   --ink:#111;
   --muted:#475569;
-  --card:#FFFFFF;
   --frame-bg:#E8E6E6;
 }
 
-/* page base */
+/* Page */
 html,body{
   margin:0; padding:0;
   background:var(--frame-bg);
   font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
 }
 body{
-  display:flex;
-  justify-content:center;
-  padding:12px;
-  overflow-x:hidden;
+  display:flex; justify-content:center;
+  padding:12px; overflow-x:hidden;
 }
 
-/* wrapper */
+/* Wrapper */
 #wrap{
   width:640px; max-width:640px;
   background:var(--card);
   border-radius:16px;
   border:1.5px solid var(--border);
   box-shadow:0 8px 24px rgba(0,0,0,0.05);
-  padding:20px;
-  box-sizing:border-box;
+  padding:20px; box-sizing:border-box;
+  transform-origin:top center;
 }
 
-/* header */
+/* Header */
+.header-nav{
+  display:flex; justify-content:center;
+  gap:28px; margin-bottom:8px;
+}
+.nav-btn{
+  width:32px; height:32px;
+  border-radius:8px;
+  border:1.5px solid var(--border);
+  background:white; font-size:18px;
+  cursor:pointer; transition:.2s;
+}
+.nav-btn:disabled{ opacity:.4; cursor:not-allowed; }
+
 #headerTitle{
   text-align:center;
   font-weight:700;
@@ -50,89 +61,44 @@ body{
   margin-bottom:12px;
 }
 
-/* NAV BUTTONS */
-.header-nav{
-  display:flex;
-  justify-content:center;
-  gap:28px;
-  margin-bottom:8px;
-}
-.nav-btn{
-  width:32px; height:32px;
-  border-radius:8px;
-  border:1.5px solid var(--border);
-  background:white;
-  font-size:18px;
-  cursor:pointer;
-  transition:.2s;
-}
-.nav-btn:disabled{
-  opacity:.4; cursor:not-allowed;
-}
-
-/* HEATMAP */
+/* Heatmap — 12 weeks × 4 rows */
 #heatmapContainer{
-  margin:0 auto 20px auto;
-  width:fit-content;
+  display:flex; flex-direction:column;
+  gap:6px; margin-bottom:18px;
 }
-
-/* Month Labels */
-.hm-months{
-  display:flex;
+.hm-row{
+  display:flex; gap:4px; align-items:center;
+}
+.hm-label{
+  width:32px; text-align:right;
+  font-size:12px; font-weight:600;
+  color:var(--muted);
+  padding-right:4px;
+}
+.hm-month-label{
+  text-align:center;
   font-size:12px;
-  color:#666;
-  margin-left:40px;
-  margin-bottom:6px;
-}
-.hm-month{
-  min-width:50px;
-  text-align:left;
-}
-
-/* row labels */
-.hm-rows{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  margin-right:6px;
-  font-size:12px;
-  color:#666;
-  font-weight:500;
-}
-
-/* grid */
-.hm-wrapper{
-  display:flex;
-}
-.hm-grid{
-  display:grid;
-  grid-auto-flow:column;
-  grid-template-rows:repeat(4, 1fr);
-  gap:3px;
+  margin-bottom:4px;
+  color:var(--muted);
+  font-weight:600;
 }
 .hm-cell{
   width:14px; height:14px;
+  border-radius:4px;
   background:#F2F2F2;
-  border-radius:3px;
 }
 
-/* TAB BAR */
+/* Tabs */
 #tabs{
-  display:flex;
-  justify-content:space-between;
+  display:flex; justify-content:space-between;
   margin-bottom:14px;
 }
 .tab{
-  flex:1;
-  text-align:center;
-  padding:6px 8px;
-  margin:0 4px;
-  border-radius:999px;
-  border:1.5px solid var(--border);
-  background:#fff;
-  color:var(--muted);
-  font-weight:600;
-  cursor:pointer;
+  flex:1; text-align:center;
+  padding:6px 8px; margin:0 4px;
+  border-radius:999px; border:1.5px solid var(--border);
+  background:#fff; color:var(--muted);
+  font-weight:600; cursor:pointer; user-select:none;
   transition:all .2s;
 }
 .tab.active{
@@ -141,66 +107,62 @@ body{
   border-color:var(--sage-light);
 }
 
-/* CARD */
+/* Content card */
 #contentCard{
   background:white;
   border-radius:14px;
   border:1.5px solid #E0E6E2;
   box-shadow:0 8px 24px rgba(0,0,0,0.05);
   padding:16px;
-  max-height:58vh;
-  overflow-y:auto;
+  max-height:58vh; overflow-y:auto;
   position:relative;
 }
 
+/* Checkmark */
 .checkmark{
   position:absolute;
   bottom:14px; right:14px;
   width:24px; height:24px;
   border-radius:6px;
   border:2px solid var(--border);
-  display:flex;
-  align-items:center; justify-content:center;
-  cursor:pointer;
-  background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; background:#fff;
+  transition:.15s;
 }
 .checkmark.checked{
   background:var(--sage-light);
   border-color:var(--sage-dark);
 }
 .checkmark.checked::after{
-  content:"✓";
-  color:var(--sage-dark);
+  content:"✓"; color:var(--sage-dark);
   font-weight:700;
 }
 
+@media(max-width:480px){
+  #wrap{ border-radius:12px; padding:14px; }
+  .tab{ font-size:14px; padding:6px 4px; }
+  #contentCard{ max-height:60vh; }
+  .hm-cell{ width:12px; height:12px; }
+}
 </style>
 </head>
+
 <body>
 <div id="wrap">
 
-  <!-- NAV -->
+  <!-- HEADER NAV -->
   <div class="header-nav">
     <button id="prevBtn" class="nav-btn">←</button>
     <button id="nextBtn" class="nav-btn">→</button>
   </div>
 
-  <!-- HEADER -->
+  <!-- DAY + TAG -->
   <div id="headerTitle">Loading…</div>
 
   <!-- HEATMAP -->
-  <div id="heatmapContainer">
-    <div id="heatmapMonths" class="hm-months"></div>
+  <div id="heatmapContainer"></div>
 
-    <div class="hm-wrapper">
-      <div class="hm-rows">
-        <div>Sun</div><div>Tue</div><div>Fri</div><div>Sat</div>
-      </div>
-      <div id="heatmap" class="hm-grid"></div>
-    </div>
-  </div>
-
-  <!-- TABS -->
+  <!-- TAB BAR -->
   <div id="tabs">
     <div class="tab active" data-tab="micro">Micro Exercise</div>
     <div class="tab" data-tab="daily">Omnifit Daily</div>
@@ -213,142 +175,205 @@ body{
 </div>
 
 <script>
+/* ==========================
+      CONFIG + STATE
+========================== */
 const JSON_URL = "./omnifit_data.json";
+
 let DAYS = [];
 let index = 0;
 let activeTab = "micro";
 
-const KEY_MICRO = date => `omni_micro_${date}`;
-const KEY_MOTIV = date => `omni_motiv_${date}`;
+/* Local storage keys */
+const KEY_MICRO = d => `omni_micro_${d}`;
+const KEY_MOTIV = d => `omni_motiv_${d}`;
 
+/* ==========================
+      LOAD JSON
+========================== */
 fetch(JSON_URL)
   .then(r=>r.json())
   .then(data=>{
     DAYS = data;
-    index = DAYS.length - 1; // latest day
+    index = findTodayIndex();
     buildHeatmap();
     render();
-  });
+  })
+  .catch(err=>console.error("JSON ERROR:",err));
 
-/* HEADER */
-function renderHeader(){
-  const d = DAYS[index];
-  const dayNum = calcDayNumber(d.date);
-  document.getElementById("headerTitle").textContent =
-    `Day ${dayNum} | ${d.day_type}`;
+/* ==========================
+      HELPER FUNCTIONS
+========================== */
+function findTodayIndex(){
+  const iso = new Date().toISOString().slice(0,10);
+  const i = DAYS.findIndex(d=>d.date===iso);
+  return i>=0 ? i : DAYS.length-1;
 }
+
+/* Day number */
 function calcDayNumber(dateStr){
   const epoch = new Date("2024-05-13");
-  return Math.floor((new Date(dateStr)-epoch)/86400000)+1;
+  const d = new Date(dateStr);
+  return Math.floor((d-epoch)/86400000)+1;
 }
 
-/* CONTENT */
-function buildContent(){
-  const d = DAYS[index];
-  if(activeTab==="micro")
-    return contentBlock("Micro Daily Exercise", d.micro, isMicroDone(d.date), ()=>toggleMicro(d.date));
-
-  if(activeTab==="daily")
-    return contentBlock("Omnifit Daily", d.daily, false);
-
-  if(activeTab==="motivation")
-    return contentBlock("Motivation", makeLinks(d.motivation), isMotivDone(d.date), ()=>toggleMotiv(d.date));
-}
-
-function contentBlock(title, text, showCheck, toggleFn){
-  return `
-    <h3>${title}</h3>
-    <div>${formatText(text)}</div>
-    ${showCheck ? `<div class="checkmark ${isMicroDone ? 'checked':''}" onclick="(${toggleFn})()"></div>` : ""}
-  `;
-}
+/* URL formatting */
 function formatText(t){
   if(!t) return "";
 
-  // detect URLs
   const urlPattern = /(https?:\/\/[^\s]+)/g;
+  t = t.replace(urlPattern, u =>
+    `<a href="${u}" target="_blank" style="color:#2a6; text-decoration:underline;">${u}</a>`
+  );
 
-  let html = t.replace(urlPattern, url => {
-    return `<a href="${url}" target="_blank" style="color:#2a6; text-decoration:underline;">${url}</a>`;
-  });
-
-  // replace newlines
-  html = html.replace(/\n/g,"<br>");
-
-  return html;
+  return t.replace(/\n/g,"<br>");
 }
 
-/* LOCAL STORAGE */
-function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date))==="1"; }
-function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date))==="1"; }
+/* Done status */
+function isMicroDone(d){ return localStorage.getItem(KEY_MICRO(d))==="1"; }
+function isMotivDone(d){ return localStorage.getItem(KEY_MOTIV(d))==="1"; }
 
+/* ==========================
+      HEATMAP BUILDER
+========================== */
+function buildHeatmap(){
+  const wrap = document.querySelector("#heatmapContainer");
+  wrap.innerHTML = "";
+
+  const WEEKS = 12; // 12 weeks
+  const ROWS = ["Sun","Tue","Fri","Sat"];
+
+  // Month label
+  const monthLabel=document.createElement("div");
+  monthLabel.className="hm-month-label";
+  monthLabel.textContent = getMonthLabel();
+  wrap.appendChild(monthLabel);
+
+  // 4 heatmap rows
+  ROWS.forEach(rowName=>{
+    const row=document.createElement("div");
+    row.className="hm-row";
+
+    const label=document.createElement("div");
+    label.className="hm-label";
+    label.textContent=rowName;
+    row.appendChild(label);
+
+    for(let w=0; w<WEEKS; w++){
+      const cell=document.createElement("div");
+      cell.className="hm-cell";
+      cell.dataset.week=w;
+      cell.dataset.row=rowName;
+      row.appendChild(cell);
+    }
+
+    wrap.appendChild(row);
+  });
+
+  updateHeatmap();
+}
+
+function getMonthLabel(){
+  const d = DAYS[index];
+  const m = new Date(d.date).toLocaleString("en",{month:"long"});
+  return m;
+}
+
+/* Paint heatmap */
+function updateHeatmap(){
+  const cells=document.querySelectorAll(".hm-cell");
+  const visible = DAYS.slice(-84); // 12 weeks * 7 days = 84 days
+
+  cells.forEach((c,i)=>{
+    const d = visible[i];
+    if(!d){
+      c.style.background="#F2F2F2";
+      return;
+    }
+    const score=(isMicroDone(d.date)?1:0)+(isMotivDone(d.date)?1:0);
+
+    if(score===0) c.style.background="#F2F2F2";
+    if(score===1) c.style.background="var(--sage-light)";
+    if(score===2) c.style.background="var(--sage-mid)";
+  });
+}
+
+/* ==========================
+      CONTENT RENDER
+========================== */
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    const next = tab.dataset.tab;
+    if(next!==activeTab){
+      activeTab=next;
+      render();
+    }
+  });
+});
+
+function buildContent(){
+  const d=DAYS[index];
+
+  if(activeTab==="micro"){
+    return `
+      <h3>Micro Daily Exercise</h3>
+      <div>${formatText(d.micro_exercise)}</div>
+      <div class="checkmark ${isMicroDone(d.date)?"checked":""}"
+           onclick="toggleMicro('${d.date}')"></div>`;
+  }
+
+  if(activeTab==="daily"){
+    return `
+      <h3>Omnifit Daily</h3>
+      <div>${formatText(d.daily_exercise)}</div>`;
+  }
+
+  return `
+    <h3>Motivation</h3>
+    <div>${formatText(d.motivation)}</div>
+    <div class="checkmark ${isMotivDone(d.date)?"checked":""}"
+         onclick="toggleMotiv('${d.date}')"></div>`;
+}
+
+/* Toggle done */
 function toggleMicro(date){
-  localStorage.setItem(KEY_MICRO(date), isMicroDone(date)?"0":"1");
+  const v=!isMicroDone(date);
+  localStorage.setItem(KEY_MICRO(date),v?"1":"0");
   updateHeatmap(); render();
 }
 function toggleMotiv(date){
-  localStorage.setItem(KEY_MOTIV(date), isMotivDone(date)?"0":"1");
+  const v=!isMotivDone(date);
+  localStorage.setItem(KEY_MOTIV(date),v?"1":"0");
   updateHeatmap(); render();
 }
 
-/* HEATMAP */
-function buildHeatmap(){
-  const total = 84; // 12 weeks = 3 months
-  const recent = DAYS.slice(-total);
+/* ==========================
+      NAVIGATION
+========================== */
+document.querySelector("#prevBtn").onclick=()=>{
+  if(index>0){ index--; render(); }
+};
+document.querySelector("#nextBtn").onclick=()=>{
+  if(index<DAYS.length-1){ index++; render(); }
+};
 
-  const hm = document.getElementById("heatmap");
-  const months = document.getElementById("heatmapMonths");
-
-  hm.innerHTML = "";
-  months.innerHTML = "";
-
-  // month labels every ~4 weeks
-  const uniqueMonths = [...new Set(recent.map(d=>d.date.slice(0,7)))];
-  uniqueMonths.forEach(m=>{
-    months.innerHTML += `<div class="hm-month">${monthName(m.slice(5,7))}</div>`;
-  });
-
-  recent.forEach(d=>{
-    const cell = document.createElement("div");
-    cell.className = "hm-cell";
-
-    const score =
-      (isMicroDone(d.date)?1:0) + (isMotivDone(d.date)?1:0);
-
-    if(score===1) cell.style.background="var(--sage-light)";
-    if(score===2) cell.style.background="var(--sage-mid)";
-
-    hm.appendChild(cell);
-  });
-}
-
-function updateHeatmap(){ buildHeatmap(); }
-
-function monthName(n){
-  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parseInt(n)-1];
-}
-
-/* NAV */
-document.getElementById("prevBtn").onclick = ()=>{ if(index>0){ index--; render(); }};
-document.getElementById("nextBtn").onclick = ()=>{ if(index<DAYS.length-1){ index++; render(); }};
-
-document.querySelectorAll(".tab").forEach(tab=>{
-  tab.onclick = ()=>{
-    activeTab = tab.dataset.tab;
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    render();
-  };
-});
-
+/* Main render */
 function render(){
-  renderHeader();
-  document.getElementById("contentCard").innerHTML = buildContent();
-}
+  const d=DAYS[index];
+  document.querySelector("#headerTitle").textContent =
+    `Day ${calcDayNumber(d.date)} | ${d.day_type}`;
 
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.classList.toggle("active",t.dataset.tab===activeTab);
+  });
+
+  document.querySelector("#contentCard").innerHTML=buildContent();
+}
 </script>
+
 </body>
 </html>
+
 
 
 
