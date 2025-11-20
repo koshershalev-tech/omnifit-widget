@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OMNIFIT Widget V2</title>
+<title>OMNIFIT Widget V2 — JSON</title>
 
 <style>
 :root{
@@ -177,7 +177,6 @@ body{
   #contentCard{ max-height:60vh; }
   .hm-cell{ width:12px; height:12px; }
 }
-
 </style>
 </head>
 
@@ -212,106 +211,70 @@ body{
 /* ==========================
       CONFIG + STATE
 ========================== */
-const CSV_URL = "./omnifit_data.csv";
+const JSON_URL = "./omnifit_data.json";
 
 let DAYS = [];
 let index = 0;
 let activeTab = "micro";
 
-/* storage keys */
+/* storage */
 const KEY_MICRO = date => `omni_micro_${date}`;
 const KEY_MOTIV = date => `omni_motiv_${date}`;
 
 /* ==========================
-      INITIALIZATION
+      LOAD JSON
 ========================== */
-fetch(CSV_URL)
-  .then(r=>r.text())
-  .then(csvText=>parseCSV(csvText))
-  .then(rows=>{
-    DAYS = rows;
+fetch(JSON_URL)
+  .then(r => r.json())
+  .then(data => {
+    DAYS = data;
     index = findTodayIndex();
     buildHeatmap();
     render();
   })
-  .catch(err=>{
-    console.error("CSV ERROR",err);
-  });
-
-/* ==========================
-      CSV PARSER
-========================== */
-function parseCSV(text){
-  const lines = text.split(/\r?\n/).filter(l=>l.trim().length>0);
-  const header = lines[0].split(",").map(x=>x.trim().toLowerCase());
-  const idx = key => header.indexOf(key);
-
-  return lines.slice(1).map(line=>{
-    const row = splitCSVLine(line);
-    return {
-      date: row[idx("date")],
-      day_type: row[idx("day_type")],
-      micro: row[idx("micro_exercise")],
-      daily: row[idx("daily_exercise")],
-      motivation: row[idx("motivation")]
-    };
-  });
-}
-function splitCSVLine(line){
-  const out=[], cell=[], chars=[...line];
-  let inQ=false;
-  for(let i=0;i<chars.length;i++){
-    const c=chars[i];
-    if(c=='"'){
-      if(inQ && chars[i+1]=='"'){ cell.push('"'); i++; }
-      else inQ=!inQ;
-    } else if(c=="," && !inQ){
-      out.push(cell.join("")); cell.length=0;
-    } else cell.push(c);
-  }
-  out.push(cell.join(""));
-  return out;
-}
+  .catch(err => console.error("JSON LOAD ERROR", err));
 
 /* ==========================
       TODAY INDEX
 ========================== */
 function findTodayIndex(){
   const iso = new Date().toISOString().slice(0,10);
-  const found = DAYS.findIndex(d=>d.date===iso);
-  return found>=0 ? found : DAYS.length-1;
+  const found = DAYS.findIndex(d => d.date === iso);
+  return found >= 0 ? found : 0;
 }
 
 /* ==========================
-      HEADER RENDER
+      HEADER
 ========================== */
 function renderHeader(){
   const d = DAYS[index];
   document.querySelector("#headerTitle").textContent =
     `Day ${calcDayNumber(d.date)} | ${d.day_type}`;
 }
+
 function calcDayNumber(dateStr){
   const epoch = new Date("2024-05-13");
   const day = new Date(dateStr);
-  return Math.floor((day-epoch)/86400000) + 1;
+  return Math.floor((day - epoch) / 86400000) + 1;
 }
 
 /* ==========================
-      TAB BAR EVENTS
+      TAB LOGIC
 ========================== */
-document.querySelectorAll(".tab").forEach(tab=>{
-  tab.addEventListener("click",()=>{
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
     const newTab = tab.dataset.tab;
-    if(newTab!==activeTab){
-      activeTab=newTab;
+    if(newTab !== activeTab){
+      activeTab = newTab;
       updateTabs();
       slideContent();
     }
   });
 });
+
 function updateTabs(){
-  document.querySelectorAll(".tab").forEach(t=>{
-    t.classList.toggle("active", t.dataset.tab===activeTab);
+  document.querySelectorAll(".tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.tab === activeTab);
   });
 }
 
@@ -320,72 +283,72 @@ function updateTabs(){
 ========================== */
 function slideContent(){
   const card = document.querySelector("#contentCard");
-  const old = card.innerHTML;
 
-  /* exit animation */
-  card.classList.add("slide-exit");
-  card.classList.add("slide-exit-active");
+  card.classList.add("slide-exit","slide-exit-active");
 
-  setTimeout(()=>{
+  setTimeout(() => {
     card.innerHTML = buildContent();
     card.classList.remove("slide-exit","slide-exit-active");
     card.classList.add("slide-enter");
 
-    setTimeout(()=>{
+    setTimeout(() => {
       card.classList.remove("slide-enter","slide-enter-active");
-    },200);
-  },180);
+    }, 200);
+  }, 180);
 
-  setTimeout(()=>card.classList.add("slide-enter-active"),20);
+  setTimeout(() => card.classList.add("slide-enter-active"), 20);
 }
 
 function buildContent(){
   const d = DAYS[index];
-  if(activeTab==="micro"){
+
+  if(activeTab === "micro"){
     return `
       <h3>Micro Daily Exercise</h3>
-      <div>${formatText(d.micro)}</div>
-      <div class="checkmark ${isMicroDone(d.date)?"checked":""}" 
+      <div>${format(d.micro_exercise)}</div>
+      <div class="checkmark ${isMicroDone(d.date)?"checked":""}"
            onclick="toggleMicro('${d.date}')"></div>
     `;
   }
-  if(activeTab==="daily"){
+
+  if(activeTab === "daily"){
     return `
       <h3>Omnifit Daily</h3>
-      <div>${formatText(d.daily)}</div>
+      <div>${format(d.daily_exercise)}</div>
     `;
   }
-  if(activeTab==="motivation"){
+
+  if(activeTab === "motivation"){
     return `
       <h3>Motivation</h3>
-      <div>${formatText(d.motivation)}</div>
+      <div>${format(d.motivation)}</div>
       <div class="checkmark ${isMotivDone(d.date)?"checked":""}"
            onclick="toggleMotiv('${d.date}')"></div>
     `;
   }
 }
 
-/* formatting */
-function formatText(t){
+function format(t){
   if(!t) return "";
   return t.replace(/\n/g,"<br>");
 }
 
 /* ==========================
-      LOCAL STORAGE
+      CHECKMARK STORAGE
 ========================== */
-function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date))==="1"; }
-function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date))==="1"; }
+function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date)) === "1"; }
+function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date)) === "1"; }
 
 function toggleMicro(date){
   const done = !isMicroDone(date);
-  localStorage.setItem(KEY_MICRO(date), done?"1":"0");
+  localStorage.setItem(KEY_MICRO(date), done ? "1" : "0");
   updateHeatmap();
   slideContent();
 }
+
 function toggleMotiv(date){
   const done = !isMotivDone(date);
-  localStorage.setItem(KEY_MOTIV(date), done?"1":"0");
+  localStorage.setItem(KEY_MOTIV(date), done ? "1" : "0");
   updateHeatmap();
   slideContent();
 }
@@ -395,46 +358,49 @@ function toggleMotiv(date){
 ========================== */
 function buildHeatmap(){
   const hm = document.querySelector("#heatmap");
-  hm.innerHTML="";
+  hm.innerHTML = "";
 
   const total = Math.min(28, DAYS.length);
   const recent = DAYS.slice(-total);
 
-  recent.forEach(d=>{
-    const cell=document.createElement("div");
-    cell.className="hm-cell";
-    cell.dataset.date=d.date;
+  recent.forEach(d => {
+    const cell = document.createElement("div");
+    cell.className = "hm-cell";
+    cell.dataset.date = d.date;
     hm.appendChild(cell);
   });
 
   updateHeatmap();
 }
+
 function updateHeatmap(){
   const cells = document.querySelectorAll(".hm-cell");
-  cells.forEach(cell=>{
+
+  cells.forEach(cell => {
     const date = cell.dataset.date;
 
     const score =
-      (isMicroDone(date)?1:0) +
-      (isMotivDone(date)?1:0);
+      (isMicroDone(date) ? 1 : 0) +
+      (isMotivDone(date) ? 1 : 0);
 
-    if(score===0) cell.style.background="#F2F2F2";
-    if(score===1) cell.style.background="var(--sage-light)";
-    if(score===2) cell.style.background="var(--sage-mid)";
+    if(score === 0) cell.style.background = "#F2F2F2";
+    if(score === 1) cell.style.background = "var(--sage-light)";
+    if(score === 2) cell.style.background = "var(--sage-mid)";
   });
 }
 
 /* ==========================
-      NAVIGATION
+      ARROW NAVIGATION
 ========================== */
-document.querySelector("#prevBtn").addEventListener("click",()=>{
-  if(index>0){
+document.querySelector("#prevBtn").addEventListener("click", () => {
+  if(index > 0){
     index--;
     render();
   }
 });
-document.querySelector("#nextBtn").addEventListener("click",()=>{
-  if(index<DAYS.length-1){
+
+document.querySelector("#nextBtn").addEventListener("click", () => {
+  if(index < DAYS.length - 1){
     index++;
     render();
   }
@@ -446,11 +412,10 @@ function render(){
   document.querySelector("#contentCard").innerHTML = buildContent();
 }
 
-/* ========================== */
-
 </script>
 
 </body>
 </html>
+
 
 
