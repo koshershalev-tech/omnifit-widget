@@ -262,18 +262,20 @@ function contentBlock(title, text, showCheck, toggleFn){
     ${showCheck ? `<div class="checkmark ${isMicroDone ? 'checked':''}" onclick="(${toggleFn})()"></div>` : ""}
   `;
 }
-
 function formatText(t){
   if(!t) return "";
-  return makeLinks(t.replace(/\n/g,"<br>"));
-}
 
-/* MAKE LINKS CLICKABLE */
-function makeLinks(text){
-  return text.replace(
-    /(https?:\/\/[^\s<]+)/g,
-    '<br><a href="$1" target="_blank" style="color:#2a6;">$1</a>'
-  );
+  // detect URLs
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+  let html = t.replace(urlPattern, url => {
+    return `<a href="${url}" target="_blank" style="color:#2a6; text-decoration:underline;">${url}</a>`;
+  });
+
+  // replace newlines
+  html = html.replace(/\n/g,"<br>");
+
+  return html;
 }
 
 /* LOCAL STORAGE */
@@ -347,6 +349,7 @@ function render(){
 </script>
 </body>
 </html>
+
 
 
 
