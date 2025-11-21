@@ -17,7 +17,6 @@
   --frame-bg:#E8E6E6;
 }
 
-/* Page */
 html,body{
   margin:0; padding:0;
   background:var(--frame-bg);
@@ -28,7 +27,6 @@ body{
   padding:12px; overflow-x:hidden;
 }
 
-/* Wrapper */
 #wrap{
   width:640px; max-width:640px;
   background:var(--card);
@@ -61,7 +59,7 @@ body{
   margin-bottom:12px;
 }
 
-/* Heatmap — 12 weeks × 4 rows */
+/* Heatmap */
 #heatmapContainer{
   display:flex; flex-direction:column;
   gap:6px; margin-bottom:18px;
@@ -88,7 +86,7 @@ body{
   background:#F2F2F2;
 }
 
-/* Tabs */
+/* Tabs — DAILY REMOVED */
 #tabs{
   display:flex; justify-content:space-between;
   margin-bottom:14px;
@@ -107,7 +105,7 @@ body{
   border-color:var(--sage-light);
 }
 
-/* Content card */
+/* Content */
 #contentCard{
   background:white;
   border-radius:14px;
@@ -118,7 +116,6 @@ body{
   position:relative;
 }
 
-/* Checkmark */
 .checkmark{
   position:absolute;
   bottom:14px; right:14px;
@@ -137,35 +134,27 @@ body{
   content:"✓"; color:var(--sage-dark);
   font-weight:700;
 }
-
-@media(max-width:480px){
-  #wrap{ border-radius:12px; padding:14px; }
-  .tab{ font-size:14px; padding:6px 4px; }
-  #contentCard{ max-height:60vh; }
-  .hm-cell{ width:12px; height:12px; }
-}
 </style>
 </head>
 
 <body>
 <div id="wrap">
 
-  <!-- HEADER NAV -->
+  <!-- NAV -->
   <div class="header-nav">
     <button id="prevBtn" class="nav-btn">←</button>
     <button id="nextBtn" class="nav-btn">→</button>
   </div>
 
-  <!-- DAY + TAG -->
+  <!-- DAY -->
   <div id="headerTitle">Loading…</div>
 
   <!-- HEATMAP -->
   <div id="heatmapContainer"></div>
 
-  <!-- TAB BAR -->
+  <!-- TABS (ONLY MICRO + MOTIVATION) -->
   <div id="tabs">
     <div class="tab active" data-tab="micro">Micro Exercise</div>
-    <div class="tab" data-tab="daily">Omnifit Daily</div>
     <div class="tab" data-tab="motivation">Motivation</div>
   </div>
 
@@ -175,22 +164,18 @@ body{
 </div>
 
 <script>
-/* ==========================
-      CONFIG + STATE
-========================== */
+/* ========== CONFIG ========== */
 const JSON_URL = "./omnifit_data.json";
 
 let DAYS = [];
 let index = 0;
 let activeTab = "micro";
 
-/* Local storage keys */
+/* Local keys */
 const KEY_MICRO = d => `omni_micro_${d}`;
 const KEY_MOTIV = d => `omni_motiv_${d}`;
 
-/* ==========================
-      LOAD JSON
-========================== */
+/* Load JSON */
 fetch(JSON_URL)
   .then(r=>r.json())
   .then(data=>{
@@ -201,55 +186,43 @@ fetch(JSON_URL)
   })
   .catch(err=>console.error("JSON ERROR:",err));
 
-/* ==========================
-      HELPER FUNCTIONS
-========================== */
 function findTodayIndex(){
   const iso = new Date().toISOString().slice(0,10);
   const i = DAYS.findIndex(d=>d.date===iso);
   return i>=0 ? i : DAYS.length-1;
 }
 
-/* Day number */
 function calcDayNumber(dateStr){
   const epoch = new Date("2024-05-13");
   const d = new Date(dateStr);
   return Math.floor((d-epoch)/86400000)+1;
 }
 
-/* URL formatting */
 function formatText(t){
   if(!t) return "";
-
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
-  t = t.replace(urlPattern, u =>
-    `<a href="${u}" target="_blank" style="color:#2a6; text-decoration:underline;">${u}</a>`
-  );
-
-  return t.replace(/\n/g,"<br>");
+  return t
+    .replace(/(https?:\/\/[^\s]+)/g, u =>
+      `<a href="${u}" target="_blank" style="color:#2a6; text-decoration:underline;">${u}</a>`
+    )
+    .replace(/\n/g,"<br>");
 }
 
-/* Done status */
 function isMicroDone(d){ return localStorage.getItem(KEY_MICRO(d))==="1"; }
 function isMotivDone(d){ return localStorage.getItem(KEY_MOTIV(d))==="1"; }
 
-/* ==========================
-      HEATMAP BUILDER
-========================== */
+/* HEATMAP */
 function buildHeatmap(){
   const wrap = document.querySelector("#heatmapContainer");
   wrap.innerHTML = "";
 
-  const WEEKS = 12; // 12 weeks
+  const WEEKS = 12;
   const ROWS = ["Sun","Tue","Fri","Sat"];
 
-  // Month label
   const monthLabel=document.createElement("div");
   monthLabel.className="hm-month-label";
   monthLabel.textContent = getMonthLabel();
   wrap.appendChild(monthLabel);
 
-  // 4 heatmap rows
   ROWS.forEach(rowName=>{
     const row=document.createElement("div");
     row.className="hm-row";
@@ -275,22 +248,20 @@ function buildHeatmap(){
 
 function getMonthLabel(){
   const d = DAYS[index];
-  const m = new Date(d.date).toLocaleString("en",{month:"long"});
-  return m;
+  return new Date(d.date).toLocaleString("en",{month:"long"});
 }
 
-/* Paint heatmap */
 function updateHeatmap(){
   const cells=document.querySelectorAll(".hm-cell");
-  const visible = DAYS.slice(-84); // 12 weeks * 7 days = 84 days
+  const visible = DAYS.slice(-84);
 
   cells.forEach((c,i)=>{
     const d = visible[i];
-    if(!d){
-      c.style.background="#F2F2F2";
-      return;
-    }
-    const score=(isMicroDone(d.date)?1:0)+(isMotivDone(d.date)?1:0);
+    if(!d){ c.style.background="#F2F2F2"; return; }
+
+    const score =
+      (isMicroDone(d.date)?1:0) +
+      (isMotivDone(d.date)?1:0);
 
     if(score===0) c.style.background="#F2F2F2";
     if(score===1) c.style.background="var(--sage-light)";
@@ -298,9 +269,7 @@ function updateHeatmap(){
   });
 }
 
-/* ==========================
-      CONTENT RENDER
-========================== */
+/* TABS */
 document.querySelectorAll(".tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
     const next = tab.dataset.tab;
@@ -311,6 +280,7 @@ document.querySelectorAll(".tab").forEach(tab=>{
   });
 });
 
+/* CONTENT RENDER */
 function buildContent(){
   const d=DAYS[index];
 
@@ -322,12 +292,6 @@ function buildContent(){
            onclick="toggleMicro('${d.date}')"></div>`;
   }
 
-  if(activeTab==="daily"){
-    return `
-      <h3>Omnifit Daily</h3>
-      <div>${formatText(d.daily_exercise)}</div>`;
-  }
-
   return `
     <h3>Motivation</h3>
     <div>${formatText(d.motivation)}</div>
@@ -335,7 +299,6 @@ function buildContent(){
          onclick="toggleMotiv('${d.date}')"></div>`;
 }
 
-/* Toggle done */
 function toggleMicro(date){
   const v=!isMicroDone(date);
   localStorage.setItem(KEY_MICRO(date),v?"1":"0");
@@ -347,9 +310,7 @@ function toggleMotiv(date){
   updateHeatmap(); render();
 }
 
-/* ==========================
-      NAVIGATION
-========================== */
+/* NAV */
 document.querySelector("#prevBtn").onclick=()=>{
   if(index>0){ index--; render(); }
 };
@@ -357,7 +318,6 @@ document.querySelector("#nextBtn").onclick=()=>{
   if(index<DAYS.length-1){ index++; render(); }
 };
 
-/* Main render */
 function render(){
   const d=DAYS[index];
   document.querySelector("#headerTitle").textContent =
@@ -373,9 +333,3 @@ function render(){
 
 </body>
 </html>
-
-
-
-
-
-
