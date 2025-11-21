@@ -284,23 +284,49 @@ function getMonthLabel(){
   return new Date(d.date).toLocaleString("en",{month:"long"});
 }
 
-function updateHeatmap(){
-  const cells=document.querySelectorAll(".hm-cell");
-  const COLS=20;
-  const visible=DAYS.slice(-(COLS*7));  // rolling 140 days
+function updateHeatmap() {
+  const cells = document.querySelectorAll(".hm-cell");
+  const COLS = 20;
 
-  cells.forEach((c,i)=>{
-    const d=visible[i];
-    if(!d){
-      c.style.background="#F2F2F2";
-      return;
+  // Only showing these days:
+  const ROW_OFFSETS = {
+    "Sun": 0,
+    "Tue": 2,
+    "Fri": 5,
+    "Sat": 6
+  };
+
+  const rows = ["Sun", "Tue", "Fri", "Sat"];
+
+  let cellIndex = 0;
+
+  rows.forEach(rowName => {
+    const rowOffset = ROW_OFFSETS[rowName];
+
+    for (let col = 0; col < COLS; col++) {
+
+      // map each cell to correct date index
+      const dateIndex =
+        DAYS.length - 1 - (col * 7) - rowOffset;
+
+      const c = cells[cellIndex];
+
+      if (dateIndex < 0) {
+        c.style.background = "#F2F2F2";
+      } else {
+        const d = DAYS[dateIndex];
+
+        const score =
+          (isMicroDone(d.date) ? 1 : 0) +
+          (isMotivDone(d.date) ? 1 : 0);
+
+        if (score === 0) c.style.background = "#F2F2F2";
+        if (score === 1) c.style.background = "var(--sage-light)";
+        if (score === 2) c.style.background = "var(--sage-mid)";
+      }
+
+      cellIndex++;
     }
-
-    const score=(isMicroDone(d.date)?1:0)+(isMotivDone(d.date)?1:0);
-
-    if(score===0) c.style.background="#F2F2F2";
-    if(score===1) c.style.background="var(--sage-light)";
-    if(score===2) c.style.background="var(--sage-mid)";
   });
 }
 
@@ -377,3 +403,4 @@ function render(){
 
 </body>
 </html>
+
