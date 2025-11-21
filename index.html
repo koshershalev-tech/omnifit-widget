@@ -71,7 +71,7 @@ body{
 
 .hm-row{
   display:flex;
-  gap:3px; /* reduced for 420px width */
+  gap:2px; /* reduced for 420px width */
   align-items:center;
 }
 .hm-label{
@@ -249,7 +249,7 @@ function buildHeatmap(){
   const wrap = document.querySelector("#heatmapContainer");
   wrap.innerHTML = "";
 
-  const WEEKS = 12;
+  const WEEKS = 16;
   const ROWS = ["Sun","Tue","Fri","Sat"];
 
   const monthLabel=document.createElement("div");
@@ -285,7 +285,7 @@ function getMonthLabel(){
 
 function updateHeatmap(){
   const cells=document.querySelectorAll(".hm-cell");
-  const visible = DAYS.slice(-84);
+  const visible = DAYS.slice(- (WEEKS * 7) );
 
   cells.forEach((c,i)=>{
     const d = visible[i];
@@ -377,3 +377,4 @@ function render(){
 
 </body>
 </html>
+
