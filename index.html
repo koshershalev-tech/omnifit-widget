@@ -28,7 +28,7 @@ body {
   padding:20px;
 }
 
-/* MAIN CARD (MATCHED TO OMNIFIT CALCULATOR WIDGET) */
+/* MAIN CARD */
 #wrap {
   width:100%;
   max-width:420px;
@@ -82,7 +82,7 @@ body {
 .hm-row {
   display:flex;
   align-items:center;
-  gap:2px;
+  gap:2px; /* compact for perfect width fill */
   margin-bottom:4px;
 }
 
@@ -202,8 +202,8 @@ let index=0;
 let activeTab="micro";
 
 /* Local keys */
-const KEY_MICRO = d => `omni_micro_${d}`;
-const KEY_MOTIV = d => `omni_motiv_${d}`;
+const KEY_MICRO=d=>`omni_micro_${d}`;
+const KEY_MOTIV=d=>`omni_motiv_${d}`;
 
 /* ------------------------------
       LOAD JSON
@@ -244,13 +244,13 @@ function isMicroDone(d){ return localStorage.getItem(KEY_MICRO(d))==="1"; }
 function isMotivDone(d){ return localStorage.getItem(KEY_MOTIV(d))==="1"; }
 
 /* ------------------------------
-      HEATMAP (16 columns × 4 rows)
+      HEATMAP (20 columns × 4 rows)
 --------------------------------*/
 function buildHeatmap(){
   const wrap=document.querySelector("#heatmapContainer");
   wrap.innerHTML="";
 
-  const WEEKS=16;
+  const COLS=20;     // ← 20 COLUMNS
   const ROWS=["Sun","Tue","Fri","Sat"];
 
   const monthLabel=document.createElement("div");
@@ -267,7 +267,7 @@ function buildHeatmap(){
     label.textContent=rowName;
     row.appendChild(label);
 
-    for(let i=0;i<WEEKS;i++){
+    for(let i=0;i<COLS;i++){
       const cell=document.createElement("div");
       cell.className="hm-cell";
       row.appendChild(cell);
@@ -286,8 +286,8 @@ function getMonthLabel(){
 
 function updateHeatmap(){
   const cells=document.querySelectorAll(".hm-cell");
-  const WEEKS=16;
-  const visible=DAYS.slice(-(WEEKS*7));
+  const COLS=20;
+  const visible=DAYS.slice(-(COLS*7));  // rolling 140 days
 
   cells.forEach((c,i)=>{
     const d=visible[i];
@@ -296,7 +296,7 @@ function updateHeatmap(){
       return;
     }
 
-    const score = (isMicroDone(d.date)?1:0) + (isMotivDone(d.date)?1:0);
+    const score=(isMicroDone(d.date)?1:0)+(isMotivDone(d.date)?1:0);
 
     if(score===0) c.style.background="#F2F2F2";
     if(score===1) c.style.background="var(--sage-light)";
@@ -315,7 +315,7 @@ document.querySelectorAll(".tab").forEach(tab=>{
 });
 
 /* ------------------------------
-      CONTENT BUILDER
+      CONTENT
 --------------------------------*/
 function buildContent(){
   const d=DAYS[index];
@@ -337,7 +337,6 @@ function buildContent(){
   `;
 }
 
-/* TOGGLE */
 function toggleMicro(date){
   const v=!isMicroDone(date);
   localStorage.setItem(KEY_MICRO(date),v?"1":"0");
