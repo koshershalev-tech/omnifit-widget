@@ -1,206 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OMNIFIT — 3D Atrium Widget</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OMNIFIT Nebula Prototype</title>
 
 <style>
 
-/* -----------------------------------------
-   COLOR & MATERIAL SYSTEM (OMNIFIT)
-------------------------------------------*/
-:root {
-  --glass-bg: rgba(255,255,255,0.22);
-  --glass-border: rgba(255,255,255,0.38);
-  --glass-shadow: rgba(0,0,0,0.11);
-
-  --sage-light:#E6F0D8;
-  --sage-mid:#BFD4A5;
-  --sage-dark:#8BB076;
-
-  --ink:#111;
-  --muted:#475569;
-  --bg:#E8E6E6;
-}
-
-/* -----------------------------------------
-   GLOBAL
-------------------------------------------*/
-html, body {
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
-}
+/* === PAGE RESET === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  display:flex;
-  justify-content:center;
-  padding:20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  background: #000;
+  overflow: hidden;
+  height: 100vh;
 }
 
-/* -----------------------------------------
-   ATRIUM WRAP
-------------------------------------------*/
-#atriumWrap {
-  width:100%;
-  max-width:480px;
-  height:520px;
-  position:relative;
-  margin-top:40px;
+/* === CSS NEBULA BACKGROUND === */
+.nebula {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(at 30% 20%, #98ffc5 0%, #0f3d44 40%, #000 80%),
+              radial-gradient(at 70% 80%, #ffdda6 0%, #442600 40%, #000 80%);
+  background-blend-mode: screen;
+  animation: breathe 10s ease-in-out infinite alternate;
+  filter: blur(30px) brightness(1.1);
 }
 
-/* -----------------------------------------
-   NAV BUTTONS
-------------------------------------------*/
-.atrium-nav {
-  position:absolute;
-  top:-32px;
-  left:0;
-  right:0;
-  display:flex;
-  justify-content:center;
-  gap:24px;
+/* Soft breathing effect */
+@keyframes breathe {
+  0%   { filter: blur(28px) brightness(1.05); }
+  100% { filter: blur(40px) brightness(1.25); }
 }
 
-.nav-btn {
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  border:1.5px solid var(--glass-border);
-  background:rgba(255,255,255,0.65);
-  backdrop-filter: blur(12px);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  transition:0.25s;
-}
-.nav-btn:hover {
-  background:white;
-  transform: translateY(-3px);
+/* === CENTER CARD === */
+.center-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 360px;
+  padding: 24px 20px;
+  text-align: center;
+
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+  border-radius: 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 }
 
-/* -----------------------------------------
-   3D ATRIUM SYSTEM
-------------------------------------------*/
-#atrium {
-  width:100%;
-  height:100%;
-  perspective:1500px;
-  perspective-origin:50% 50%;
-  transform-style:preserve-3d;
+.center-card h2 {
+  font-size: 1.1rem;
+  color: #fff;
+  opacity: 0.85;
 }
 
-#prism {
-  width:100%;
-  height:100%;
-  position:absolute;
-  transform-style:preserve-3d;
-  transform-origin:center center;
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+.center-card h1 {
+  margin-top: 6px;
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #fff;
 }
 
-/* -----------------------------------------
-   FACE PANELS (SLABS)
-------------------------------------------*/
-.prism-face {
-  width:100%;
-  height:100%;
-  position:absolute;
-  padding:24px;
-  border-radius:28px;
-  box-sizing:border-box;
-  background:var(--glass-bg);
-  border:1px solid var(--glass-border);
-  backdrop-filter: blur(26px);
-  box-shadow:0 16px 40px var(--glass-shadow);
-  overflow-y:auto;
+.center-card .motive-label {
+  margin-top: 14px;
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.9;
 }
 
-/* CORRECT RADIUS (220px gives perfect spacing) */
-#face1 { transform: rotateY(0deg)   translateZ(220px); }
-#face2 { transform: rotateY(120deg) translateZ(220px); }
-#face3 { transform: rotateY(240deg) translateZ(220px); }
+/* === MOTIVATION NODES === */
+.node {
+  position: absolute;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.8rem;
+  text-align: center;
 
-/* -----------------------------------------
-   TITLES
-------------------------------------------*/
-.face-title {
-  font-size:22px;
-  font-weight:800;
-  margin-bottom:14px;
-  color:var(--ink);
-}
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
 
-/* -----------------------------------------
-   HEATMAP
-------------------------------------------*/
-.hm-month-label {
-  text-align:center;
-  font-size:13px;
-  font-weight:700;
-  color:var(--muted);
-  margin-bottom:6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  transition: transform 0.25s ease, background 0.25s ease;
 }
 
-.hm-row {
-  display:flex;
-  align-items:center;
-  gap:3px;
-  margin-bottom:4px;
-}
-.hm-label {
-  width:28px;
-  text-align:right;
-  font-size:12px;
-  color:var(--muted);
-}
-.hm-cell {
-  width:12px;
-  height:12px;
-  border-radius:4px;
-  background:#F2F2F2;
+/* Hover effect */
+.node:hover {
+  transform: scale(1.08);
+  background: rgba(255,255,255,0.18);
 }
 
-/* -----------------------------------------
-   CHECKMARK
-------------------------------------------*/
-.checkmark {
-  width:32px;
-  height:32px;
-  border-radius:12px;
-  border:2px solid var(--glass-border);
-  background:rgba(255,255,255,0.5);
-  backdrop-filter: blur(6px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  margin-top:16px;
+/* === NODE POSITIONS === */
+
+/* Top center */
+#playful {
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.checkmark.checked {
-  background:var(--sage-light);
-  border-color:var(--sage-dark);
-}
-.checkmark.checked::after {
-  content:"✓";
-  font-weight:700;
-  color:var(--sage-dark);
-  font-size:20px;
+/* Bottom left */
+#direct {
+  bottom: 10%;
+  left: 12%;
 }
 
-/* -----------------------------------------
-   MOBILE OPTIMIZATION
-------------------------------------------*/
-@media(max-width:480px) {
-  #atriumWrap {
-    transform: scale(0.82);
-    height:480px;
-    margin-top:20px;
-  }
+/* Bottom right */
+#identity {
+  bottom: 10%;
+  right: 12%;
+}
+
+/* Bottom center */
+#educational {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 </style>
@@ -208,249 +131,28 @@ body {
 
 <body>
 
-<div id="atriumWrap">
+<div class="nebula"></div>
 
-  <!-- NAV -->
-  <div class="atrium-nav">
-    <button id="prevBtn" class="nav-btn">←</button>
-    <button id="nextBtn" class="nav-btn">→</button>
-  </div>
-
-  <!-- ATRIUM -->
-  <div id="atrium">
-    <div id="prism">
-
-      <!-- FACE 1 — TRACKING -->
-      <div id="face1" class="prism-face">
-        <div class="face-title" id="dayTitle">Loading…</div>
-        <div id="heatmapContainer"></div>
-      </div>
-
-      <!-- FACE 2 — MICRO EXERCISE -->
-      <div id="face2" class="prism-face">
-        <div class="face-title">Micro Exercise</div>
-        <div id="microContent"></div>
-      </div>
-
-      <!-- FACE 3 — MOTIVATION -->
-      <div id="face3" class="prism-face">
-        <div class="face-title">Motivation</div>
-        <div id="motivContent"></div>
-      </div>
-
-    </div>
-  </div>
-
+<!-- CENTER CARD -->
+<div class="center-card">
+  <h2>Micro Exercise</h2>
+  <h1>Day 558 | Forge 🔥</h1>
+  <div class="motive-label">Educational</div>
 </div>
 
+<!-- MOTIVATION NODES -->
+<div class="node" id="playful">Playful</div>
+<div class="node" id="direct">Direct</div>
+<div class="node" id="identity">Identity</div>
+<div class="node" id="educational">Educational</div>
+
 <script>
-
-/* -----------------------------------------
-   CONFIG
-------------------------------------------*/
-const JSON_URL =
-  "https://raw.githubusercontent.com/koshershalev-tech/omnifit-widget/refs/heads/main/omnifit_data.json";
-
-let DAYS=[];
-let index=0;
-let rotation=0;
-
-const KEY_MICRO = d=>`omni_micro_${d}`;
-const KEY_MOTIV = d=>`omni_motiv_${d}`;
-
-/* -----------------------------------------
-   LOAD JSON
-------------------------------------------*/
-fetch(JSON_URL)
-.then(r=>r.json())
-.then(data=>{
-  DAYS=data;
-  index=findTodayIndex();
-  buildHeatmap();
-  renderAll();
-})
-.catch(err=>console.error("JSON ERROR:",err));
-
-/* -----------------------------------------
-   HELPERS
-------------------------------------------*/
-function findTodayIndex(){
-  const iso=new Date().toISOString().slice(0,10);
-  const i=DAYS.findIndex(d=>d.date===iso);
-  return i>=0?i:DAYS.length-1;
-}
-
-function calcDayNumber(dateStr){
-  const epoch=new Date("2024-05-13");
-  const d=new Date(dateStr);
-  return Math.floor((d-epoch)/86400000)+1;
-}
-
-function formatText(t){
-  if(!t) return "";
-  return t.replace(/(https?:\/\/[^\s]+)/g, u =>
-    `<a href="${u}" target="_blank" style="color:#2a6;text-decoration:underline;">${u}</a>`
-  ).replace(/\n/g,"<br>");
-}
-
-function isMicroDone(date){ return localStorage.getItem(KEY_MICRO(date))==="1"; }
-function isMotivDone(date){ return localStorage.getItem(KEY_MOTIV(date))==="1"; }
-
-/* -----------------------------------------
-   ROTATION
-------------------------------------------*/
-document.querySelector("#prevBtn").onclick = ()=>{
-  rotation += 120;
-  updateRotation();
-};
-
-document.querySelector("#nextBtn").onclick = ()=>{
-  rotation -= 120;
-  updateRotation();
-};
-
-function updateRotation(){
-  document.querySelector("#prism").style.transform =
-    `rotateY(${rotation}deg)`;
-}
-
-/* -----------------------------------------
-   HEATMAP BUILD
-------------------------------------------*/
-function buildHeatmap(){
-  const wrap=document.querySelector("#heatmapContainer");
-  wrap.innerHTML="";
-
-  const COLS=20;
-  const ROWS=["Sun","Tue","Fri","Sat"];
-
-  const monthLabel=document.createElement("div");
-  monthLabel.className="hm-month-label";
-  monthLabel.textContent=getMonthLabel();
-  wrap.appendChild(monthLabel);
-
-  ROWS.forEach(rowName=>{
-    const row=document.createElement("div");
-    row.className="hm-row";
-
-    const label=document.createElement("div");
-    label.className="hm-label";
-    label.textContent=rowName;
-    row.append.appendChild?
-
-    row.appendChild(label);
-
-    for(let i=0;i<COLS;i++){
-      const cell=document.createElement("div");
-      cell.className="hm-cell";
-      row.appendChild(cell);
-    }
-
-    wrap.appendChild(row);
+/* Placeholder for future interactions */
+document.querySelectorAll('.node').forEach(node => {
+  node.addEventListener('click', () => {
+    document.querySelector('.motive-label').textContent = node.textContent;
   });
-
-  updateHeatmap();
-}
-
-function getMonthLabel(){
-  const d=DAYS[index];
-  return new Date(d.date).toLocaleString("en",{month:"long"});
-}
-
-function updateHeatmap(){
-  const cells=document.querySelectorAll(".hm-cell");
-  const COLS=20;
-
-  const ROW_OFFSETS={
-    "Sun":0,
-    "Tue":2,
-    "Fri":5,
-    "Sat":6
-  };
-  const rows=["Sun","Tue","Fri","Sat"];
-
-  let cellIndex=0;
-
-  rows.forEach(rowName=>{
-    const rowOffset=ROW_OFFSETS[rowName];
-
-    for(let col=0;col<COLS;col++){
-      const colFromRight = (COLS - 1 - col);
-      const dateIndex = DAYS.length - 1 - (colFromRight * 7) - rowOffset;
-
-      const c=cells[cellIndex];
-
-      if(dateIndex < 0){
-        c.style.background="#F2F2F2";
-      }else{
-        const d=DAYS[dateIndex];
-
-        const score=
-          (isMicroDone(d.date)?1:0)+
-          (isMotivDone(d.date)?1:0);
-
-        if(score===0) c.style.background="#F2F2F2";
-        if(score===1) c.style.background="var(--sage-light)";
-        if(score===2) c.style.background="var(--sage-mid)";
-      }
-
-      cellIndex++;
-    }
-  });
-}
-
-/* -----------------------------------------
-   CONTENT
-------------------------------------------*/
-function renderTracking(){
-  const d=DAYS[index];
-  document.querySelector("#dayTitle").innerHTML =
-    `Day ${calcDayNumber(d.date)} — <span style="color:var(--muted);">${d.day_type}</span>`;
-}
-
-function renderMicro(){
-  const d=DAYS[index];
-  document.querySelector("#microContent").innerHTML = `
-    <div>${formatText(d.micro_exercise)}</div>
-    <div class="checkmark ${isMicroDone(d.date)?"checked":""}"
-         onclick="toggleMicro('${d.date}')"></div>
-  `;
-}
-
-function renderMotivation(){
-  const d=DAYS[index];
-  document.querySelector("#motivContent").innerHTML = `
-    <div>${formatText(d.motivation)}</div>
-    <div class="checkmark ${isMotivDone(d.date)?"checked":""}"
-         onclick="toggleMotiv('${d.date}')"></div>
-  `;
-}
-
-/* -----------------------------------------
-   CHECKBOX TOGGLES
-------------------------------------------*/
-function toggleMicro(date){
-  const v=!isMicroDone(date);
-  localStorage.setItem(KEY_MICRO(date),v?"1":"0");
-  updateHeatmap();
-  renderMicro();
-}
-function toggleMotiv(date){
-  const v=!isMotivDone(date);
-  localStorage.setItem(KEY_MOTIV(date),v?"1":"0");
-  updateHeatmap();
-  renderMotivation();
-}
-
-/* -----------------------------------------
-   RENDER ALL
-------------------------------------------*/
-function renderAll(){
-  renderTracking();
-  renderMicro();
-  renderMotivation();
-}
-
+});
 </script>
 
 </body>
