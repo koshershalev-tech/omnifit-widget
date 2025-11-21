@@ -27,14 +27,17 @@ body{
   padding:12px; overflow-x:hidden;
 }
 
-#wrap{
-  width:640px; max-width:640px;
-  background:var(--card);
-  border-radius:16px;
-  border:1.5px solid var(--border);
-  box-shadow:0 8px 24px rgba(0,0,0,0.05);
-  padding:20px; box-sizing:border-box;
-  transform-origin:top center;
+/* MAIN WIDGET CONTAINER — MATCHED TO YOUR OTHER WIDGET */
+#wrap {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border-radius: 24px;
+  padding: 32px 20px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+  border: none;
+  transform-origin: top center;
 }
 
 /* Header */
@@ -46,7 +49,8 @@ body{
   width:32px; height:32px;
   border-radius:8px;
   border:1.5px solid var(--border);
-  background:white; font-size:18px;
+  background:white;
+  font-size:18px;
   cursor:pointer; transition:.2s;
 }
 .nav-btn:disabled{ opacity:.4; cursor:not-allowed; }
@@ -64,12 +68,17 @@ body{
   display:flex; flex-direction:column;
   gap:6px; margin-bottom:18px;
 }
+
 .hm-row{
-  display:flex; gap:4px; align-items:center;
+  display:flex;
+  gap:3px; /* reduced for 420px width */
+  align-items:center;
 }
 .hm-label{
-  width:32px; text-align:right;
-  font-size:12px; font-weight:600;
+  width:32px;
+  text-align:right;
+  font-size:12px;
+  font-weight:600;
   color:var(--muted);
   padding-right:4px;
 }
@@ -80,23 +89,32 @@ body{
   color:var(--muted);
   font-weight:600;
 }
+
 .hm-cell{
-  width:14px; height:14px;
+  width:12px;
+  height:12px;
   border-radius:4px;
   background:#F2F2F2;
 }
 
-/* Tabs — DAILY REMOVED */
+/* Tabs — only MICRO + MOTIVATION */
 #tabs{
-  display:flex; justify-content:space-between;
+  display:flex;
+  justify-content:space-between;
   margin-bottom:14px;
 }
 .tab{
-  flex:1; text-align:center;
-  padding:6px 8px; margin:0 4px;
-  border-radius:999px; border:1.5px solid var(--border);
-  background:#fff; color:var(--muted);
-  font-weight:600; cursor:pointer; user-select:none;
+  flex:1;
+  text-align:center;
+  padding:6px 8px;
+  margin:0 4px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--muted);
+  font-weight:600;
+  cursor:pointer;
+  user-select:none;
   transition:all .2s;
 }
 .tab.active{
@@ -105,25 +123,31 @@ body{
   border-color:var(--sage-light);
 }
 
-/* Content */
+/* Content Card */
 #contentCard{
   background:white;
-  border-radius:14px;
+  border-radius:18px; /* increased for your design system */
   border:1.5px solid #E0E6E2;
-  box-shadow:0 8px 24px rgba(0,0,0,0.05);
+  box-shadow:0 4px 16px rgba(0,0,0,0.06);
   padding:16px;
-  max-height:58vh; overflow-y:auto;
+  max-height:58vh;
+  overflow-y:auto;
   position:relative;
 }
 
+/* Checkmark */
 .checkmark{
   position:absolute;
-  bottom:14px; right:14px;
+  bottom:14px;
+  right:14px;
   width:24px; height:24px;
-  border-radius:6px;
+  border-radius:10px; /* match OMNIFIT corner radius guidelines */
   border:2px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  background:#fff;
   transition:.15s;
 }
 .checkmark.checked{
@@ -131,7 +155,8 @@ body{
   border-color:var(--sage-dark);
 }
 .checkmark.checked::after{
-  content:"✓"; color:var(--sage-dark);
+  content:"✓";
+  color:var(--sage-dark);
   font-weight:700;
 }
 </style>
@@ -140,19 +165,19 @@ body{
 <body>
 <div id="wrap">
 
-  <!-- NAV -->
+  <!-- NAVIGATION -->
   <div class="header-nav">
     <button id="prevBtn" class="nav-btn">←</button>
     <button id="nextBtn" class="nav-btn">→</button>
   </div>
 
-  <!-- DAY -->
+  <!-- DAY LABEL -->
   <div id="headerTitle">Loading…</div>
 
   <!-- HEATMAP -->
   <div id="heatmapContainer"></div>
 
-  <!-- TABS (ONLY MICRO + MOTIVATION) -->
+  <!-- TABS (MICRO + MOTIV ONLY) -->
   <div id="tabs">
     <div class="tab active" data-tab="micro">Micro Exercise</div>
     <div class="tab" data-tab="motivation">Motivation</div>
@@ -164,18 +189,22 @@ body{
 </div>
 
 <script>
-/* ========== CONFIG ========== */
+/* ==========================
+      CONFIG + STATE
+========================== */
 const JSON_URL = "./omnifit_data.json";
 
 let DAYS = [];
 let index = 0;
 let activeTab = "micro";
 
-/* Local keys */
+/* Local storage keys */
 const KEY_MICRO = d => `omni_micro_${d}`;
 const KEY_MOTIV = d => `omni_motiv_${d}`;
 
-/* Load JSON */
+/* ==========================
+      LOAD JSON
+========================== */
 fetch(JSON_URL)
   .then(r=>r.json())
   .then(data=>{
@@ -186,6 +215,9 @@ fetch(JSON_URL)
   })
   .catch(err=>console.error("JSON ERROR:",err));
 
+/* ==========================
+      HELPERS
+========================== */
 function findTodayIndex(){
   const iso = new Date().toISOString().slice(0,10);
   const i = DAYS.findIndex(d=>d.date===iso);
@@ -210,7 +242,9 @@ function formatText(t){
 function isMicroDone(d){ return localStorage.getItem(KEY_MICRO(d))==="1"; }
 function isMotivDone(d){ return localStorage.getItem(KEY_MOTIV(d))==="1"; }
 
-/* HEATMAP */
+/* ==========================
+      HEATMAP
+========================== */
 function buildHeatmap(){
   const wrap = document.querySelector("#heatmapContainer");
   wrap.innerHTML = "";
@@ -235,8 +269,6 @@ function buildHeatmap(){
     for(let w=0; w<WEEKS; w++){
       const cell=document.createElement("div");
       cell.className="hm-cell";
-      cell.dataset.week=w;
-      cell.dataset.row=rowName;
       row.appendChild(cell);
     }
 
@@ -257,8 +289,10 @@ function updateHeatmap(){
 
   cells.forEach((c,i)=>{
     const d = visible[i];
-    if(!d){ c.style.background="#F2F2F2"; return; }
-
+    if(!d){
+      c.style.background="#F2F2F2";
+      return;
+    }
     const score =
       (isMicroDone(d.date)?1:0) +
       (isMotivDone(d.date)?1:0);
@@ -269,7 +303,9 @@ function updateHeatmap(){
   });
 }
 
-/* TABS */
+/* ==========================
+      TAB LOGIC
+========================== */
 document.querySelectorAll(".tab").forEach(tab=>{
   tab.addEventListener("click",()=>{
     const next = tab.dataset.tab;
@@ -280,7 +316,7 @@ document.querySelectorAll(".tab").forEach(tab=>{
   });
 });
 
-/* CONTENT RENDER */
+/* Build content */
 function buildContent(){
   const d=DAYS[index];
 
@@ -299,18 +335,22 @@ function buildContent(){
          onclick="toggleMotiv('${d.date}')"></div>`;
 }
 
+/* Toggle done states */
 function toggleMicro(date){
   const v=!isMicroDone(date);
   localStorage.setItem(KEY_MICRO(date),v?"1":"0");
   updateHeatmap(); render();
 }
+
 function toggleMotiv(date){
   const v=!isMotivDone(date);
   localStorage.setItem(KEY_MOTIV(date),v?"1":"0");
   updateHeatmap(); render();
 }
 
-/* NAV */
+/* ==========================
+      NAVIGATION
+========================== */
 document.querySelector("#prevBtn").onclick=()=>{
   if(index>0){ index--; render(); }
 };
@@ -318,8 +358,12 @@ document.querySelector("#nextBtn").onclick=()=>{
   if(index<DAYS.length-1){ index++; render(); }
 };
 
+/* ==========================
+      RENDER
+========================== */
 function render(){
   const d=DAYS[index];
+
   document.querySelector("#headerTitle").textContent =
     `Day ${calcDayNumber(d.date)} | ${d.day_type}`;
 
@@ -327,7 +371,7 @@ function render(){
     t.classList.toggle("active",t.dataset.tab===activeTab);
   });
 
-  document.querySelector("#contentCard").innerHTML=buildContent();
+  document.querySelector("#contentCard").innerHTML = buildContent();
 }
 </script>
 
