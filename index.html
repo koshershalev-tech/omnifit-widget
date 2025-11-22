@@ -4,17 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>OMNIFIT V15.2 Widget</title>
+<title>OMNIFIT V15.3 Widget</title>
 
 <style>
 /* RESET */
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
+               BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   background:transparent;
 }
 
-/* WIDGET WRAPPER (600px height) */
+/* WRAPPER */
 #omnifitWidget {
   width:100%;
   max-width:315px;
@@ -70,13 +71,13 @@ body {
 .tile.active { opacity:1; }
 .tiles:not(:hover) .tile:not(.active) { opacity:0.78; }
 
-/* Tile active colors */
+/* Active tile colors */
 .tile.active[data-motive="Educational"] { background:#E6F0D8; color:#245C2A; }
 .tile.active[data-motive="Playful"]    { background:#FFF2D5; color:#A96300; }
 .tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#0F4C9A; }
 .tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#9A3D21; }
 
-/* CARD — MEDIUM SIZE */
+/* CARD */
 .card {
   position:absolute;
   top:260px;
@@ -85,7 +86,6 @@ body {
   width:85%;
   background:rgba(240,250,235,0.28);
   backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
   padding:20px;
   border-radius:18px;
   color:white;
@@ -93,6 +93,7 @@ body {
   transition:transform .35s cubic-bezier(.25,.8,.25,1);
   z-index:20;
 }
+
 .card.breathing {
   animation:breathe 6s ease-in-out infinite;
 }
@@ -101,6 +102,7 @@ body {
   50%  { transform:translateX(-50%) scale(1.00); }
   100% { transform:translateX(-50%) scale(.96); }
 }
+
 .pulse {
   animation:pulseSelect .32s ease-out;
 }
@@ -137,7 +139,6 @@ body {
   background:rgba(255,255,255,0.22);
   border:1px solid rgba(255,255,255,0.38);
   box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  transition:transform .25s ease;
 }
 
 .pill.level-0 { background:rgba(255,255,255,0.22); }
@@ -145,7 +146,7 @@ body {
 .pill.level-2 { background:rgba(180,220,165,0.38); }
 .pill.level-3 { background:rgba(150,190,135,0.48); }
 
-/* Today pill subtle pulse */
+/* Today pill animation */
 .pill.today {
   animation:pillPulse 2.8s ease-in-out infinite;
 }
@@ -155,7 +156,7 @@ body {
 100% { transform:scale(1); box-shadow:0 0 0 rgba(255,255,255,0.5); }
 }
 
-/* DIM + BOTTOM SHEET */
+/* BOTTOM SHEET */
 #dimOverlay {
   position:fixed;
   inset:0;
@@ -191,7 +192,7 @@ body {
   cursor:pointer;
 }
 
-/* RIPPLE EFFECT */
+/* RIPPLE */
 .ripple-container {
   position:absolute;
   inset:0;
@@ -222,7 +223,7 @@ body {
   <div class="nebula"></div>
   <div id="dimOverlay"></div>
 
-  <!-- TILE GRID -->
+  <!-- TILES -->
   <div class="tiles" id="tiles">
     <div class="tile" data-motive="Educational">Educational</div>
     <div class="tile" data-motive="Playful">Playful</div>
@@ -241,7 +242,7 @@ body {
   <!-- HEATMAP -->
   <div class="heatmapRow" id="heatmapRow"></div>
 
-  <!-- BOTTOM PANEL -->
+  <!-- BOTTOM SHEET -->
   <div id="motivePanel">
     <div id="closePanel">×</div>
     <div id="panelContent"></div>
@@ -249,7 +250,9 @@ body {
 </div>
 
 <script>
-/* ICONS + TEXT */
+/* ---------------------------------------------------------
+   ICONS + MOTIVE TEXT
+--------------------------------------------------------- */
 const icons = {
   Educational:`<path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>`,
   Playful:`<path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>`,
@@ -273,7 +276,9 @@ const dimOverlay=document.getElementById('dimOverlay');
 const panel=document.getElementById('motivePanel');
 const panelContent=document.getElementById('panelContent');
 
-/* TILE INTERACTIONS */
+/* ---------------------------------------------------------
+   TILE INTERACTION → CARD UPDATE → PANEL
+--------------------------------------------------------- */
 tiles.forEach(tile=>{
   tile.addEventListener('click',()=>{
     const m=tile.dataset.motive;
@@ -309,7 +314,9 @@ function closePanel(){
   dimOverlay.style.pointerEvents="none";
 }
 
-/* HEATMAP DATA */
+/* ---------------------------------------------------------
+   HEATMAP (STATIC FOR NOW)
+--------------------------------------------------------- */
 const heatmapRow=document.getElementById('heatmapRow');
 const heatData=[3,2,1,0,3,1,2,3,0,1];
 
@@ -320,7 +327,29 @@ heatData.forEach((lvl,i)=>{
   heatmapRow.appendChild(p);
 });
 
-/* RIPPLE EFFECT */
+/* ---------------------------------------------------------
+   LOAD DATA FROM YOUR JSON FILE
+--------------------------------------------------------- */
+fetch("https://koshershalev-tech.github.io/omnifit-widget/omnifit_data.json")
+  .then(response => response.json())
+  .then(data => {
+
+    if(data.micro_exercise_title){
+      document.querySelector(".card h1").textContent =
+        data.micro_exercise_title;
+    }
+
+    if(data.day && data.category){
+      document.querySelector(".card h2").textContent =
+        `Day ${data.day} | ${data.category} ${data.emoji || ""}`;
+    }
+
+  })
+  .catch(err => console.error("Error loading omnifit_data.json:", err));
+
+/* ---------------------------------------------------------
+   RIPPLE EFFECT
+--------------------------------------------------------- */
 function attachRipples(){
   tiles.forEach(el=>{
     const rc=document.createElement('div');
