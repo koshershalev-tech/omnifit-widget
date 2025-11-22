@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>OMNIFIT V15.1</title>
+<title>OMNIFIT V15.2 Widget</title>
 
 <style>
+/* RESET */
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   background:transparent;
 }
 
-/* WIDGET WRAPPER — FINAL HEIGHT 600PX */
+/* WIDGET WRAPPER (600px height) */
 #omnifitWidget {
   width:100%;
   max-width:315px;
@@ -69,16 +70,16 @@ body {
 .tile.active { opacity:1; }
 .tiles:not(:hover) .tile:not(.active) { opacity:0.78; }
 
-/* Active tile colors */
+/* Tile active colors */
 .tile.active[data-motive="Educational"] { background:#E6F0D8; color:#245C2A; }
 .tile.active[data-motive="Playful"]    { background:#FFF2D5; color:#A96300; }
 .tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#0F4C9A; }
 .tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#9A3D21; }
 
-/* CARD — MEDIUM SIZE, CENTERED */
+/* CARD — MEDIUM SIZE */
 .card {
   position:absolute;
-  top:260px; /* UPDATED FOR BETTER BALANCE */
+  top:260px;
   left:50%;
   transform:translateX(-50%) scale(.96);
   width:85%;
@@ -92,7 +93,6 @@ body {
   transition:transform .35s cubic-bezier(.25,.8,.25,1);
   z-index:20;
 }
-
 .card.breathing {
   animation:breathe 6s ease-in-out infinite;
 }
@@ -101,7 +101,6 @@ body {
   50%  { transform:translateX(-50%) scale(1.00); }
   100% { transform:translateX(-50%) scale(.96); }
 }
-
 .pulse {
   animation:pulseSelect .32s ease-out;
 }
@@ -127,7 +126,7 @@ body {
   display:flex;
   justify-content:center;
   gap:8px;
-  margin-top:360px; /* Now balanced inside 600px layout */
+  margin-top:360px;
 }
 
 .pill {
@@ -146,10 +145,208 @@ body {
 .pill.level-2 { background:rgba(180,220,165,0.38); }
 .pill.level-3 { background:rgba(150,190,135,0.48); }
 
-/* Today pill pulse */
+/* Today pill subtle pulse */
 .pill.today {
   animation:pillPulse 2.8s ease-in-out infinite;
 }
 @keyframes pillPulse {
   0% { transform:scale(1); box-shadow:0 0 0 rgba(255,255,255,0.5); }
- 50% { transform:scale(1.18); box-shadow:0 0 12px rgba(255,255,255,
+ 50% { transform:scale(1.18); box-shadow:0 0 12px rgba(255,255,255,0.65); }
+100% { transform:scale(1); box-shadow:0 0 0 rgba(255,255,255,0.5); }
+}
+
+/* DIM + BOTTOM SHEET */
+#dimOverlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.40);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s ease;
+  z-index:40;
+}
+
+#motivePanel {
+  position:fixed;
+  bottom:-100%;
+  left:0;
+  width:100%;
+  height:65%;
+  background:rgba(255,255,255,0.25);
+  backdrop-filter:blur(28px);
+  border-radius:24px 24px 0 0;
+  padding:26px;
+  color:white;
+  transition:bottom .45s ease;
+  z-index:50;
+}
+#motivePanel.open { bottom:0; }
+
+#closePanel {
+  position:absolute;
+  top:12px;
+  right:18px;
+  font-size:32px;
+  opacity:0.7;
+  cursor:pointer;
+}
+
+/* RIPPLE EFFECT */
+.ripple-container {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.ripple {
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:rgba(255,255,255,0.35);
+  border-radius:50%;
+  transform:scale(0);
+  animation:rippleExpand .45s ease-out forwards;
+}
+@keyframes rippleExpand {
+  to { transform:scale(8); opacity:0; }
+}
+.press {
+  transform:scale(.94);
+  transition:transform .08s ease;
+}
+</style>
+</head>
+
+<body>
+<div id="omnifitWidget">
+  <div class="nebula"></div>
+  <div id="dimOverlay"></div>
+
+  <!-- TILE GRID -->
+  <div class="tiles" id="tiles">
+    <div class="tile" data-motive="Educational">Educational</div>
+    <div class="tile" data-motive="Playful">Playful</div>
+    <div class="tile" data-motive="Direct">Direct</div>
+    <div class="tile" data-motive="Identity">Identity</div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card breathing" id="exerciseCard">
+    <svg id="cardIcon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7"></svg>
+    <h1>Micro Exercise</h1>
+    <h2>Day 558 | Forge 🔥</h2>
+    <div class="motive-tag" id="motiveLabel">Educational</div>
+  </div>
+
+  <!-- HEATMAP -->
+  <div class="heatmapRow" id="heatmapRow"></div>
+
+  <!-- BOTTOM PANEL -->
+  <div id="motivePanel">
+    <div id="closePanel">×</div>
+    <div id="panelContent"></div>
+  </div>
+</div>
+
+<script>
+/* ICONS + TEXT */
+const icons = {
+  Educational:`<path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>`,
+  Playful:`<path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>`,
+  Direct:`<path d="M5 12h14"/><path d="M13 8l6 4-6 4"/>`,
+  Identity:`<circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/>`
+};
+
+const descriptions = {
+  Educational:"Clear reasoning and practical science behind today’s exercise.",
+  Playful:"Lightness and fun energy to make training enjoyable.",
+  Direct:"Straightforward guidance — simple, effective, to the point.",
+  Identity:"A reminder of who you're becoming through consistency."
+};
+
+/* ELEMENTS */
+const tiles=document.querySelectorAll('.tile');
+const card=document.getElementById('exerciseCard');
+const cardIcon=document.getElementById('cardIcon');
+const motiveLabel=document.getElementById('motiveLabel');
+const dimOverlay=document.getElementById('dimOverlay');
+const panel=document.getElementById('motivePanel');
+const panelContent=document.getElementById('panelContent');
+
+/* TILE INTERACTIONS */
+tiles.forEach(tile=>{
+  tile.addEventListener('click',()=>{
+    const m=tile.dataset.motive;
+
+    motiveLabel.textContent=m;
+    cardIcon.innerHTML=icons[m];
+
+    card.classList.remove("pulse");
+    void card.offsetWidth;
+    card.classList.add("pulse");
+
+    tiles.forEach(t=>t.classList.remove('active'));
+    tile.classList.add('active');
+
+    panelContent.innerHTML=`
+      <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">${icons[m]}</svg>
+      <h3 style="margin-top:16px">${m}</h3>
+      <p style="margin-top:8px; font-size:1rem; opacity:0.9">${descriptions[m]}</p>
+    `;
+
+    panel.classList.add("open");
+    dimOverlay.style.opacity="1";
+    dimOverlay.style.pointerEvents="auto";
+  });
+});
+
+document.getElementById('closePanel').onclick=closePanel;
+dimOverlay.onclick=closePanel;
+
+function closePanel(){
+  panel.classList.remove("open");
+  dimOverlay.style.opacity="0";
+  dimOverlay.style.pointerEvents="none";
+}
+
+/* HEATMAP DATA */
+const heatmapRow=document.getElementById('heatmapRow');
+const heatData=[3,2,1,0,3,1,2,3,0,1];
+
+heatData.forEach((lvl,i)=>{
+  const p=document.createElement('div');
+  p.className=`pill level-${lvl}`;
+  if(i===heatData.length-1) p.classList.add("today");
+  heatmapRow.appendChild(p);
+});
+
+/* RIPPLE EFFECT */
+function attachRipples(){
+  tiles.forEach(el=>{
+    const rc=document.createElement('div');
+    rc.className='ripple-container';
+    el.appendChild(rc);
+
+    el.addEventListener('pointerdown',e=>{
+      el.classList.add('press');
+      createRipple(e,rc);
+    });
+    el.addEventListener('pointerup',()=>el.classList.remove('press'));
+    el.addEventListener('pointerleave',()=>el.classList.remove('press'));
+  });
+}
+attachRipples();
+
+function createRipple(e,container){
+  const r=document.createElement('div');
+  r.className='ripple';
+  const rect=container.getBoundingClientRect();
+  r.style.left=(e.clientX-rect.left-10)+"px";
+  r.style.top=(e.clientY-rect.top-10)+"px";
+  container.appendChild(r);
+  setTimeout(()=>r.remove(),450);
+}
+</script>
+
+</body>
+</html>
