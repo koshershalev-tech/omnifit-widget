@@ -3,43 +3,51 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OMNIFIT V11 — Full</title>
+<title>OMNIFIT V12 — Wix Optimized</title>
 
 <style>
-/* =====================================
-   RESET & BASE
-===================================== */
+/* ======================================
+   RESET
+====================================== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   background: transparent;
   overflow-x: hidden;
-  padding: env(safe-area-inset-top) env(safe-area-inset-left)
-           env(safe-area-inset-bottom) env(safe-area-inset-right);
 }
 
-/* =====================================
-   NEBULA (TRANSPARENT)
-===================================== */
+/* ======================================
+   WIDGET WRAPPER (NEW FOR WIX)
+====================================== */
+#omnifitWidget {
+  width: 100%;
+  position: relative;
+  overflow: visible;
+  padding-bottom: 150px; 
+}
+
+/* ======================================
+   NEBULA BACKGROUND
+====================================== */
 .nebula {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(at 20% 30%, rgba(155,255,210,0.20), rgba(0,0,0,0) 60%),
-    radial-gradient(at 80% 70%, rgba(255,180,120,0.18), rgba(0,0,0,0) 70%),
+    radial-gradient(at 20% 30%, rgba(155,255,210,0.22), rgba(0,0,0,0) 62%),
+    radial-gradient(at 80% 65%, rgba(255,180,120,0.18), rgba(0,0,0,0) 70%),
     radial-gradient(at 50% 90%, rgba(120,180,255,0.16), rgba(0,0,0,0) 75%);
   animation: nebulaGlow 14s ease-in-out infinite alternate;
 }
 @keyframes nebulaGlow {
-  0% { filter: brightness(1.10); }
+  0% { filter: brightness(1.1); }
   100% { filter: brightness(1.25); }
 }
 
-/* =====================================
-   OVERLAY
-===================================== */
+/* ======================================
+   DIM OVERLAY (BOTTOM SHEET BG)
+====================================== */
 #dimOverlay {
   position: fixed;
   inset: 0;
@@ -50,15 +58,15 @@ body {
   z-index: 8;
 }
 
-/* =====================================
+/* ======================================
    MOTIVATION TILES
-===================================== */
+====================================== */
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+  margin-top: clamp(12px, 3vh, 26px); /* V12 raised tiles */
   padding: 0 24px;
-  margin-top: 32px;
 }
 
 .tile {
@@ -77,28 +85,30 @@ body {
   position: relative;
   overflow: hidden;
 }
-.tile svg { width: 22px; height: 22px; }
 
 .tile.active[data-motive="Educational"] { background:#E6F0D8; color:#245C2A; }
 .tile.active[data-motive="Playful"]    { background:#FFF2D5; color:#A96300; }
 .tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#0F4C9A; }
 .tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#9A3D21; }
 
-/* =====================================
-   FLOATING CARD (V10 - WARM SAGE FROST)
-===================================== */
+/* ======================================
+   FLOATING LIVING TILE — MEDIUM HERO
+====================================== */
 .card {
-  position: fixed;
-  left: 50%;
-  top: 28%;
-  transform: translateX(-50%) scale(0.90);
+  position: relative;
+  margin: 0 auto;
+  top: clamp(14%, 20vh, 24%); /* V12 repositioning */
+  transform: scale(.92);
   width: clamp(260px, 86vw, 420px);
-  background: rgba(230,240,216,0.18);
+
+  background: rgba(230,240,216,0.20);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+
   padding: 26px 22px;
   border-radius: 20px;
   color: #fff;
+
   box-shadow: 0 6px 20px rgba(0,0,0,0.20);
   transition:
     opacity .35s ease,
@@ -106,80 +116,44 @@ body {
     top .45s cubic-bezier(.25,.8,.25,1);
   z-index: 3;
 }
+
 .card h1 { font-size: clamp(1.2rem, 4vw, 1.7rem); }
-.card h2 { font-size: clamp(.9rem, 3vw, 1rem); opacity: 0.85; margin-top: 4px; }
-.card .motive-tag { margin-top: 10px; font-size: clamp(1rem,3.3vw,1.2rem); opacity:.95; }
+.card h2 { font-size: clamp(.9rem, 3vw, 1rem); opacity: 0.90; }
+.card .motive-tag { margin-top: 10px; font-size: 1.1rem; opacity: 0.95; }
 
-.card svg { width: 28px; height: 28px; }
+.card svg { width: 26px; height: 26px; }
 
-.card.breathing { animation: breathe 7s ease-in-out infinite; }
+.card.breathing {
+  animation: breathe 7s ease-in-out infinite;
+}
 @keyframes breathe {
-  0%   { transform: translateX(-50%) scale(.90); }
-  50%  { transform: translateX(-50%) scale(.94); }
-  100% { transform: translateX(-50%) scale(.90); }
+  0%   { transform: scale(.92); }
+  50%  { transform: scale(.95); }
+  100% { transform: scale(.92); }
 }
 
-/* COLLAPSE ON SCROLL */
+/* COLLAPSE ON SCROLL (Wix optimized) */
 .scrolled .card {
-  top: 17%;
-  transform: translateX(-50%) scale(1);
+  top: clamp(8%, 10vh, 13%);
+  transform: scale(1);
+  opacity: 1;
 }
 .scrolled .tiles {
   opacity: 0.18;
 }
 
-/* =====================================
-   BOTTOM SHEET
-===================================== */
-#motivePanel {
-  position: fixed;
-  left: 0;
-  bottom: -100%;
-  width: 100%;
-  height: 75%;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(28px);
-  border-radius: 24px 24px 0 0;
-  padding: 30px 28px;
-  color: #fff;
-  transition: bottom .45s cubic-bezier(.35,.8,.25,1);
-  z-index: 10;
-}
-#motivePanel.open { bottom: 0; }
-
-#closePanel {
-  position: absolute;
-  top: 18px;
-  right: 24px;
-  font-size: 32px;
-  opacity: 0.65;
-  cursor: pointer;
-}
-
-#toggleCompleteBtn {
-  margin-top: 26px;
-  padding: 14px 20px;
-  text-align: center;
-  background: rgba(255,255,255,0.28);
-  border-radius: 16px;
-  font-size: 1.05rem;
-  cursor: pointer;
-  transition: background .25s ease;
-}
-#toggleCompleteBtn:hover { background: rgba(255,255,255,0.40); }
-
-/* =====================================
-   HEATMAP
-===================================== */
+/* ======================================
+   HEATMAP — HYBRID POSITIONING
+====================================== */
 .heatmapSection {
-  margin-top: 420px;
-  padding: 0 24px 120px;
+  margin-top: clamp(200px, 28vh, 260px); /* V12 perfect hybrid */
+  padding: 0 24px 140px;
   color: white;
 }
 .heatmapSection h2 {
   margin-bottom: 18px;
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 1.15rem;
+  opacity: 0.88;
 }
 
 .heatmapRow {
@@ -188,6 +162,7 @@ body {
   gap: 6px;
   margin-bottom: 14px;
 }
+
 .rowLabel {
   width: 38px;
   opacity: 0.75;
@@ -210,87 +185,121 @@ body {
 .level-2 { background:#A8CC8C; opacity:0.78; }
 .level-3 { background:#8BB076; opacity:1; }
 
-/* =====================================
-   V11 — RIPPLE + PHYSICS + GLOW + FLOAT
-===================================== */
+/* ======================================
+   BOTTOM SHEET
+====================================== */
+#motivePanel {
+  position: fixed;
+  left: 0;
+  bottom: -100%;
+  width: 100%;
+  height: 75%;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(28px);
+  border-radius: 24px 24px 0 0;
+  padding: 30px 28px;
+  color: #fff;
+  transition: bottom .45s cubic-bezier(.35,.8,.25,1);
+  z-index: 15;
+}
 
-/* Ripple Container */
+#motivePanel.open { bottom: 0; }
+
+#closePanel {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  font-size: 32px;
+  opacity: 0.70;
+  cursor: pointer;
+}
+
+#toggleCompleteBtn {
+  margin-top: 26px;
+  padding: 14px 20px;
+  text-align: center;
+  background: rgba(255,255,255,0.28);
+  border-radius: 16px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background .25s ease;
+}
+#toggleCompleteBtn:hover {
+  background: rgba(255,255,255,0.40);
+}
+
+/* ======================================
+   V11 INTERACTION: RIPPLE, PRESS, GLOW
+====================================== */
 .ripple-container {
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  overflow: hidden;
+  overflow:hidden;
 }
 
-/* Ripple */
 .ripple {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: rgba(255,255,255,0.35);
-  border-radius: 50%;
-  transform: scale(0);
-  animation: rippleExpand 0.45s cubic-bezier(.25,.8,.25,1) forwards;
+  position:absolute;
+  width:20px;
+  height:20px;
+  background:rgba(255,255,255,0.35);
+  border-radius:50%;
+  transform:scale(0);
+  animation:rippleExpand .45s cubic-bezier(.25,.8,.25,1) forwards;
 }
 @keyframes rippleExpand {
-  to {
-    transform: scale(8);
-    opacity: 0;
-  }
+  to { transform:scale(8); opacity:0; }
 }
 
-/* Press-down micro physics */
 .press {
-  transform: scale(0.96) !important;
-  transition: transform 80ms cubic-bezier(.2,.75,.35,1.2);
+  transform:scale(.96) !important;
+  transition:transform 80ms cubic-bezier(.2,.75,.35,1.2);
 }
 
-/* Glow pulse */
 .glow-pulse {
-  animation: glowPulse 0.55s ease-out;
+  animation:glowPulse .55s ease-out;
 }
 @keyframes glowPulse {
-  0%   { box-shadow: 0 0 0 rgba(139,176,118,0); }
-  40%  { box-shadow: 0 0 14px rgba(139,176,118,0.9); }
-  100% { box-shadow: 0 0 0 rgba(139,176,118,0); }
+  0% { box-shadow:0 0 0 rgba(139,176,118,0); }
+  40%{ box-shadow:0 0 14px rgba(139,176,118,0.9); }
+ 100%{ box-shadow:0 0 0 rgba(139,176,118,0); }
 }
 
-/* +1 streak float */
 .streak-float {
-  position: absolute;
-  pointer-events: none;
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.85);
-  animation: streakFloatUp 0.6s cubic-bezier(.3,.8,.3,1) forwards;
+  position:absolute;
+  pointer-events:none;
+  font-size:.85rem;
+  color:rgba(255,255,255,0.85);
+  animation:streakFloatUp .6s cubic-bezier(.3,.8,.3,1) forwards;
 }
 @keyframes streakFloatUp {
-  0%   { opacity: 0; transform: translateY(0); }
-  30%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-14px); }
+  0%{opacity:0; transform:translateY(0);}
+ 30%{opacity:1;}
+100%{opacity:0; transform:translateY(-14px);}
 }
 
 /* Bottom sheet bounce */
 #motivePanel.open {
-  animation: sheetBounce 0.55s cubic-bezier(.35,.8,.25,1);
+  animation: sheetBounce .55s cubic-bezier(.35,.8,.25,1);
 }
-
 @keyframes sheetBounce {
-  0%   { bottom: -100%; }
-  80%  { bottom: 2%; }
-  100% { bottom: 0%; }
+  0%   { bottom:-100%; }
+  80%  { bottom:2%; }
+  100% { bottom:0%; }
 }
 </style>
 </head>
 
 <body>
+<div id="omnifitWidget">
 
 <div class="nebula"></div>
 <div id="dimOverlay"></div>
 
-<!-- =====================================
-     MOTIVATION TILES
-===================================== -->
+<!-- ============================
+     TILES
+============================ -->
 <div class="tiles" id="tiles">
   <div class="tile" data-motive="Educational">Educational</div>
   <div class="tile" data-motive="Playful">Playful</div>
@@ -298,9 +307,9 @@ body {
   <div class="tile" data-motive="Identity">Identity</div>
 </div>
 
-<!-- =====================================
-     FLOATING LIVING TILE
-===================================== -->
+<!-- ============================
+     FLOATING CARD
+============================ -->
 <div class="card breathing" id="exerciseCard">
   <svg id="cardIcon" viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7"></svg>
   <h1>Micro Exercise</h1>
@@ -308,18 +317,18 @@ body {
   <div class="motive-tag" id="motiveLabel">Educational</div>
 </div>
 
-<!-- =====================================
+<!-- ============================
      BOTTOM SHEET
-===================================== -->
+============================ -->
 <div id="motivePanel">
   <div id="closePanel">×</div>
   <div id="panelContent"></div>
   <div id="toggleCompleteBtn"></div>
 </div>
 
-<!-- =====================================
+<!-- ============================
      HEATMAP
-===================================== -->
+============================ -->
 <div class="heatmapSection">
   <h2>Your Consistency</h2>
 
@@ -329,13 +338,15 @@ body {
   <div class="heatmapRow"><div class="rowLabel">SAT</div><div id="row-sat"></div></div>
 </div>
 
-<!-- =====================================
-     JAVASCRIPT (V10 + V11 MERGED)
-===================================== -->
+</div><!-- END WIDGET WRAPPER -->
+
+<!-- ============================
+     JAVASCRIPT (V10 + V11 + V12)
+============================ -->
 <script>
-/* -----------------------------
-   ICONS AND TEXT
------------------------------- */
+/* ----------------------------------
+   ICONS + TEXT
+---------------------------------- */
 const icons = {
   Educational:`<path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>`,
   Playful:`<path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>`,
@@ -350,7 +361,9 @@ const descriptions = {
   Identity:"A reminder of who you are becoming through consistent action."
 };
 
-/* DOM */
+/* ----------------------------------
+   ELEMENTS
+---------------------------------- */
 const tiles = document.querySelectorAll('.tile');
 const card = document.getElementById('exerciseCard');
 const motiveLabel = document.getElementById('motiveLabel');
@@ -360,9 +373,9 @@ const panelContent = document.getElementById('panelContent');
 const dimOverlay = document.getElementById('dimOverlay');
 const toggleBtn = document.getElementById('toggleCompleteBtn');
 
-/* -----------------------------
-   TILE → OPEN MOTIVE PANEL
------------------------------- */
+/* ----------------------------------
+   TILE → OPEN PANEL
+---------------------------------- */
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
     const motive = tile.dataset.motive;
@@ -397,11 +410,11 @@ function closePanel() {
   dimOverlay.style.pointerEvents = "none";
 }
 
-/* -----------------------------
-   SCROLL → COLLAPSE CARD
------------------------------- */
+/* ----------------------------------
+   SCROLL → COLLAPSE CARD (V12 tuned)
+---------------------------------- */
 window.addEventListener('scroll', () => {
-  const trigger = window.innerHeight * 0.32;
+  const trigger = window.innerHeight * 0.20;
   if (window.scrollY > trigger) {
     document.body.classList.add("scrolled");
   } else {
@@ -409,9 +422,9 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* -----------------------------
-   HEATMAP GENERATION
------------------------------- */
+/* ----------------------------------
+   HEATMAP
+---------------------------------- */
 const heatmapData = {
   sun: [0,1,2,3,1,0,2,3,0,1,2,3],
   tue: [0,0,1,2,3,1,1,2,0,0,2,3],
@@ -434,9 +447,9 @@ function createHeatmap() {
 }
 createHeatmap();
 
-/* -----------------------------
+/* ----------------------------------
    OPEN DAY PANEL
------------------------------- */
+---------------------------------- */
 let currentDayKey = null;
 let currentIndex = null;
 
@@ -465,9 +478,9 @@ function openDayPanel(dayKey, index) {
   dimOverlay.style.pointerEvents = "auto";
 }
 
-/* -----------------------------
-   V9 TOGGLE 0 ↔ 3 (OVERRIDDEN BY V11)
------------------------------- */
+/* ----------------------------------
+   ORIGINAL TOGGLE (V10)
+---------------------------------- */
 function originalToggleIntensity() {
   const currentValue = heatmapData[currentDayKey][currentIndex];
   const newValue = currentValue === 0 ? 3 : 0;
@@ -480,10 +493,11 @@ function originalToggleIntensity() {
   openDayPanel(currentDayKey, currentIndex);
 }
 
-/* -----------------------------
-   OMNIFIT STREAK CALC
------------------------------- */
+/* ----------------------------------
+   STREAK ENGINE
+---------------------------------- */
 const cycleOrder = ["sat","fri","tue","sun"];
+
 function calculateStreak() {
   let flat = [];
   const len = heatmapData.sun.length;
@@ -502,11 +516,9 @@ function calculateStreak() {
   return streak;
 }
 
-/* ============================================
-   V11 — INTERACTION SYSTEM
-============================================ */
-
-/* Add ripple containers */
+/* ----------------------------------
+   V11 INTERACTION LAYER
+---------------------------------- */
 function attachRipples() {
   const targets = document.querySelectorAll('.tile, .square');
   targets.forEach(target => {
@@ -518,7 +530,6 @@ function attachRipples() {
       target.classList.add('press');
       createRipple(e, rc);
     });
-
     target.addEventListener('pointerup', () => target.classList.remove('press'));
     target.addEventListener('pointerleave', () => target.classList.remove('press'));
   });
@@ -534,17 +545,15 @@ function createRipple(e, container) {
   ripple.style.top = (e.clientY - rect.top - 10)+'px';
 
   container.appendChild(ripple);
-  setTimeout(()=> ripple.remove(), 500);
+  setTimeout(()=> ripple.remove(), 450);
 }
 
-/* Glow Pulse */
 function glowPulseSquare(day, idx) {
   const sq = document.querySelector(`#row-${day}`).children[idx];
   sq.classList.add('glow-pulse');
   setTimeout(()=> sq.classList.remove('glow-pulse'), 600);
 }
 
-/* Streak Float */
 function showStreakFloat(day, idx) {
   const sq = document.querySelector(`#row-${day}`).children[idx];
   const rect = sq.getBoundingClientRect();
@@ -559,7 +568,7 @@ function showStreakFloat(day, idx) {
   setTimeout(()=> float.remove(), 650);
 }
 
-/* Replace toggleIntensity with V11 version */
+/* Overwrite toggleIntensity with V11 wrapper */
 toggleIntensity = function() {
   const before = calculateStreak();
   originalToggleIntensity();
