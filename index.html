@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OMNIFIT V10 — Mobile Optimized</title>
+<title>OMNIFIT V11 — Full</title>
 
 <style>
-/* RESET */
+/* =====================================
+   RESET & BASE
+===================================== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
   background: transparent;
   overflow-x: hidden;
-  padding: env(safe-area-inset-top) env(safe-area-inset-left) env(safe-area-inset-bottom) env(safe-area-inset-right);
+  padding: env(safe-area-inset-top) env(safe-area-inset-left)
+           env(safe-area-inset-bottom) env(safe-area-inset-right);
 }
 
-/* ==== NEBULA (transparent-friendly) ==== */
+/* =====================================
+   NEBULA (TRANSPARENT)
+===================================== */
 .nebula {
   position: fixed;
   inset: 0;
@@ -25,7 +30,6 @@ body {
     radial-gradient(at 20% 30%, rgba(155,255,210,0.20), rgba(0,0,0,0) 60%),
     radial-gradient(at 80% 70%, rgba(255,180,120,0.18), rgba(0,0,0,0) 70%),
     radial-gradient(at 50% 90%, rgba(120,180,255,0.16), rgba(0,0,0,0) 75%);
-  filter: brightness(1.15);
   animation: nebulaGlow 14s ease-in-out infinite alternate;
 }
 @keyframes nebulaGlow {
@@ -33,7 +37,9 @@ body {
   100% { filter: brightness(1.25); }
 }
 
-/* ==== DIM OVERLAY ==== */
+/* =====================================
+   OVERLAY
+===================================== */
 #dimOverlay {
   position: fixed;
   inset: 0;
@@ -44,7 +50,9 @@ body {
   z-index: 8;
 }
 
-/* ==== TILE GRID ==== */
+/* =====================================
+   MOTIVATION TILES
+===================================== */
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -66,6 +74,8 @@ body {
   backdrop-filter: blur(14px);
   transition: transform .25s cubic-bezier(.25,.8,.25,1),
               background .35s ease;
+  position: relative;
+  overflow: hidden;
 }
 .tile svg { width: 22px; height: 22px; }
 
@@ -74,34 +84,31 @@ body {
 .tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#0F4C9A; }
 .tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#9A3D21; }
 
-/* ==== FLOATING CARD (V10 SAGE GLASS) ==== */
+/* =====================================
+   FLOATING CARD (V10 - WARM SAGE FROST)
+===================================== */
 .card {
   position: fixed;
   left: 50%;
   top: 28%;
   transform: translateX(-50%) scale(0.90);
   width: clamp(260px, 86vw, 420px);
-  background: rgba(230,240,216,0.18);       /* Warm Sage Frost */
+  background: rgba(230,240,216,0.18);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   padding: 26px 22px;
   border-radius: 20px;
   color: #fff;
   box-shadow: 0 6px 20px rgba(0,0,0,0.20);
-  transition: 
+  transition:
     opacity .35s ease,
     transform .45s cubic-bezier(.25,.8,.25,1),
     top .45s cubic-bezier(.25,.8,.25,1);
   z-index: 3;
 }
-
 .card h1 { font-size: clamp(1.2rem, 4vw, 1.7rem); }
 .card h2 { font-size: clamp(.9rem, 3vw, 1rem); opacity: 0.85; margin-top: 4px; }
-.card .motive-tag { 
-  margin-top: 10px; 
-  font-size: clamp(1rem, 3.3vw, 1.2rem); 
-  opacity: 0.95;
-}
+.card .motive-tag { margin-top: 10px; font-size: clamp(1rem,3.3vw,1.2rem); opacity:.95; }
 
 .card svg { width: 28px; height: 28px; }
 
@@ -112,7 +119,7 @@ body {
   100% { transform: translateX(-50%) scale(.90); }
 }
 
-/* ==== COLLAPSED SCROLL STATE ==== */
+/* COLLAPSE ON SCROLL */
 .scrolled .card {
   top: 17%;
   transform: translateX(-50%) scale(1);
@@ -121,7 +128,9 @@ body {
   opacity: 0.18;
 }
 
-/* ==== PANEL ==== */
+/* =====================================
+   BOTTOM SHEET
+===================================== */
 #motivePanel {
   position: fixed;
   left: 0;
@@ -132,11 +141,10 @@ body {
   backdrop-filter: blur(28px);
   border-radius: 24px 24px 0 0;
   padding: 30px 28px;
+  color: #fff;
   transition: bottom .45s cubic-bezier(.35,.8,.25,1);
   z-index: 10;
-  color: #fff;
 }
-
 #motivePanel.open { bottom: 0; }
 
 #closePanel {
@@ -148,13 +156,26 @@ body {
   cursor: pointer;
 }
 
-/* ==== HEATMAP (V10 mobile tuned) ==== */
+#toggleCompleteBtn {
+  margin-top: 26px;
+  padding: 14px 20px;
+  text-align: center;
+  background: rgba(255,255,255,0.28);
+  border-radius: 16px;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background .25s ease;
+}
+#toggleCompleteBtn:hover { background: rgba(255,255,255,0.40); }
+
+/* =====================================
+   HEATMAP
+===================================== */
 .heatmapSection {
   margin-top: 420px;
   padding: 0 24px 120px;
   color: white;
 }
-
 .heatmapSection h2 {
   margin-bottom: 18px;
   font-size: 1.2rem;
@@ -167,7 +188,6 @@ body {
   gap: 6px;
   margin-bottom: 14px;
 }
-
 .rowLabel {
   width: 38px;
   opacity: 0.75;
@@ -180,8 +200,9 @@ body {
   border-radius: 6px;
   cursor: pointer;
   transition: transform .18s ease, opacity .18s ease;
+  position: relative;
+  overflow: hidden;
 }
-
 .square:hover { transform: scale(1.12); }
 
 .level-0 { background:#E6F0D8; opacity:0.45; }
@@ -189,20 +210,75 @@ body {
 .level-2 { background:#A8CC8C; opacity:0.78; }
 .level-3 { background:#8BB076; opacity:1; }
 
-/* ==== BOTTOM-SHEET BUTTON ==== */
-#toggleCompleteBtn {
-  margin-top: 26px;
-  padding: 14px 20px;
-  text-align: center;
-  background: rgba(255,255,255,0.28);
-  border-radius: 16px;
-  font-size: 1.05rem;
-  cursor: pointer;
-  transition: background .25s ease;
+/* =====================================
+   V11 — RIPPLE + PHYSICS + GLOW + FLOAT
+===================================== */
+
+/* Ripple Container */
+.ripple-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
-#toggleCompleteBtn:hover {
-  background: rgba(255,255,255,0.40);
+/* Ripple */
+.ripple {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleExpand 0.45s cubic-bezier(.25,.8,.25,1) forwards;
+}
+@keyframes rippleExpand {
+  to {
+    transform: scale(8);
+    opacity: 0;
+  }
+}
+
+/* Press-down micro physics */
+.press {
+  transform: scale(0.96) !important;
+  transition: transform 80ms cubic-bezier(.2,.75,.35,1.2);
+}
+
+/* Glow pulse */
+.glow-pulse {
+  animation: glowPulse 0.55s ease-out;
+}
+@keyframes glowPulse {
+  0%   { box-shadow: 0 0 0 rgba(139,176,118,0); }
+  40%  { box-shadow: 0 0 14px rgba(139,176,118,0.9); }
+  100% { box-shadow: 0 0 0 rgba(139,176,118,0); }
+}
+
+/* +1 streak float */
+.streak-float {
+  position: absolute;
+  pointer-events: none;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.85);
+  animation: streakFloatUp 0.6s cubic-bezier(.3,.8,.3,1) forwards;
+}
+@keyframes streakFloatUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+
+/* Bottom sheet bounce */
+#motivePanel.open {
+  animation: sheetBounce 0.55s cubic-bezier(.35,.8,.25,1);
+}
+
+@keyframes sheetBounce {
+  0%   { bottom: -100%; }
+  80%  { bottom: 2%; }
+  100% { bottom: 0%; }
 }
 </style>
 </head>
@@ -212,6 +288,9 @@ body {
 <div class="nebula"></div>
 <div id="dimOverlay"></div>
 
+<!-- =====================================
+     MOTIVATION TILES
+===================================== -->
 <div class="tiles" id="tiles">
   <div class="tile" data-motive="Educational">Educational</div>
   <div class="tile" data-motive="Playful">Playful</div>
@@ -219,6 +298,9 @@ body {
   <div class="tile" data-motive="Identity">Identity</div>
 </div>
 
+<!-- =====================================
+     FLOATING LIVING TILE
+===================================== -->
 <div class="card breathing" id="exerciseCard">
   <svg id="cardIcon" viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7"></svg>
   <h1>Micro Exercise</h1>
@@ -226,24 +308,34 @@ body {
   <div class="motive-tag" id="motiveLabel">Educational</div>
 </div>
 
+<!-- =====================================
+     BOTTOM SHEET
+===================================== -->
 <div id="motivePanel">
   <div id="closePanel">×</div>
   <div id="panelContent"></div>
   <div id="toggleCompleteBtn"></div>
 </div>
 
+<!-- =====================================
+     HEATMAP
+===================================== -->
 <div class="heatmapSection">
   <h2>Your Consistency</h2>
 
   <div class="heatmapRow"><div class="rowLabel">SUN</div><div id="row-sun"></div></div>
   <div class="heatmapRow"><div class="rowLabel">TUE</div><div id="row-tue"></div></div>
-  ��<div class="heatmapRow"><div class="rowLabel">FRI</div><div id="row-fri"></div></div>
+  <div class="heatmapRow"><div class="rowLabel">FRI</div><div id="row-fri"></div></div>
   <div class="heatmapRow"><div class="rowLabel">SAT</div><div id="row-sat"></div></div>
 </div>
+
+<!-- =====================================
+     JAVASCRIPT (V10 + V11 MERGED)
+===================================== -->
 <script>
-/* =============================
-   ICONS (same as V9)
-============================= */
+/* -----------------------------
+   ICONS AND TEXT
+------------------------------ */
 const icons = {
   Educational:`<path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>`,
   Playful:`<path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>`,
@@ -258,7 +350,7 @@ const descriptions = {
   Identity:"A reminder of who you are becoming through consistent action."
 };
 
-/* DOM references */
+/* DOM */
 const tiles = document.querySelectorAll('.tile');
 const card = document.getElementById('exerciseCard');
 const motiveLabel = document.getElementById('motiveLabel');
@@ -268,9 +360,9 @@ const panelContent = document.getElementById('panelContent');
 const dimOverlay = document.getElementById('dimOverlay');
 const toggleBtn = document.getElementById('toggleCompleteBtn');
 
-/* -----------------------------------
-   MOTIVATION PANEL / TILE INTERACTION
--------------------------------------- */
+/* -----------------------------
+   TILE → OPEN MOTIVE PANEL
+------------------------------ */
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
     const motive = tile.dataset.motive;
@@ -278,34 +370,24 @@ tiles.forEach(tile => {
     motiveLabel.textContent = motive;
     cardIcon.innerHTML = icons[motive];
 
-    /* Active tile styling */
     tiles.forEach(t => t.classList.remove('active'));
     tile.classList.add('active');
 
-    /* Update card tint class */
-    card.classList.remove("educational","playful","direct","identity");
-    card.classList.add(motive.toLowerCase());
+    panelContent.innerHTML = `
+      <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">
+        ${icons[motive]}
+      </svg>
+      <h3>${motive}</h3>
+      <p>${descriptions[motive]}</p>
+    `;
+    toggleBtn.style.display = "none";
 
-    openMotivationPanel(motive);
+    panel.classList.add("open");
+    dimOverlay.style.opacity = "1";
+    dimOverlay.style.pointerEvents = "auto";
   });
 });
 
-function openMotivationPanel(motive) {
-  panelContent.innerHTML = `
-    <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">
-      ${icons[motive]}
-    </svg>
-    <h3>${motive}</h3>
-    <p>${descriptions[motive]}</p>
-  `;
-  toggleBtn.style.display = "none";
-
-  panel.classList.add("open");
-  dimOverlay.style.opacity = "1";
-  dimOverlay.style.pointerEvents = "auto";
-}
-
-/* Close panel */
 document.getElementById('closePanel').onclick = closePanel;
 dimOverlay.onclick = closePanel;
 
@@ -315,12 +397,11 @@ function closePanel() {
   dimOverlay.style.pointerEvents = "none";
 }
 
-/* -----------------------------------
-   V10 SCROLL PHYSICS (Mobile Optimized)
--------------------------------------- */
+/* -----------------------------
+   SCROLL → COLLAPSE CARD
+------------------------------ */
 window.addEventListener('scroll', () => {
   const trigger = window.innerHeight * 0.32;
-
   if (window.scrollY > trigger) {
     document.body.classList.add("scrolled");
   } else {
@@ -328,9 +409,9 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* -----------------------------------
-   HEATMAP DATA (V8)
--------------------------------------- */
+/* -----------------------------
+   HEATMAP GENERATION
+------------------------------ */
 const heatmapData = {
   sun: [0,1,2,3,1,0,2,3,0,1,2,3],
   tue: [0,0,1,2,3,1,1,2,0,0,2,3],
@@ -340,22 +421,22 @@ const heatmapData = {
 
 function createHeatmap() {
   Object.entries(heatmapData).forEach(([day, arr]) => {
-    const rowEl = document.getElementById(`row-${day}`);
-    arr.forEach((level, index) => {
+    const row = document.getElementById(`row-${day}`);
+    arr.forEach((level, i) => {
       const sq = document.createElement("div");
       sq.className = `square level-${level}`;
       sq.dataset.day = day;
-      sq.dataset.index = index;
-      sq.onclick = () => openDayPanel(day, index);
-      rowEl.appendChild(sq);
+      sq.dataset.index = i;
+      sq.onclick = () => openDayPanel(day, i);
+      row.appendChild(sq);
     });
   });
 }
 createHeatmap();
 
-/* -----------------------------------
-   V9 / V10 BOTTOM-SHEET FOR HEATMAP
--------------------------------------- */
+/* -----------------------------
+   OPEN DAY PANEL
+------------------------------ */
 let currentDayKey = null;
 let currentIndex = null;
 
@@ -364,23 +445,18 @@ function openDayPanel(dayKey, index) {
   currentIndex = index;
 
   const level = heatmapData[dayKey][index];
-  const displayName = dayKey.toUpperCase();
-  const displayNumber = index + 1;
   const streak = calculateStreak();
 
   panelContent.innerHTML = `
     <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">
       <rect x="4" y="4" width="16" height="16" rx="4"/>
     </svg>
-    <h3>${displayName} • Day ${displayNumber}</h3>
+    <h3>${dayKey.toUpperCase()} • Day ${index+1}</h3>
     <p>Intensity Level: ${level}/3</p>
     <p style="margin-top:10px; font-size:1.1rem;">🔥 Streak: ${streak} days</p>
   `;
 
-  toggleBtn.textContent = level === 0
-    ? "Mark Complete"
-    : "Mark Incomplete";
-
+  toggleBtn.textContent = (level===0) ? "Mark Complete" : "Mark Incomplete";
   toggleBtn.style.display = "block";
   toggleBtn.onclick = toggleIntensity;
 
@@ -389,49 +465,111 @@ function openDayPanel(dayKey, index) {
   dimOverlay.style.pointerEvents = "auto";
 }
 
-/* -----------------------------------
-   V9 / V10 TOGGLE COMPLETE (0 ↔ 3)
--------------------------------------- */
-function toggleIntensity() {
+/* -----------------------------
+   V9 TOGGLE 0 ↔ 3 (OVERRIDDEN BY V11)
+------------------------------ */
+function originalToggleIntensity() {
   const currentValue = heatmapData[currentDayKey][currentIndex];
   const newValue = currentValue === 0 ? 3 : 0;
-
   heatmapData[currentDayKey][currentIndex] = newValue;
 
-  /* Update UI */
   const rowEl = document.getElementById(`row-${currentDayKey}`);
   const sq = rowEl.children[currentIndex];
   sq.className = `square level-${newValue}`;
 
-  /* Reopen panel to update streak + label */
   openDayPanel(currentDayKey, currentIndex);
 }
 
-/* -----------------------------------
-   V10 STREAK ENGINE (OMNIFIT ORDER)
--------------------------------------- */
+/* -----------------------------
+   OMNIFIT STREAK CALC
+------------------------------ */
 const cycleOrder = ["sat","fri","tue","sun"];
-
 function calculateStreak() {
   let flat = [];
   const len = heatmapData.sun.length;
 
-  /* Flatten in OMNIFIT timeline order */
-  for (let i = len - 1; i >= 0; i--) {
+  for (let i=len-1; i>=0; i--) {
     for (let d of cycleOrder) {
       flat.push(heatmapData[d][i]);
     }
   }
 
-  /* Count streak */
   let streak = 0;
   for (let val of flat) {
     if (val === 3) streak++;
     else break;
   }
-
   return streak;
 }
+
+/* ============================================
+   V11 — INTERACTION SYSTEM
+============================================ */
+
+/* Add ripple containers */
+function attachRipples() {
+  const targets = document.querySelectorAll('.tile, .square');
+  targets.forEach(target => {
+    const rc = document.createElement('div');
+    rc.classList.add('ripple-container');
+    target.appendChild(rc);
+
+    target.addEventListener('pointerdown', e => {
+      target.classList.add('press');
+      createRipple(e, rc);
+    });
+
+    target.addEventListener('pointerup', () => target.classList.remove('press'));
+    target.addEventListener('pointerleave', () => target.classList.remove('press'));
+  });
+}
+attachRipples();
+
+function createRipple(e, container) {
+  const ripple = document.createElement('div');
+  ripple.classList.add('ripple');
+
+  const rect = container.getBoundingClientRect();
+  ripple.style.left = (e.clientX - rect.left - 10)+'px';
+  ripple.style.top = (e.clientY - rect.top - 10)+'px';
+
+  container.appendChild(ripple);
+  setTimeout(()=> ripple.remove(), 500);
+}
+
+/* Glow Pulse */
+function glowPulseSquare(day, idx) {
+  const sq = document.querySelector(`#row-${day}`).children[idx];
+  sq.classList.add('glow-pulse');
+  setTimeout(()=> sq.classList.remove('glow-pulse'), 600);
+}
+
+/* Streak Float */
+function showStreakFloat(day, idx) {
+  const sq = document.querySelector(`#row-${day}`).children[idx];
+  const rect = sq.getBoundingClientRect();
+
+  const float = document.createElement('div');
+  float.className = 'streak-float';
+  float.textContent = '+1 Streak';
+  float.style.left = rect.left + rect.width/2 + 'px';
+  float.style.top = rect.top - 4 + 'px';
+
+  document.body.appendChild(float);
+  setTimeout(()=> float.remove(), 650);
+}
+
+/* Replace toggleIntensity with V11 version */
+toggleIntensity = function() {
+  const before = calculateStreak();
+  originalToggleIntensity();
+  const after = calculateStreak();
+
+  if (after > before) {
+    glowPulseSquare(currentDayKey, currentIndex);
+    showStreakFloat(currentDayKey, currentIndex);
+  }
+};
 </script>
 
 </body>
