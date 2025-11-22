@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OMNIFIT Living Tile Prototype</title>
+<title>OMNIFIT Living Tile Prototype — V3 Lift</title>
 
 <style>
 /* RESET */
@@ -11,7 +11,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   background: #f6f6f6;
-  height: 200vh; /* allows scroll */
+  height: 200vh;
   overflow-x: hidden;
 }
 
@@ -22,7 +22,7 @@ body {
   text-align: center;
 }
 
-/* === MOTIVATION GRID (4 TILES) === */
+/* === MOTIVATION GRID === */
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -38,12 +38,42 @@ body {
   font-size: 1rem;
   color: #333;
   font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  transition:
+    transform 0.25s cubic-bezier(.25,.8,.25,1),
+    box-shadow 0.25s ease,
+    background 0.35s ease,
+    color 0.35s ease,
+    opacity 0.35s ease;
 }
 
-.tile:active {
-  transform: scale(0.95);
+/* Subtle Apple-style lift */
+.tile:active,
+.tile:focus {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* ACTIVE TILE COLORS */
+.tile.active[data-motive="Educational"] {
+  background: #E6F4EA;
+  color: #2E7D32;
+  box-shadow: 0 6px 24px rgba(46,125,50,0.25);
+}
+.tile.active[data-motive="Playful"] {
+  background: #FFF2D5;
+  color: #D47A00;
+  box-shadow: 0 6px 24px rgba(212,122,0,0.25);
+}
+.tile.active[data-motive="Direct"] {
+  background: #E3F2FD;
+  color: #1565C0;
+  box-shadow: 0 6px 24px rgba(21,101,192,0.25);
+}
+.tile.active[data-motive="Identity"] {
+  background: #FCE8E0;
+  color: #A84422;
+  box-shadow: 0 6px 24px rgba(168,68,34,0.25);
 }
 
 /* === FLOATING CARD === */
@@ -66,10 +96,12 @@ body {
 
   transition:
     transform 0.45s cubic-bezier(.25,.8,.25,1),
-    top 0.45s cubic-bezier(.25,.8,.25,1);
+    top 0.45s cubic-bezier(.25,.8,.25,1),
+    background 0.45s ease,
+    color 0.35s ease;
 }
 
-/* TITLE INSIDE CARD */
+/* Card content */
 .card h1 {
   font-size: 1.6rem;
   margin-bottom: 8px;
@@ -85,12 +117,22 @@ body {
   font-weight: 600;
 }
 
-/* ACTIVE TILE */
-.tile.active {
-  background: #e8f5ff;
-  color: #1565c0;
-  box-shadow: 0 4px 18px rgba(21,101,192,0.25);
+/* CARD COLOR THEMES */
+.card.educational  { background: rgba(230, 244, 234, 0.6); }
+.card.playful      { background: rgba(255, 242, 213, 0.6); }
+.card.direct       { background: rgba(227, 242, 253, 0.6); }
+.card.identity     { background: rgba(252, 232, 224, 0.6); }
+
+/* MICRO-BOUNCE when motive updates */
+.card.bump {
+  animation: bump 0.35s cubic-bezier(.34,1.56,.64,1);
 }
+@keyframes bump {
+  0%   { transform: translateX(-50%) scale(1); }
+  50%  { transform: translateX(-50%) scale(1.04); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
 </style>
 </head>
 
@@ -108,47 +150,57 @@ body {
 
 </div>
 
-<!-- FLOATING MICRO EXERCISE CARD -->
-<div class="card" id="exerciseCard">
+<!-- FLOATING CARD -->
+<div class="card educational" id="exerciseCard">
   <h1>Micro Exercise</h1>
   <h2>Day 558 | Forge 🔥</h2>
   <div class="motive-tag" id="motiveLabel">Educational</div>
 </div>
 
 <script>
-/* === TAP LOGIC FOR TILES === */
+/* === TILE TAP LOGIC === */
 const tiles = document.querySelectorAll('.tile');
+const card = document.getElementById('exerciseCard');
 const motiveLabel = document.getElementById('motiveLabel');
 
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
-    tiles.forEach(t => t.classList.remove('active')); // reset
+
+    /* reset tile states */
+    tiles.forEach(t => t.classList.remove('active'));
     tile.classList.add('active');
-    motiveLabel.textContent = tile.dataset.motive;
+
+    /* update text */
+    const motive = tile.dataset.motive;
+    motiveLabel.textContent = motive;
+
+    /* reset card color themes */
+    card.classList.remove("educational","playful","direct","identity");
+
+    /* apply selected theme */
+    card.classList.add(motive.toLowerCase());
+
+    /* card micro-bounce */
+    card.classList.remove("bump");
+    void card.offsetWidth; /* reset animation */
+    card.classList.add("bump");
   });
 });
 
-/* === SCROLL ANIMATION LOGIC === */
-const card = document.getElementById('exerciseCard');
+/* === SCROLL REVEAL LOGIC === */
 const grid = document.getElementById('tiles');
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
-  const trigger = window.innerHeight * 0.45; // mid-screen trigger
+  const trigger = window.innerHeight * 0.45;
 
   if (scrollY > trigger) {
-    // EXPAND CARD
     card.style.transform = "translateX(-50%) scale(1)";
     card.style.top = "20%";
-
-    // FADE TILES
     grid.style.opacity = "0.25";
   } else {
-    // SHRINK CARD
     card.style.transform = "translateX(-50%) scale(0.82)";
     card.style.top = "40%";
-
-    // FULL TILES OPACITY
     grid.style.opacity = "1";
   }
 });
