@@ -3,16 +3,45 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OMNIFIT Living Tile Prototype — V4 (Breathing)</title>
+<title>OMNIFIT Living Tile — V7 Panel</title>
 
 <style>
 /* RESET */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  background: #f6f6f6;
   height: 200vh;
   overflow-x: hidden;
+  background: #000;
+}
+
+/* === NEBULA BG === */
+.nebula {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(at 20% 30%, rgba(155,255,210,0.30), rgba(0,0,0,0.15) 60%),
+    radial-gradient(at 80% 70%, rgba(255,180,120,0.25), rgba(0,0,0,0.15) 70%),
+    radial-gradient(at 50% 90%, rgba(120,180,255,0.22), rgba(0,0,0,0.10) 75%),
+    #000;
+  filter: blur(26px) brightness(1.15);
+  animation: nebulaGlow 12s ease-in-out infinite alternate;
+}
+@keyframes nebulaGlow {
+  0% { filter: blur(26px) brightness(1.10); }
+  100% { filter: blur(32px) brightness(1.20); }
+}
+
+/* DIM OVERLAY */
+#dimOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+  z-index: 8;
 }
 
 /* WRAPPER */
@@ -22,59 +51,41 @@ body {
   text-align: center;
 }
 
-/* === MOTIVATION GRID === */
+/* === TILE GRID === */
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
   padding: 0 18px;
   transition: opacity 0.4s ease;
+  z-index: 2;
 }
 
 .tile {
-  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.85);
   border-radius: 18px;
-  padding: 22px 10px;
+  padding: 18px 12px;
   font-size: 1rem;
-  color: #333;
+  color: #222;
   font-weight: 500;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.10);
   transition:
     transform 0.25s cubic-bezier(.25,.8,.25,1),
     box-shadow 0.25s ease,
     background 0.35s ease,
-    color 0.35s ease,
-    opacity 0.35s ease;
+    color 0.35s ease;
 }
 
-/* Lift animation (subtle) */
-.tile:active,
-.tile:focus {
-  transform: scale(1.03);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
+.tile svg { width: 22px; height: 22px; opacity: 0.85; }
 
-/* ACTIVE TILE COLORS */
-.tile.active[data-motive="Educational"] {
-  background: #E6F4EA;
-  color: #2E7D32;
-  box-shadow: 0 6px 24px rgba(46,125,50,0.25);
-}
-.tile.active[data-motive="Playful"] {
-  background: #FFF2D5;
-  color: #D47A00;
-  box-shadow: 0 6px 24px rgba(212,122,0,0.25);
-}
-.tile.active[data-motive="Direct"] {
-  background: #E3F2FD;
-  color: #1565C0;
-  box-shadow: 0 6px 24px rgba(21,101,192,0.25);
-}
-.tile.active[data-motive="Identity"] {
-  background: #FCE8E0;
-  color: #A84422;
-  box-shadow: 0 6px 24px rgba(168,68,34,0.25);
-}
+/* Active tile */
+.tile.active[data-motive="Educational"] { background:#E6F4EA; color:#2E7D32; }
+.tile.active[data-motive="Playful"]    { background:#FFF2D5; color:#D47A00; }
+.tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#1565C0; }
+.tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#A84422; }
 
 /* === FLOATING CARD === */
 .card {
@@ -84,117 +95,220 @@ body {
   transform: translateX(-50%) scale(0.82);
   width: 88%;
   max-width: 420px;
-
-  background: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.3);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
   padding: 22px 20px;
   border-radius: 24px;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-  opacity: 0.92;
-
+  box-shadow: 0 8px 28px rgba(0,0,0,0.20);
+  color: #fff;
+  opacity: 0.95;
   transition:
     transform 0.45s cubic-bezier(.25,.8,.25,1),
     top 0.45s cubic-bezier(.25,.8,.25,1),
-    background 0.45s ease,
-    color 0.35s ease;
+    background 0.45s ease;
+  z-index: 3;
 }
+.card h1 { font-size: 1.6rem; margin-bottom: 8px; }
+.card h2 { font-size: 1rem; opacity: 0.75; }
+.card .motive-tag { font-size: 1.2rem; margin-top: 12px; }
+.card .icon { width: 28px; height: 28px; margin-bottom: 6px; opacity: 0.9; }
 
-/* CARD CONTENT */
-.card h1 {
-  font-size: 1.6rem;
-  margin-bottom: 8px;
-}
-.card h2 {
-  font-size: 1rem;
-  font-weight: 500;
-  opacity: 0.75;
-}
-.card .motive-tag {
-  margin-top: 12px;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
+/* CARD THEMES */
+.card.educational { background: rgba(230,244,234,0.45); }
+.card.playful     { background: rgba(255,242,213,0.45); }
+.card.direct      { background: rgba(227,242,253,0.45); }
+.card.identity    { background: rgba(252,232,224,0.45); }
 
-/* COLOR THEMES */
-.card.educational { background: rgba(230, 244, 234, 0.6); }
-.card.playful      { background: rgba(255, 242, 213, 0.6); }
-.card.direct       { background: rgba(227, 242, 253, 0.6); }
-.card.identity     { background: rgba(252, 232, 224, 0.6); }
-
-/* MICRO-BOUNCE */
-.card.bump {
-  animation: bump 0.35s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes bump {
-  0%   { transform: translateX(-50%) scale(1); }
-  50%  { transform: translateX(-50%) scale(1.04); }
-  100% { transform: translateX(-50%) scale(1); }
-}
-
-/* === ULTRA-SUBTLE BREATHING (V4) === */
+/* Breathing */
 .card.breathing {
   animation: breathing 6.5s ease-in-out infinite;
 }
 @keyframes breathing {
-  0%   { transform: translateX(-50%) scale(1);     box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
-  50%  { transform: translateX(-50%) scale(1.01); box-shadow: 0 10px 32px rgba(0,0,0,0.15); }
-  100% { transform: translateX(-50%) scale(1);     box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+  0%   { transform: translateX(-50%) scale(1); }
+  50%  { transform: translateX(-50%) scale(1.01); }
+  100% { transform: translateX(-50%) scale(1); }
 }
 
+/* === V7 MOTIVATION PANEL (Bottom Sheet) === */
+#motivePanel {
+  position: fixed;
+  left: 0;
+  bottom: -100%;
+  width: 100%;
+  height: 75%;
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(28px);
+  border-radius: 24px 24px 0 0;
+  padding: 26px 24px 34px;
+  box-shadow: 0 -8px 28px rgba(0,0,0,0.25);
+  transition: transform 0.42s cubic-bezier(.25,.8,.25,1), bottom 0.42s cubic-bezier(.25,.8,.25,1);
+  z-index: 10;
+  color: #fff;
+  overflow-y: auto;
+}
+
+#motivePanel.open {
+  bottom: 0;
+}
+
+/* Close button */
+#closePanel {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 28px;
+  color: white;
+  opacity: 0.75;
+  cursor: pointer;
+  font-weight: 300;
+  transition: opacity 0.2s ease;
+}
+#closePanel:hover { opacity: 1; }
+
+/* Panel icon */
+#motivePanel svg {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+  opacity: 0.9;
+}
+
+#motivePanel h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+#motivePanel p {
+  font-size: 1.05rem;
+  line-height: 1.48;
+  opacity: 0.95;
+}
 </style>
 </head>
 
 <body>
 
+<div class="nebula"></div>
+<div id="dimOverlay"></div>
+
 <div class="container">
   <div class="tiles" id="tiles">
-    <div class="tile" data-motive="Educational">Educational</div>
-    <div class="tile" data-motive="Playful">Playful</div>
-    <div class="tile" data-motive="Direct">Direct</div>
-    <div class="tile" data-motive="Identity">Identity</div>
+
+    <!-- EDUCATIONAL -->
+    <div class="tile" data-motive="Educational">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/></svg>
+      Educational
+    </div>
+
+    <!-- PLAYFUL -->
+    <div class="tile" data-motive="Playful">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>
+      Playful
+    </div>
+
+    <!-- DIRECT -->
+    <div class="tile" data-motive="Direct">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7"><path d="M5 12h14"/><path d="M13 8l6 4-6 4"/></svg>
+      Direct
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="tile" data-motive="Identity">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.7"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/></svg>
+      Identity
+    </div>
+
   </div>
 </div>
 
-<!-- FLOATING CARD -->
+<!-- CARD -->
 <div class="card educational breathing" id="exerciseCard">
+  <svg class="icon" id="cardIcon" viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">
+    <path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>
+  </svg>
   <h1>Micro Exercise</h1>
   <h2>Day 558 | Forge 🔥</h2>
   <div class="motive-tag" id="motiveLabel">Educational</div>
 </div>
 
+<!-- V7 MOTIVATION PANEL -->
+<div id="motivePanel">
+  <div id="closePanel">×</div>
+  <div id="panelContent"></div>
+</div>
+
 <script>
-/* === TILE TAP LOGIC === */
 const tiles = document.querySelectorAll('.tile');
 const card = document.getElementById('exerciseCard');
 const motiveLabel = document.getElementById('motiveLabel');
+const cardIcon = document.getElementById('cardIcon');
+const panel = document.getElementById('motivePanel');
+const panelContent = document.getElementById('panelContent');
+const dimOverlay = document.getElementById('dimOverlay');
 
+/* Icon SVGs */
+const icons = {
+  Educational: `<path d="M12 3v18"/><path d="M8 7h8"/><path d="M10 12h4"/>`,
+  Playful: `<path d="M12 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>`,
+  Direct: `<path d="M5 12h14"/><path d="M13 8l6 4-6 4"/>`,
+  Identity: `<circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2"/>`
+};
+
+/* Short motivation explanations */
+const descriptions = {
+  Educational: "Clear reasoning and helpful science that explain why this matters.",
+  Playful: "A spark of lightness that helps the work feel less heavy.",
+  Direct: "Straightforward guidance with no fluff — do this, feel better.",
+  Identity: "A reminder of who you are becoming through consistent action."
+};
+
+/* TILE CLICK BEHAVIOR */
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
 
-    /* Reset active states */
+    /* Active states */
     tiles.forEach(t => t.classList.remove('active'));
     tile.classList.add('active');
 
-    /* Update label */
     const motive = tile.dataset.motive;
     motiveLabel.textContent = motive;
 
-    /* Reset card theme */
+    /* Apply card theme */
     card.classList.remove("educational","playful","direct","identity");
-
-    /* Apply new theme */
     card.classList.add(motive.toLowerCase());
 
-    /* Micro-bounce */
+    /* Update card icon */
+    cardIcon.innerHTML = icons[motive];
+
+    /* Bounce */
     card.classList.remove("bump");
     void card.offsetWidth;
     card.classList.add("bump");
+
+    /* === OPEN PANEL === */
+    panelContent.innerHTML = `
+      <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">${icons[motive]}</svg>
+      <h3>${motive}</h3>
+      <p>${descriptions[motive]}</p>
+    `;
+
+    panel.classList.add("open");
+    dimOverlay.style.opacity = "1";
+    dimOverlay.style.pointerEvents = "auto";
   });
 });
 
-/* === SCROLL REVEAL === */
+/* CLOSE PANEL */
+document.getElementById('closePanel').onclick = closePanel;
+dimOverlay.onclick = closePanel;
+
+function closePanel() {
+  panel.classList.remove("open");
+  dimOverlay.style.opacity = "0";
+  dimOverlay.style.pointerEvents = "none";
+}
+
+/* SCROLL ANIMATION */
 const grid = document.getElementById('tiles');
 
 window.addEventListener('scroll', () => {
