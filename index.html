@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>OMNIFIT V14 — Static</title>
+<title>OMNIFIT V14.2 — Static Widget</title>
 
 <style>
 /* ===========================================================
@@ -17,15 +17,15 @@ body {
 }
 
 /* ===========================================================
-   WIDGET WRAPPER (STATIC, 400PX)
+   WRAPPER — FIXED STATIC WIDGET (400PX)
 =========================================================== */
 #omnifitWidget {
   width:100%;
   max-width:315px;
-  height:400px;                /* ⭐ Fixed height */
+  height:400px;
   margin:0 auto;
   position:relative;
-  overflow:hidden;             /* ⭐ No scroll */
+  overflow:hidden;
 }
 
 /* ===========================================================
@@ -47,13 +47,15 @@ body {
 }
 
 /* ===========================================================
-   MOTIVATION TILES
+   MOTIVATION TILES (TOP)
 =========================================================== */
 .tiles {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
   padding:16px 10px 0;
+  position:relative;
+  z-index:10;
 }
 
 .tile {
@@ -66,48 +68,87 @@ body {
   text-align:center;
   cursor:pointer;
   color:#1d1d1d;
-  transition:transform .2s ease;
+  transition:transform .2s ease, opacity .25s ease;
   position:relative;
   overflow:hidden;
 }
-.tile:hover { transform:scale(1.03); }
 
-/* Active Colors */
+.tile:hover { transform:scale(1.03); }
+.tile.active { opacity:1; }
+
+.tiles:not(:hover) .tile:not(.active) {
+  opacity:0.80;
+}
+
+/* Active colors */
 .tile.active[data-motive="Educational"] { background:#E6F0D8; color:#245C2A; }
 .tile.active[data-motive="Playful"]    { background:#FFF2D5; color:#A96300; }
 .tile.active[data-motive="Direct"]     { background:#E3F2FD; color:#0F4C9A; }
 .tile.active[data-motive="Identity"]   { background:#FCE8E0; color:#9A3D21; }
 
 /* ===========================================================
-   LIVING CARD — CENTERED HERO
+   LIVING CARD — CENTER HERO
 =========================================================== */
 .card {
   position:absolute;
-  top:50%;                               /* center vertically */
+  top:50%;
   left:50%;
   transform:translate(-50%,-50%) scale(.96);
   width:90%;
+
   background:rgba(230,240,216,0.28);
-  backdrop-filter:blur(22px);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+
   padding:20px;
-  border-radius:16px;
+  border-radius:18px;
   text-align:left;
-  box-shadow:0 4px 14px rgba(0,0,0,0.18);
   color:white;
+
+  box-shadow:0 12px 32px rgba(0,0,0,0.22);
+
+  transition:
+    background .35s ease,
+    box-shadow .35s ease,
+    transform .35s cubic-bezier(.25,.8,.25,1);
+
+  z-index:20;
 }
 
-.card h1 {
-  font-size:1.15rem;
-  margin-bottom:4px;
+/* Breathing animation */
+.card.breathing {
+  animation:breathe 6s ease-in-out infinite;
 }
-.card h2 {
-  font-size:0.9rem;
-  opacity:0.9;
+@keyframes breathe {
+  0%   { transform:translate(-50%,-50%) scale(.96); }
+  50%  { transform:translate(-50%,-50%) scale(1.00); }
+  100% { transform:translate(-50%,-50%) scale(.96); }
 }
-.card .motive-tag {
-  margin-top:8px;
-  font-size:1rem;
+
+/* Pulse animation when tile ⚡ updates the card */
+.pulse {
+  animation:pulseSelect 0.32s ease-out;
+}
+@keyframes pulseSelect {
+  0%   { transform:translate(-50%,-50%) scale(0.97); }
+  100% { transform:translate(-50%,-50%) scale(.96); }
+}
+
+/* Card content */
+.card h1 { font-size:1.15rem; margin-bottom:4px; }
+.card h2 { font-size:0.9rem; opacity:0.9; }
+.card .motive-tag { margin-top:8px; font-size:1rem; opacity:0.95; }
+
+/* Card icon */
+#cardIcon {
+  width:28px;
+  height:28px;
+  margin-bottom:10px;
   opacity:0.95;
+}
+#cardIcon path, 
+#cardIcon circle {
+  stroke:white;
 }
 
 /* ===========================================================
@@ -149,7 +190,7 @@ body {
 }
 
 /* ===========================================================
-   RIPPLE + PRESS EFFECTS
+   RIPPLE + PRESS
 =========================================================== */
 .ripple-container {
   position:absolute;
@@ -171,19 +212,20 @@ body {
 }
 .press {
   transform:scale(.94);
-  transition:transform 80ms ease;
+  transition:transform .08s ease;
 }
 </style>
 </head>
 
 <body>
 <div id="omnifitWidget">
+
   <div class="nebula"></div>
   <div id="dimOverlay"></div>
 
-  <!-- ========================= -->
-  <!-- TILES                     -->
-  <!-- ========================= -->
+  <!-- ========================================= -->
+  <!-- TILES                                     -->
+  <!-- ========================================= -->
   <div class="tiles" id="tiles">
     <div class="tile" data-motive="Educational">Educational</div>
     <div class="tile" data-motive="Playful">Playful</div>
@@ -191,26 +233,25 @@ body {
     <div class="tile" data-motive="Identity">Identity</div>
   </div>
 
-  <!-- ========================= -->
-  <!-- LIVING CARD               -->
-  <!-- ========================= -->
-  <div class="card" id="exerciseCard">
-    <svg id="cardIcon" viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7"></svg>
+  <!-- ========================================= -->
+  <!-- LIVING CARD (CENTERED HERO)               -->
+  <!-- ========================================= -->
+  <div class="card breathing" id="exerciseCard">
+    <svg id="cardIcon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.7"></svg>
     <h1>Micro Exercise</h1>
     <h2>Day 558 | Forge 🔥</h2>
     <div class="motive-tag" id="motiveLabel">Educational</div>
   </div>
 
-  <!-- ========================= -->
-  <!-- BOTTOM PANEL              -->
-  <!-- ========================= -->
+  <!-- ========================================= -->
+  <!-- BOTTOM SHEET                              -->
+  <!-- ========================================= -->
   <div id="motivePanel">
     <div id="closePanel">×</div>
     <div id="panelContent"></div>
   </div>
 
-</div> <!-- END WRAPPER -->
-
+</div><!-- END -->
 
 <script>
 /* ===========================================================
@@ -224,10 +265,10 @@ const icons = {
 };
 
 const descriptions = {
-  Educational:"Clear reasoning and useful science behind today’s exercise.",
-  Playful:"Lightness and motivation to keep things enjoyable.",
-  Direct:"Straightforward and impactful guidance.",
-  Identity:"A reminder of who you're becoming through consistent action."
+  Educational:"Clear reasoning and practical science behind today’s exercise.",
+  Playful:"Lightness and fun energy to make training enjoyable.",
+  Direct:"Straightforward guidance — simple, effective, to the point.",
+  Identity:"A reminder of who you're becoming through consistency."
 };
 
 /* ===========================================================
@@ -242,7 +283,7 @@ const panel=document.getElementById('motivePanel');
 const panelContent=document.getElementById('panelContent');
 
 /* ===========================================================
-   TILE → OPEN PANEL
+   TILE → UPDATE CARD + OPEN PANEL
 =========================================================== */
 tiles.forEach(tile=>{
   tile.addEventListener('click',()=>{
@@ -251,21 +292,30 @@ tiles.forEach(tile=>{
     motiveLabel.textContent=m;
     cardIcon.innerHTML=icons[m];
 
+    /* Pulse animation */
+    card.classList.remove("pulse");
+    void card.offsetWidth;
+    card.classList.add("pulse");
+
+    /* Activate tile */
     tiles.forEach(t=>t.classList.remove('active'));
     tile.classList.add('active');
 
+    /* Prepare panel content */
     panelContent.innerHTML=`
       <svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.7">${icons[m]}</svg>
       <h3 style="margin-top:14px">${m}</h3>
       <p style="margin-top:6px; font-size:1rem; opacity:0.9">${descriptions[m]}</p>
     `;
 
+    /* Open panel */
     panel.classList.add("open");
     dimOverlay.style.opacity="1";
     dimOverlay.style.pointerEvents="auto";
   });
 });
 
+/* CLOSE PANEL */
 document.getElementById('closePanel').onclick=closePanel;
 dimOverlay.onclick=closePanel;
 
@@ -276,7 +326,7 @@ function closePanel(){
 }
 
 /* ===========================================================
-   RIPPLE INTERACTION
+   RIPPLE EFFECT
 =========================================================== */
 function attachRipples(){
   document.querySelectorAll('.tile').forEach(el=>{
