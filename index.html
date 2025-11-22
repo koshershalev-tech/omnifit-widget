@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OMNIFIT Living Tile Prototype — V3 Lift</title>
+<title>OMNIFIT Living Tile Prototype — V4 (Breathing)</title>
 
 <style>
 /* RESET */
@@ -15,7 +15,7 @@ body {
   overflow-x: hidden;
 }
 
-/* === WRAPPER === */
+/* WRAPPER */
 .container {
   width: 100%;
   padding-top: 40px;
@@ -47,7 +47,7 @@ body {
     opacity 0.35s ease;
 }
 
-/* Subtle Apple-style lift */
+/* Lift animation (subtle) */
 .tile:active,
 .tile:focus {
   transform: scale(1.03);
@@ -101,7 +101,7 @@ body {
     color 0.35s ease;
 }
 
-/* Card content */
+/* CARD CONTENT */
 .card h1 {
   font-size: 1.6rem;
   margin-bottom: 8px;
@@ -117,13 +117,13 @@ body {
   font-weight: 600;
 }
 
-/* CARD COLOR THEMES */
-.card.educational  { background: rgba(230, 244, 234, 0.6); }
+/* COLOR THEMES */
+.card.educational { background: rgba(230, 244, 234, 0.6); }
 .card.playful      { background: rgba(255, 242, 213, 0.6); }
 .card.direct       { background: rgba(227, 242, 253, 0.6); }
 .card.identity     { background: rgba(252, 232, 224, 0.6); }
 
-/* MICRO-BOUNCE when motive updates */
+/* MICRO-BOUNCE */
 .card.bump {
   animation: bump 0.35s cubic-bezier(.34,1.56,.64,1);
 }
@@ -133,25 +133,32 @@ body {
   100% { transform: translateX(-50%) scale(1); }
 }
 
+/* === ULTRA-SUBTLE BREATHING (V4) === */
+.card.breathing {
+  animation: breathing 6.5s ease-in-out infinite;
+}
+@keyframes breathing {
+  0%   { transform: translateX(-50%) scale(1);     box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+  50%  { transform: translateX(-50%) scale(1.01); box-shadow: 0 10px 32px rgba(0,0,0,0.15); }
+  100% { transform: translateX(-50%) scale(1);     box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
-  <!-- LIVING TILE GRID -->
   <div class="tiles" id="tiles">
     <div class="tile" data-motive="Educational">Educational</div>
     <div class="tile" data-motive="Playful">Playful</div>
     <div class="tile" data-motive="Direct">Direct</div>
     <div class="tile" data-motive="Identity">Identity</div>
   </div>
-
 </div>
 
 <!-- FLOATING CARD -->
-<div class="card educational" id="exerciseCard">
+<div class="card educational breathing" id="exerciseCard">
   <h1>Micro Exercise</h1>
   <h2>Day 558 | Forge 🔥</h2>
   <div class="motive-tag" id="motiveLabel">Educational</div>
@@ -166,28 +173,28 @@ const motiveLabel = document.getElementById('motiveLabel');
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
 
-    /* reset tile states */
+    /* Reset active states */
     tiles.forEach(t => t.classList.remove('active'));
     tile.classList.add('active');
 
-    /* update text */
+    /* Update label */
     const motive = tile.dataset.motive;
     motiveLabel.textContent = motive;
 
-    /* reset card color themes */
+    /* Reset card theme */
     card.classList.remove("educational","playful","direct","identity");
 
-    /* apply selected theme */
+    /* Apply new theme */
     card.classList.add(motive.toLowerCase());
 
-    /* card micro-bounce */
+    /* Micro-bounce */
     card.classList.remove("bump");
-    void card.offsetWidth; /* reset animation */
+    void card.offsetWidth;
     card.classList.add("bump");
   });
 });
 
-/* === SCROLL REVEAL LOGIC === */
+/* === SCROLL REVEAL === */
 const grid = document.getElementById('tiles');
 
 window.addEventListener('scroll', () => {
@@ -208,3 +215,4 @@ window.addEventListener('scroll', () => {
 
 </body>
 </html>
+
