@@ -263,3 +263,193 @@ body {
   </div>
 
 </div>
+<script>
+/* ---------------------------------------------------------
+   CONFIG
+--------------------------------------------------------- */
+const DATA_URL =
+  "https://koshershalev-tech.github.io/omnifit-widget/omnifit_data.json";
+
+const OMNIFIT_START = new Date("2024-05-13"); // Auto day-number engine
+
+/* DOM ELEMENTS */
+const cardTitle = document.getElementById("cardTitle");
+const cardSubtitle = document.getElementById("cardSubtitle");
+const motiveLabel = document.getElementById("motiveLabel");
+const heatmapRow = document.getElementById("heatmapRow");
+const panel = document.getElementById("motivePanel");
+const dimOverlay = document.getElementById("dimOverlay");
+const panelContent = document.getElementById("panelContent");
+
+let jsonData = [];
+let todayEntry = null;
+
+/* ---------------------------------------------------------
+   FETCH + INIT
+--------------------------------------------------------- */
+async function loadData() {
+  try {
+    const res = await fetch(DATA_URL);
+    jsonData = await res.json();
+  } catch (err) {
+    console.error("JSON Load Error:", err);
+    jsonData = [];
+  }
+
+  findTodayEntry();
+  renderCard();
+  renderHeatmap();
+}
+
+loadData();
+
+/* ---------------------------------------------------------
+   FIND TODAY ENTRY (Option A + fallback B)
+--------------------------------------------------------- */
+function findTodayEntry() {
+  const todayStr = new Date().toISOString().slice(0, 10);
+  todayEntry = jsonData.find(d => d.date === todayStr);
+
+  if (!todayEntry) {
+    todayEntry = {
+      date: todayStr,
+      category: "Coming Soon",
+      emoji: "⏳",
+      micro_exercise_title: "Content Coming Soon",
+      micro_exercise: "Your OMNIFIT session is on the way.",
+      motivation: {
+        Educational: "Your daily OMNIFIT update will appear here soon.",
+        Direct: "Check back later today.",
+        Playful: "Even widgets need a warm-up.",
+        Identity: "Consistency includes waiting with patience."
+      }
+    };
+  }
+}
+
+/* ---------------------------------------------------------
+   AUTO DAY CALCULATION
+--------------------------------------------------------- */
+function getDayNumber(dateStr) {
+  const d = new Date(dateStr);
+  const diff = d - OMNIFIT_START;
+  return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+}
+
+/* ---------------------------------------------------------
+   RENDER MAIN CARD
+--------------------------------------------------------- */
+function renderCard() {
+  cardTitle.textContent = todayEntry.micro_exercise_title;
+
+  const dayNum = getDayNumber(todayEntry.date);
+  cardSubtitle.textContent = `Day ${dayNum} | ${todayEntry.category} ${todayEntry.emoji}`;
+
+  motiveLabel.textContent = "Tap a motivation";
+}
+
+/* ---------------------------------------------------------
+   MOTIVATION PANEL LOGIC
+--------------------------------------------------------- */
+document.querySelectorAll(".tile").forEach(tile => {
+  const rc = document.createElement("div");
+  rc.className = "ripple-container";
+  tile.appendChild(rc);
+
+  tile.addEventListener("pointerdown", e => {
+    tile.classList.add("press");
+    createRipple(e, rc);
+  });
+  tile.addEventListener("pointerup", () => tile.classList.remove("press"));
+  tile.addEventListener("pointerleave", () =>
+    tile.classList.remove("press")
+  );
+
+  tile.addEventListener("click", () => {
+    document
+      .querySelectorAll(".tile")
+      .forEach(t => t.classList.remove("active"));
+    tile.classList.add("active");
+
+    const key = tile.dataset.motive;
+    motiveLabel.textContent = key;
+
+    panelContent.innerHTML = `
+      <h3>${key}</h3>
+      <p>${todayEntry.motivation[key]}</p>
+    `;
+
+    panel.classList.add("open");
+    dimOverlay.style.opacity = "1";
+    dimOverlay.style.pointerEvents = "auto";
+  });
+});
+
+document.getElementById("closePanel").onclick = closePanel;
+dimOverlay.onclick = closePanel;
+
+function closePanel() {
+  panel.classList.remove("open");
+  dimOverlay.style.opacity = "0";
+  dimOverlay.style.pointerEvents = "none";
+}
+
+/* ---------------------------------------------------------
+   RIPPLE
+--------------------------------------------------------- */
+function createRipple(e, container) {
+  const r = document.createElement("div");
+  r.className = "ripple";
+  const rect = container.getBoundingClientRect();
+  r.style.left = e.clientX - rect.left - 10 + "px";
+  r.style.top = e.clientY - rect.top - 10 + "px";
+  container.appendChild(r);
+  setTimeout(() => r.remove(), 450);
+}
+
+/* ---------------------------------------------------------
+   HEATMAP V2 — 90 DAY ENGINE
+--------------------------------------------------------- */
+function renderHeatmap() {
+  heatmapRow.innerHTML = "";
+
+  const DAYS = 90;
+  const today = new Date();
+
+  const pastDays = [];
+  for (let i = DAYS - 1; i >= 0; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    pastDays.push(d);
+  }
+
+  pastDays.forEach(d => {
+    const ds = d.toISOString().slice(0, 10);
+
+    const match = jsonData.find(x => x.date === ds);
+
+    let level = 0;
+    if (match) {
+      switch (match.category) {
+        case "Active Recovery": level = 1; break;
+        case "Practice":        level = 1; break;
+        case "Train":           level = 2; break;
+        case "Aerobic Capacity":level = 2; break;
+        case "Forge":           level = 3; break;
+        case "Heavy":           level = 3; break;
+      }
+    }
+
+    const pill = document.createElement("div");
+    pill.className = `hm-pill hm-${level}`;
+
+    if (ds === today.toISOString().slice(0, 10)) {
+      pill.classList.add("hm-today");
+    }
+
+    heatmapRow.appendChild(pill);
+  });
+}
+</script>
+</body>
+</html>
