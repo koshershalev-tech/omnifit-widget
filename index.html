@@ -1,456 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OMNIFIT Widget</title>
 
-<title>OMNIFIT Widget V16</title>
-
-<style>
-/* RESET */
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
-               Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background:transparent;
-}
-
-/* WRAPPER */
-#omnifitWidget {
-  width:100%;
-  max-width:320px;
-  height:600px;
-  margin:0 auto;
-  position:relative;
-  overflow:hidden;
-  border-radius:22px;
-  background:#f6f8f4; /* clean minimal background */
-  border:1px solid #e1e4df;
-}
-
-/* TILE GRID */
-.tiles {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  padding:16px 10px 0;
-  position:relative;
-  z-index:10;
-}
-
-.tile {
-  padding:14px;
-  border-radius:14px;
-  background:#ffffff;
-  border:1px solid #e8e8e8;
-  text-align:center;
-  font-weight:500;
-  font-size:0.95rem;
-  cursor:pointer;
-  color:#1d1d1d;
-  transition:transform .2s ease, opacity .25s ease, background .25s ease;
-  position:relative;
-  overflow:hidden;
-}
-.tile:hover { transform:scale(1.03); }
-.tile.active { opacity:1; border-color:#bcbcbc; }
-.tiles:not(:hover) .tile:not(.active) { opacity:0.75; }
-
-/* Active tile color logic */
-.tile.active[data-motive="Educational"] { background:#E6F0D8; color:#245C2A; }
-.tile.active[data-motive="Direct"]      { background:#E3F2FD; color:#0F4C9A; }
-.tile.active[data-motive="Playful"]     { background:#FFF2D5; color:#A96300; }
-.tile.active[data-motive="Identity"]    { background:#FCE8E0; color:#9A3D21; }
-
-/* CARD */
-.card {
-  position:absolute;
-  top:250px;
-  left:50%;
-  transform:translateX(-50%) scale(1);
-  width:86%;
-  background:#ffffff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 22px rgba(0,0,0,0.15);
-  transition:transform .3s ease;
-  border:1px solid #e1e1e1;
-  z-index:20;
-}
-
-.card h1 {
-  font-size:1.08rem;
-  font-weight:600;
-  color:#222;
-}
-.card h2 {
-  margin-top:4px;
-  font-size:0.92rem;
-  opacity:0.8;
-  color:#444;
-}
-
-/* Motivation label under title */
-.motive-tag {
-  margin-top:12px;
-  font-size:0.95rem;
-  font-weight:500;
-  opacity:0.85;
-  color:#333;
-}
-
-/* Heatmap container */
-.heatmapContainer {
-  position:absolute;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  width:90%;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.hm-week-labels {
-  display:flex;
-  justify-content:space-between;
-  padding:0 6px;
-  font-size:0.65rem;
-  opacity:0.55;
-  color:#444;
-}
-
-.hm-row {
-  display:flex;
-  justify-content:space-between;
-  gap:3px;
-}
-
-.hm-pill {
-  width:16px;
-  height:16px;
-  border-radius:4px;
-  background:#e4e6e3;
-  border:1px solid #d0d2ce;
-  transition:background .25s ease;
-}
-
-/* Intensity colors */
-.hm-0 { background:#e8eae7; }
-.hm-1 { background:#cfe5c4; }
-.hm-2 { background:#aace9b; }
-.hm-3 { background:#85b678; }
-
-.hm-today {
-  border:2px solid #4a8836;
-  box-shadow:0 0 4px rgba(74,136,54,0.4);
-}
-
-/* DIM OVERLAY */
-#dimOverlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.40);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .3s ease;
-  z-index:40;
-}
-
-/* BOTTOM SHEET */
-#motivePanel {
-  position:fixed;
-  bottom:-100%;
-  left:0;
-  width:100%;
-  height:58%;
-  background:#ffffff;
-  border-radius:22px 22px 0 0;
-  padding:26px;
-  color:#222;
-  transition:bottom .45s ease;
-  z-index:50;
-  overflow-y:auto;
-  border:1px solid #e7e7e7;
-}
-
-#motivePanel.open { bottom:0; }
-
-#closePanel {
-  position:absolute;
-  top:12px;
-  right:18px;
-  font-size:32px;
-  opacity:0.7;
-  cursor:pointer;
-  color:#333;
-}
-
-#panelContent h3 {
-  font-size:1.1rem;
-  font-weight:600;
-  margin-top:10px;
-}
-
-#panelContent p {
-  margin-top:8px;
-  line-height:1.45;
-  color:#444;
-  white-space:pre-line;
-  font-size:0.95rem;
-}
-
-/* Ripple */
-.ripple-container {
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  overflow:hidden;
-}
-.ripple {
-  position:absolute;
-  width:20px;
-  height:20px;
-  background:rgba(0,0,0,0.15);
-  border-radius:50%;
-  transform:scale(0);
-  animation:rippleExpand .45s ease-out forwards;
-}
-@keyframes rippleExpand {
-  to { transform:scale(8); opacity:0; }
-}
-.press {
-  transform:scale(.95);
-  transition:transform .08s ease;
-}
-</style>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-<div id="omnifitWidget">
+  <div id="omnifitWidget">
 
-  <!-- MOTIVATION TILES -->
-  <div class="tiles" id="tiles">
-    <div class="tile" data-motive="Educational">Educational</div>
-    <div class="tile" data-motive="Direct">Direct</div>
-    <div class="tile" data-motive="Playful">Playful</div>
-    <div class="tile" data-motive="Identity">Identity</div>
-  </div>
-
-  <!-- MAIN CARD -->
-  <div class="card" id="exerciseCard">
-    <h1 id="cardTitle">Micro Exercise</h1>
-    <h2 id="cardSubtitle">Day — | —</h2>
-    <div class="motive-tag" id="motiveLabel">Tap a motivation</div>
-  </div>
-
-  <!-- HEATMAP -->
-  <div class="heatmapContainer">
-    <div class="hm-week-labels">
-      <span>S</span><span>M</span><span>T</span><span>W</span>
-      <span>T</span><span>F</span><span>S</span>
+    <!-- MOTIVATION TILES -->
+    <div class="tiles">
+      <div class="tile" data-motive="Educational">Educational</div>
+      <div class="tile" data-motive="Direct">Direct</div>
+      <div class="tile" data-motive="Playful">Playful</div>
+      <div class="tile" data-motive="Identity">Identity</div>
     </div>
-    <div class="hm-row" id="heatmapRow"></div>
+
+    <!-- MAIN CARD -->
+    <div class="card" id="exerciseCard">
+      <h1 id="cardTitle">Micro Exercise</h1>
+      <h2 id="cardSubtitle">Day — | —</h2>
+      <div class="motive-tag" id="motiveLabel">Tap a motivation</div>
+    </div>
+
+    <!-- HEATMAP -->
+    <div class="heatmapContainer">
+      <div class="hm-week-labels">
+        <span>S</span><span>M</span><span>T</span><span>W</span>
+        <span>T</span><span>F</span><span>S</span>
+      </div>
+      <div class="hm-row" id="heatmapRow"></div>
+    </div>
+
+    <!-- Overlay + Panel -->
+    <div id="dimOverlay"></div>
+    <div id="motivePanel">
+      <div id="closePanel">×</div>
+      <div id="panelContent"></div>
+    </div>
+
   </div>
 
-  <!-- DIM OVERLAY -->
-  <div id="dimOverlay"></div>
-
-  <!-- MOTIVATION PANEL -->
-  <div id="motivePanel">
-    <div id="closePanel">×</div>
-    <div id="panelContent"></div>
-  </div>
-
-</div>
-<script>
-/* ---------------------------------------------------------
-   CONFIG
---------------------------------------------------------- */
-const DATA_URL =
-  "https://koshershalev-tech.github.io/omnifit-widget/data.json";
-
-const OMNIFIT_START = new Date("2024-05-13"); // Auto day-number engine
-
-/* DOM ELEMENTS */
-const cardTitle = document.getElementById("cardTitle");
-const cardSubtitle = document.getElementById("cardSubtitle");
-const motiveLabel = document.getElementById("motiveLabel");
-const heatmapRow = document.getElementById("heatmapRow");
-const panel = document.getElementById("motivePanel");
-const dimOverlay = document.getElementById("dimOverlay");
-const panelContent = document.getElementById("panelContent");
-
-let jsonData = [];
-let todayEntry = null;
-
-/* ---------------------------------------------------------
-   FETCH + INIT
---------------------------------------------------------- */
-async function loadData() {
-  try {
-    const res = await fetch(DATA_URL);
-    jsonData = await res.json();
-  } catch (err) {
-    console.error("JSON Load Error:", err);
-    jsonData = [];
-  }
-
-  findTodayEntry();
-  renderCard();
-  renderHeatmap();
-}
-
-loadData();
-
-/* ---------------------------------------------------------
-   FIND TODAY ENTRY (Option A + fallback B)
---------------------------------------------------------- */
-function findTodayEntry() {
-  const todayStr = new Date().toISOString().slice(0, 10);
-  todayEntry = jsonData.find(d => d.date === todayStr);
-
-  if (!todayEntry) {
-    todayEntry = {
-      date: todayStr,
-      category: "Coming Soon",
-      emoji: "⏳",
-      micro_exercise_title: "Content Coming Soon",
-      micro_exercise: "Your OMNIFIT session is on the way.",
-      motivation: {
-        Educational: "Your daily OMNIFIT update will appear here soon.",
-        Direct: "Check back later today.",
-        Playful: "Even widgets need a warm-up.",
-        Identity: "Consistency includes waiting with patience."
-      }
-    };
-  }
-}
-
-/* ---------------------------------------------------------
-   AUTO DAY CALCULATION
---------------------------------------------------------- */
-function getDayNumber(dateStr) {
-  const d = new Date(dateStr);
-  const diff = d - OMNIFIT_START;
-  return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-}
-
-/* ---------------------------------------------------------
-   RENDER MAIN CARD
---------------------------------------------------------- */
-function renderCard() {
-  cardTitle.textContent = todayEntry.micro_exercise_title;
-
-  const dayNum = getDayNumber(todayEntry.date);
-  cardSubtitle.textContent = `Day ${dayNum} | ${todayEntry.category} ${todayEntry.emoji}`;
-
-  motiveLabel.textContent = "Tap a motivation";
-}
-
-/* ---------------------------------------------------------
-   MOTIVATION PANEL LOGIC
---------------------------------------------------------- */
-document.querySelectorAll(".tile").forEach(tile => {
-  const rc = document.createElement("div");
-  rc.className = "ripple-container";
-  tile.appendChild(rc);
-
-  tile.addEventListener("pointerdown", e => {
-    tile.classList.add("press");
-    createRipple(e, rc);
-  });
-  tile.addEventListener("pointerup", () => tile.classList.remove("press"));
-  tile.addEventListener("pointerleave", () =>
-    tile.classList.remove("press")
-  );
-
-  tile.addEventListener("click", () => {
-    document
-      .querySelectorAll(".tile")
-      .forEach(t => t.classList.remove("active"));
-    tile.classList.add("active");
-
-    const key = tile.dataset.motive;
-    motiveLabel.textContent = key;
-
-    panelContent.innerHTML = `
-      <h3>${key}</h3>
-      <p>${todayEntry.motivation[key]}</p>
-    `;
-
-    panel.classList.add("open");
-    dimOverlay.style.opacity = "1";
-    dimOverlay.style.pointerEvents = "auto";
-  });
-});
-
-document.getElementById("closePanel").onclick = closePanel;
-dimOverlay.onclick = closePanel;
-
-function closePanel() {
-  panel.classList.remove("open");
-  dimOverlay.style.opacity = "0";
-  dimOverlay.style.pointerEvents = "none";
-}
-
-/* ---------------------------------------------------------
-   RIPPLE
---------------------------------------------------------- */
-function createRipple(e, container) {
-  const r = document.createElement("div");
-  r.className = "ripple";
-  const rect = container.getBoundingClientRect();
-  r.style.left = e.clientX - rect.left - 10 + "px";
-  r.style.top = e.clientY - rect.top - 10 + "px";
-  container.appendChild(r);
-  setTimeout(() => r.remove(), 450);
-}
-
-/* ---------------------------------------------------------
-   HEATMAP V2 — 90 DAY ENGINE
---------------------------------------------------------- */
-function renderHeatmap() {
-  heatmapRow.innerHTML = "";
-
-  const DAYS = 90;
-  const today = new Date();
-
-  const pastDays = [];
-  for (let i = DAYS - 1; i >= 0; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    pastDays.push(d);
-  }
-
-  pastDays.forEach(d => {
-    const ds = d.toISOString().slice(0, 10);
-
-    const match = jsonData.find(x => x.date === ds);
-
-    let level = 0;
-    if (match) {
-      switch (match.category) {
-        case "Active Recovery": level = 1; break;
-        case "Practice":        level = 1; break;
-        case "Train":           level = 2; break;
-        case "Aerobic Capacity":level = 2; break;
-        case "Forge":           level = 3; break;
-        case "Heavy":           level = 3; break;
-      }
-    }
-
-    const pill = document.createElement("div");
-    pill.className = `hm-pill hm-${level}`;
-
-    if (ds === today.toISOString().slice(0, 10)) {
-      pill.classList.add("hm-today");
-    }
-
-    heatmapRow.appendChild(pill);
-  });
-}
-</script>
+  <!-- External JS -->
+  <script src="script.js"></script>
 </body>
 </html>
-
