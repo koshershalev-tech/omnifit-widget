@@ -39,7 +39,7 @@
     "day": 4,
     "category": "Practice",
     "title": "EMOM 12 — Technique Refinement",
-    "micro_exercise": "EMOM 12 (repeat):\n1: :30 Dead Bug\n2: :30 Bear Crawl\n3: :30 Slow Air Squats",
+    "micro_exercise": "EMOM 12:\n1: :30 Dead Bug\n2: :30 Bear Crawl\n3: :30 Slow Air Squats",
     "motivation": {
       "Educational": "Practice days sharpen patterns under zero stress.",
       "Direct": "Slow the crawl—make it deliberate.",
@@ -83,9 +83,6 @@
       "Identity": "You build strength that lasts all season."
     }
   },
-
-  ** DAYS 8–14 **
-
   {
     "day": 8,
     "category": "Practice",
@@ -170,9 +167,6 @@
       "Identity": "You refine your patterns with attention."
     }
   },
-
-  ** DAYS 15–21 **
-
   {
     "day": 15,
     "category": "Aerobic Capacity",
@@ -257,14 +251,11 @@
       "Identity": "You build your engine one steady set at a time."
     }
   },
-
-  ** DAYS 22–25 **
-
   {
     "day": 22,
     "category": "Forge",
     "title": "EMOM 12 — Controlled Challenge",
-    "micro_exercise": "EMOM 12 (repeat):\n1: 6 Step Burpees\n2: 8 Lunges\n3: :30 Bear Crawl",
+    "micro_exercise": "EMOM 12:\n1: 6 Step Burpees\n2: 8 Lunges\n3: :30 Bear Crawl",
     "motivation": {
       "Educational": "Forge days build resilience through steady challenge.",
       "Direct": "Keep burpees clean—not frantic.",
@@ -308,9 +299,6 @@
       "Identity": "You refine your patterns intentionally."
     }
   },
-
-  ** DAYS 26–31 **
-
   {
     "day": 26,
     "category": "Heavy",
@@ -339,7 +327,7 @@
     "day": 28,
     "category": "Aerobic Capacity",
     "title": "EMOM 12 — Sustainable Aerobic",
-    "micro_exercise": "EMOM 12:\n:45 alternating\n- Jog/March\n- Fast Steps\n- Step Burpees",
+    "micro_exercise": "EMOM 12:\n:45 alternating:\n- Jog/March\n- Fast Steps\n- Step Burpees",
     "motivation": {
       "Educational": "Aerobic repeatability improves resilience.",
       "Direct": "Maintain even breathing.",
