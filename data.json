@@ -1,67 +1,386 @@
 [
   {
-    "date": "2025-11-12",
-    "category": "Heavy",
-    "emoji": "🦾",
-    "micro_exercise_title": "OMNIFIT SHORTS (12 min)",
-    "micro_exercise": "Standard:\n4 Rounds:\n- 10 Deadlifts (light–moderate)\n- 8 Burpees\n- :20 Plank Hold\n\nBodyweight:\n4 Rounds:\n- 12 Good Mornings (2-1-1)\n- 8 Burpees\n- :20 Plank Hold",
-    "motivation": {
-      "Educational": "Slow, controlled loading signals your bones and connective tissue to adapt and stay durable.",
-      "Direct": "Move with intention—steady tempo, clean positions.",
-      "Playful": "Lift like you’re restacking the universe one rep at a time.",
-      "Identity": "You’re the kind of person who builds strength patiently and consistently."
-    }
-  },
-  {
-    "date": "2025-11-13",
-    "category": "Train",
-    "emoji": "🔧",
-    "micro_exercise_title": "OMNIFIT SHORTS (12 min)",
-    "micro_exercise": "Standard:\nAMRAP 12:\n- 5 Neutral-Grip Pull-Ups\n- 10 Push-Ups\n\nBodyweight:\nAMRAP 12:\n- 6 Table Rows\n- 10 Push-Ups",
-    "motivation": {
-      "Educational": "Push–pull patterns create balanced shoulder mechanics and long-term joint health.",
-      "Direct": "Keep the reps honest and the rhythm steady.",
-      "Playful": "Climb and press like you’re troubleshooting gravity.",
-      "Identity": "You maintain strong posture because you train it deliberately."
-    }
-  },
-  {
-    "date": "2025-11-14",
+    "day": 1,
     "category": "Practice",
-    "emoji": "🎯",
-    "micro_exercise_title": "OMNIFIT SHORTS (12 min)",
-    "micro_exercise": "One Version:\n3 Rounds:\n- :45 Sit-Ups\n- :45 Walking Lunges\n- :45 Bear Crawl\n- :45 Rest",
+    "title": "AMRAP 12 — Practice Flow",
+    "micro_exercise": "AMRAP 12:\n- 6 Walk-Out to Plank + Step-In\n- 8 Tempo Air Squats (3–1–1–1)\n- 10 Scap Push-Ups",
     "motivation": {
-      "Educational": "Controlled intervals sharpen coordination and teach your system how to manage effort.",
-      "Direct": "Prioritize smooth movement over speed.",
-      "Playful": "Move as if you’re exploring new terrain with curiosity.",
-      "Identity": "You refine your patterns with attention, not ego."
+      "Educational": "Rhythm-based work improves joint control and movement accuracy.",
+      "Direct": "Stay smooth—avoid rushing transitions.",
+      "Playful": "Move like you’re tuning your internal metronome.",
+      "Identity": "You value precision more than speed."
     }
   },
   {
-    "date": "2025-11-15",
+    "day": 2,
+    "category": "Train",
+    "title": "EMOM 12 — Upper/Lower Strength",
+    "micro_exercise": "EMOM 12:\nOdd: 8 Push-Ups\nEven: 10 Hip Hinge Good-Mornings",
+    "motivation": {
+      "Educational": "Controlled reps build durable strength without fatigue spikes.",
+      "Direct": "Keep the form identical rep after rep.",
+      "Playful": "Pretend gravity is slightly heavier today—move with respect.",
+      "Identity": "You train with quality, not chaos."
+    }
+  },
+  {
+    "day": 3,
     "category": "Aerobic Capacity",
-    "emoji": "🌬️",
-    "micro_exercise_title": "OMNIFIT SHORTS (12 min)",
-    "micro_exercise": "Standard:\nEMOM 12:\n- :30 Jump Rope\n- :30 Rest\n\nBodyweight:\nEMOM 12:\n- :30 Fast March / Run in Place\n- :30 Rest",
+    "title": "AMRAP 12 — Mixed Engine",
+    "micro_exercise": "AMRAP 12:\n- :45 March or Jog in Place\n- 10 Reverse Lunges\n- 8 Light Step Burpees",
     "motivation": {
-      "Educational": "Steady-state work builds metabolic flexibility and supports long-term cardiovascular health.",
-      "Direct": "Stay relaxed—breathe through the pace.",
-      "Playful": "Bounce lightly as if the ground owes you nothing.",
-      "Identity": "You’re someone who maintains a strong engine through consistent, low-stress work."
+      "Educational": "Aerobic repeatability is the base of performance.",
+      "Direct": "Breathe in through the nose, out with control.",
+      "Playful": "Float through the lunges like the floor is soft sand.",
+      "Identity": "You build your engine with calm consistency."
     }
   },
   {
-    "date": "2025-11-16",
-    "category": "Active Recovery",
-    "emoji": "🌿",
-    "micro_exercise_title": "OMNIFIT SHORTS (12 min)",
-    "micro_exercise": "One Version:\n12-minute steady walk, nasal breathing, easy pace.",
+    "day": 4,
+    "category": "Practice",
+    "title": "EMOM 12 — Technique Refinement",
+    "micro_exercise": "EMOM 12 (repeat):\n1: :30 Dead Bug\n2: :30 Bear Crawl\n3: :30 Slow Air Squats",
     "motivation": {
-      "Educational": "Low-intensity movement downshifts your nervous system and improves tissue recovery.",
-      "Direct": "Keep the pace easy and the breathing nasal.",
-      "Playful": "Walk like you’re letting your thoughts settle into place.",
-      "Identity": "You honor your body by choosing recovery when it’s needed."
+      "Educational": "Practice days sharpen patterns under zero stress.",
+      "Direct": "Slow the crawl—make it deliberate.",
+      "Playful": "Treat it like a movement puzzle your body already knows.",
+      "Identity": "You refine your patterns one minute at a time."
+    }
+  },
+  {
+    "day": 5,
+    "category": "Heavy",
+    "title": "EMOM 12 — Controlled Strength",
+    "micro_exercise": "EMOM 12:\nOdd: 8 Tempo Good Mornings (3–1–1–1)\nEven: 6 Slow Push-Up Negatives",
+    "motivation": {
+      "Educational": "Slower eccentrics strengthen connective tissue.",
+      "Direct": "Own the descent—it’s where strength builds.",
+      "Playful": "Lower like you're trying not to wake a sleeping cat.",
+      "Identity": "You lift with intention, not ego."
+    }
+  },
+  {
+    "day": 6,
+    "category": "Active Recovery",
+    "title": "12-Min Walk Flow",
+    "micro_exercise": "12 minutes continuous:\n1 min nasal walk\n:30 Scap Circles\n:30 Ankle Rocks\nRepeat.",
+    "motivation": {
+      "Educational": "Light motion reduces residual fatigue and restores posture.",
+      "Direct": "Keep your shoulders relaxed and breathing soft.",
+      "Playful": "Walk like you’re smoothing wrinkles out of your system.",
+      "Identity": "You recover with intention."
+    }
+  },
+  {
+    "day": 7,
+    "category": "Train",
+    "title": "AMRAP 12 — Balanced Strength",
+    "micro_exercise": "AMRAP 12:\n- 6 Table Rows\n- 10 Air Squats\n- :20 Plank Walk-Out Hold",
+    "motivation": {
+      "Educational": "Balanced upper/lower work supports long-term durability.",
+      "Direct": "Keep the row strict—no sway.",
+      "Playful": "Imagine pulling yourself toward better posture.",
+      "Identity": "You build strength that lasts all season."
+    }
+  },
+
+  ** DAYS 8–14 **
+
+  {
+    "day": 8,
+    "category": "Practice",
+    "title": "AMRAP 12 — Control & Coordination",
+    "micro_exercise": "AMRAP 12:\n- 6 Tempo Step-Back Lunges\n- 8 Slow Mountain Climbers / side\n- :20 Hollow Hold",
+    "motivation": {
+      "Educational": "Slow patterns improve joint positioning and control.",
+      "Direct": "Match the tempo—don’t rush.",
+      "Playful": "Move like you're adjusting internal settings.",
+      "Identity": "You sharpen movement with patience."
+    }
+  },
+  {
+    "day": 9,
+    "category": "Heavy",
+    "title": "EMOM 12 — Strength Control",
+    "micro_exercise": "EMOM 12:\nOdd: 5 Slow Decline Push-Ups\nEven: 8 Hip Hinge Good-Mornings",
+    "motivation": {
+      "Educational": "Strength improves most when reps stay controlled.",
+      "Direct": "Keep every push-up aligned—no sagging.",
+      "Playful": "Lower like the ground is fragile.",
+      "Identity": "You build strength that supports everything else."
+    }
+  },
+  {
+    "day": 10,
+    "category": "Aerobic Capacity",
+    "title": "AMRAP 12 — Mixed Movement Aerobic",
+    "micro_exercise": "AMRAP 12:\n- :40 Light jog/march\n- :20 Fast feet\n- 8 Reverse Lunges\n- 6 Step Burpees",
+    "motivation": {
+      "Educational": "Aerobic consistency improves recovery between efforts.",
+      "Direct": "Keep breathing steady.",
+      "Playful": "Let the footwork feel like tapping out a rhythm.",
+      "Identity": "You keep the engine running smoothly."
+    }
+  },
+  {
+    "day": 11,
+    "category": "OMNIFIT Day",
+    "title": "EMOM 12 — Choose & Flow",
+    "micro_exercise": "EMOM 12:\nChoose each minute:\n- 5–8 Gentle Burpees\n- :30 Crawl\n- :30 Mobility Flow",
+    "motivation": {
+      "Educational": "Unstructured movement refreshes the nervous system.",
+      "Direct": "Pick the option your body wants.",
+      "Playful": "Treat it like a menu you can snack from.",
+      "Identity": "You train with curiosity, not obligation."
+    }
+  },
+  {
+    "day": 12,
+    "category": "Train",
+    "title": "AMRAP 12 — Mixed Structural Strength",
+    "micro_exercise": "AMRAP 12:\n- 10 Air Squats\n- 6 Table Rows\n- :20 Plank March",
+    "motivation": {
+      "Educational": "Balanced strength supports long-term durability.",
+      "Direct": "Keep every rep honest.",
+      "Playful": "Pull yourself toward better alignment.",
+      "Identity": "You build strength with intention."
+    }
+  },
+  {
+    "day": 13,
+    "category": "Active Recovery",
+    "title": "12-Min Mobility Walk",
+    "micro_exercise": "12 minutes:\n1 min nasal walk\n:30 Scap Rotations\n:30 Hip Openers\nRepeat.",
+    "motivation": {
+      "Educational": "Low-intensity movement accelerates recovery.",
+      "Direct": "Breathe slow and relaxed.",
+      "Playful": "Move like you're ironing tension away.",
+      "Identity": "You recover with as much intention as you train."
+    }
+  },
+  {
+    "day": 14,
+    "category": "Practice",
+    "title": "EMOM 12 — Stability Practice",
+    "micro_exercise": "EMOM 12:\n1: :30 Single-Leg Balance + Reach\n2: :30 Slow Air Squats\n3: :30 Bear Hold Shoulder Taps",
+    "motivation": {
+      "Educational": "Balance drills improve joint stability.",
+      "Direct": "Keep your center quiet.",
+      "Playful": "Stand like you're trying to convince the floor you're weightless.",
+      "Identity": "You refine your patterns with attention."
+    }
+  },
+
+  ** DAYS 15–21 **
+
+  {
+    "day": 15,
+    "category": "Aerobic Capacity",
+    "title": "EMOM 12 — Repeatable Engine",
+    "micro_exercise": "EMOM 12:\n:40 March/Jog\n:20 Breath-return recovery",
+    "motivation": {
+      "Educational": "Repeatable aerobic work teaches the body to manage effort.",
+      "Direct": "Keep the pace steady.",
+      "Playful": "Jog between your thoughts.",
+      "Identity": "You build capacity through consistency."
+    }
+  },
+  {
+    "day": 16,
+    "category": "Train",
+    "title": "AMRAP 12 — Mixed Strength",
+    "micro_exercise": "AMRAP 12:\n- 8 Air Squats\n- 6 Table Rows\n- 4 Walk-out Push-Ups",
+    "motivation": {
+      "Educational": "Upper/lower coupling maintains balanced strength.",
+      "Direct": "Keep transitions clean.",
+      "Playful": "Move like you're assembling your body piece by piece.",
+      "Identity": "You train with control."
+    }
+  },
+  {
+    "day": 17,
+    "category": "Heavy",
+    "title": "EMOM 12 — Slow Strength",
+    "micro_exercise": "EMOM 12:\nOdd: 6 Tempo Squats (3–2–1–1)\nEven: 6 Slow Negative Push-Ups",
+    "motivation": {
+      "Educational": "Eccentrics build connective tissue resilience.",
+      "Direct": "Own the descent.",
+      "Playful": "Lower like you're trying not to creak.",
+      "Identity": "You choose strength built on control."
+    }
+  },
+  {
+    "day": 18,
+    "category": "OMNIFIT Day",
+    "title": "12-Min Movement Flow",
+    "micro_exercise": "12 minutes rotating:\n- :30 T-spine Flow\n- :30 Light Burpees\n- :30 Bear Crawl\n- :30 Hip Circles",
+    "motivation": {
+      "Educational": "Exploratory movement improves adaptability.",
+      "Direct": "Follow what feels smooth.",
+      "Playful": "Use the session like a movement sandbox.",
+      "Identity": "You enjoy your training."
+    }
+  },
+  {
+    "day": 19,
+    "category": "Active Recovery",
+    "title": "12-Min Mobility Walk",
+    "micro_exercise": "12 minutes:\n:45 nasal walk\n:15 ankles\n:15 scap\n:15 hips\nRepeat.",
+    "motivation": {
+      "Educational": "Recovery supports long-term adherence.",
+      "Direct": "Keep the pace easy.",
+      "Playful": "Walk like you're dissolving tension.",
+      "Identity": "You protect your longevity through recovery."
+    }
+  },
+  {
+    "day": 20,
+    "category": "Practice",
+    "title": "AMRAP 12 — Coordination",
+    "micro_exercise": "AMRAP 12:\n- 6 Tempo Reverse Lunges\n- :20 Bear Hold\n- 8 Slow Scap Push-Ups",
+    "motivation": {
+      "Educational": "Controlled patterns sharpen joint coordination.",
+      "Direct": "Keep ribs down in the bear hold.",
+      "Playful": "Move like you're dusting off old movement skills.",
+      "Identity": "You refine your craft daily."
+    }
+  },
+  {
+    "day": 21,
+    "category": "Aerobic Capacity",
+    "title": "AMRAP 12 — Smooth Engine",
+    "micro_exercise": "AMRAP 12:\n- 20 March-in-place\n- 10 Step-through Lunges\n- :20 Fast Feet\n- 4 Step Burpees",
+    "motivation": {
+      "Educational": "Aerobic repeatability supports long-term frequency.",
+      "Direct": "Keep breathing even.",
+      "Playful": "Pretend the floor is a soft drum.",
+      "Identity": "You build your engine one steady set at a time."
+    }
+  },
+
+  ** DAYS 22–25 **
+
+  {
+    "day": 22,
+    "category": "Forge",
+    "title": "EMOM 12 — Controlled Challenge",
+    "micro_exercise": "EMOM 12 (repeat):\n1: 6 Step Burpees\n2: 8 Lunges\n3: :30 Bear Crawl",
+    "motivation": {
+      "Educational": "Forge days build resilience through steady challenge.",
+      "Direct": "Keep burpees clean—not frantic.",
+      "Playful": "Treat each minute like a small test.",
+      "Identity": "You face effort with composure."
+    }
+  },
+  {
+    "day": 23,
+    "category": "Train",
+    "title": "AMRAP 12 — Strength Mix",
+    "micro_exercise": "AMRAP 12:\n- 8 Air Squats\n- 6 Push-Ups\n- :20 Plank Hold\n- 6 Good-Mornings",
+    "motivation": {
+      "Educational": "Combining hinge, squat, and push builds balanced capacity.",
+      "Direct": "Maintain posture through each hinge.",
+      "Playful": "Imagine stacking strength one rep at a time.",
+      "Identity": "You train with calm discipline."
+    }
+  },
+  {
+    "day": 24,
+    "category": "OMNIFIT Day",
+    "title": "AMRAP 12 — Free Flow",
+    "micro_exercise": "AMRAP 12:\nChoose any:\n- Crawls\n- Hip mobility\n- Slow burpees\n- Kneeling transitions\nFlow freely.",
+    "motivation": {
+      "Educational": "Exploration supports coordination and adaptability.",
+      "Direct": "Keep transitions smooth.",
+      "Playful": "Move like you're discovering new joints.",
+      "Identity": "You explore your body, not just train it."
+    }
+  },
+  {
+    "day": 25,
+    "category": "Practice",
+    "title": "EMOM 12 — Balance & Control",
+    "micro_exercise": "EMOM 12:\n1: :30 Single-Leg Balance\n2: 8 Controlled Air Squats\n3: 6 Walk-outs to Plank",
+    "motivation": {
+      "Educational": "Practice sharpens the patterns that support every category.",
+      "Direct": "Keep your balance quiet and centered.",
+      "Playful": "Fine-tune your rhythm like a musical instrument.",
+      "Identity": "You refine your patterns intentionally."
+    }
+  },
+
+  ** DAYS 26–31 **
+
+  {
+    "day": 26,
+    "category": "Heavy",
+    "title": "AMRAP 12 — Controlled Strength",
+    "micro_exercise": "AMRAP 12:\n- 6 Slow Push-Up Negatives\n- 8 Hip Hinge Good-Mornings\n- :20 Hollow Hold",
+    "motivation": {
+      "Educational": "Strength improves when positions stay consistent.",
+      "Direct": "Slow the negatives and stay tight.",
+      "Playful": "Move like you're loading a precision tool.",
+      "Identity": "You build strength with discipline."
+    }
+  },
+  {
+    "day": 27,
+    "category": "Active Recovery",
+    "title": "12-Min Mobility Walk",
+    "micro_exercise": "12 minutes:\n1 min nasal walk\n:30 T-spine\n:30 ankle/hip mobility\nRepeat.",
+    "motivation": {
+      "Educational": "Recovery supports long-term adaptation.",
+      "Direct": "Keep the pace easy.",
+      "Playful": "Walk like you're letting tension melt.",
+      "Identity": "You recover with purpose."
+    }
+  },
+  {
+    "day": 28,
+    "category": "Aerobic Capacity",
+    "title": "EMOM 12 — Sustainable Aerobic",
+    "micro_exercise": "EMOM 12:\n:45 alternating\n- Jog/March\n- Fast Steps\n- Step Burpees",
+    "motivation": {
+      "Educational": "Aerobic repeatability improves resilience.",
+      "Direct": "Maintain even breathing.",
+      "Playful": "Let your feet drum a soft rhythm.",
+      "Identity": "You build your engine minute by minute."
+    }
+  },
+  {
+    "day": 29,
+    "category": "OMNIFIT Day",
+    "title": "AMRAP 12 — Exploration Flow",
+    "micro_exercise": "AMRAP 12:\n- Crawls\n- Hip flows\n- Light burpees\n- T-spine rotations\nChoose freely.",
+    "motivation": {
+      "Educational": "Freedom sharpens self-regulation.",
+      "Direct": "Move in the direction that feels intelligent.",
+      "Playful": "Sketch movement with your body.",
+      "Identity": "You stay consistent because you enjoy the practice."
+    }
+  },
+  {
+    "day": 30,
+    "category": "Train",
+    "title": "EMOM 12 — Structural Strength",
+    "micro_exercise": "EMOM 12:\nOdd: 8 Air Squats\nEven: 6 Table Rows + :10 hold",
+    "motivation": {
+      "Educational": "Balanced strength improves posture and movement economy.",
+      "Direct": "Keep ribcage down and spine long.",
+      "Playful": "Pull yourself into alignment.",
+      "Identity": "You build strength on purpose."
+    }
+  },
+  {
+    "day": 31,
+    "category": "Forge",
+    "title": "AMRAP 12 — Composed Effort",
+    "micro_exercise": "AMRAP 12:\n- 6 Step Burpees\n- 10 Lunges\n- :20 Bear Hold\n- 6 Good-Mornings",
+    "motivation": {
+      "Educational": "Controlled challenge builds resilience without draining recovery.",
+      "Direct": "Steady breath—no spikes.",
+      "Playful": "Move like you're proving calm under effort.",
+      "Identity": "You finish seasons with composure."
     }
   }
 ]
