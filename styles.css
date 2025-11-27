@@ -158,3 +158,22 @@ body {
   font-size:0.95rem;
   white-space:pre-line;
 }
+.dayNav {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.dayNav button {
+  background: #f4f4f4;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.dayNav button:hover {
+  background: #e8e8e8;
+}
