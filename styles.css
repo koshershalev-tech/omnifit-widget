@@ -80,22 +80,36 @@ body {
 }
 
 /* HEATMAP FIX */
+.heatmapContainer {
+  width: 100%;
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.hm-week-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+
 .hm-row {
-  display:flex;
-  justify-content:space-between;
-  gap:3px;
-  margin-top:6px;
+  display: flex;
+  gap: 4px;
+  overflow-x: hidden;
+  height: 18px;
 }
 
-.hm-cell {
-  width:16px;
-  height:16px;
-  border-radius:4px;
-  background:#e4e6e3;
-  border:1px solid #d0d2ce;
+.hm-pill {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: #e2e3e1;
 }
 
-.hm-cell.active {
-  background:#85b678;
-  border-color:#4a8836;
+.hm-pill.active {
+  background: #7aaa65;
+  border: 1px solid #5d8a47;
 }
+
