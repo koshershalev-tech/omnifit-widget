@@ -1,8 +1,8 @@
 /* RESET */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
 
 /* WRAPPER */
@@ -14,10 +14,11 @@ body {
   background: #f6f8f4;
   border-radius: 26px;
   border: 1px solid #e1e4df;
+
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 0 16px;
-  overflow: hidden;
+  padding: 16px;
+  gap: 16px;
 }
 
 /* TILES */
@@ -25,67 +26,90 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-bottom: 20px;
 }
 
 .tile {
   padding: 14px;
-  background: #ffffff;
-  border-radius: 14px;
-  border: 1px solid #e6e6e6;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e8e8e8;
   text-align: center;
-  font-weight: 600;
   font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  color: #333;
-  transition: 0.15s ease;
+  transition: 0.15s;
 }
-.tile:hover { transform: scale(1.03); }
+.tile:hover { transform: scale(1.04); }
 
-/* MAIN CARD */
+/* HEATMAP */
+.heatmapContainer {
+  width: 100%;
+  padding-top: 2px;
+}
+
+.hm-week-labels {
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.6;
+  font-size: 0.7rem;
+  margin-bottom: 6px;
+}
+
+.hm-row {
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.hm-pill {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #d7dad5;
+}
+.hm-pill.active {
+  background: #7fb36a;
+}
+
+/* CARD */
 .card {
-  background: #ffffff;
+  background: #fff;
   border-radius: 22px;
-  border: 1px solid #e5e5e5;
-  box-shadow: 0 12px 26px rgba(0,0,0,0.12);
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
 
   padding: 22px;
-  margin-top: 8px;
-
-  flex-shrink: 0;
-  max-height: 250px;
-  overflow-y: auto;
-
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .card h1 {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  line-height: 1.25;
 }
 
 .card h2 {
   font-size: 0.95rem;
   opacity: 0.7;
-  margin-top: -2px;
 }
 
+/* MOTIVE TEXT */
 .motive-tag {
   font-size: 0.95rem;
-  line-height: 1.4;
   white-space: pre-line;
 }
 
-/* DAY NAV BUTTONS */
+/* DAY NAV */
 .dayNav {
   margin-top: auto;
   display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding-top: 12px;
+  gap: 10px;
+  padding-top: 14px;
 }
 
 .dayNav button {
@@ -96,53 +120,20 @@ body {
   border: none;
   font-size: 0.9rem;
   cursor: pointer;
-  font-weight: 500;
+  transition: 0.15s;
 }
 .dayNav button:hover {
   background: #e7e7e7;
 }
 
-/* HEATMAP */
-.heatmapContainer {
-  margin-top: 18px;
-  padding: 0 4px 6px 4px;
-}
-
-.hm-week-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.7rem;
-  opacity: 0.55;
-  margin-bottom: 6px;
-}
-
-.hm-row {
-  display: flex;
-  gap: 4px;
-  height: 18px;
-  overflow: hidden;
-}
-
-.hm-cell {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: #dde0dc;
-  border: 1px solid #cfd2cd;
-}
-.hm-cell.active {
-  background: #87b16b;
-  border: 1px solid #5d8a47;
-}
-
-/* OVERLAY */
+/* PANEL */
 #dimOverlay {
   position: fixed;
-  left: 0; right: 0; top: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  inset: 0;
+  background: rgba(0,0,0,0.35);
   opacity: 0;
   pointer-events: none;
-  transition: 0.3s ease;
+  transition: .3s;
   z-index: 50;
 }
 
@@ -151,20 +142,19 @@ body {
   pointer-events: auto;
 }
 
-/* MOTIVATION PANEL */
 #motivePanel {
   position: fixed;
-  bottom: -100%;
   left: 0;
+  bottom: -100%;
   width: 100%;
   height: 55%;
-  background: #ffffff;
+  background: #fff;
   border-radius: 26px 26px 0 0;
   border: 1px solid #e5e5e5;
-  padding: 28px;
-  transition: 0.4s ease;
-  z-index: 60;
+  padding: 26px;
+  transition: .35s ease-out;
   overflow-y: auto;
+  z-index: 60;
 }
 
 #motivePanel.open {
@@ -173,26 +163,14 @@ body {
 
 #closePanel {
   position: absolute;
-  right: 18px;
   top: 12px;
-  font-size: 30px;
+  right: 16px;
+  font-size: 32px;
   opacity: 0.7;
   cursor: pointer;
 }
 
-#panelContent h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-#panelContent p {
-  font-size: 1rem;
-  line-height: 1.45;
-  white-space: pre-line;
-}
-
-/* CLEAN SCROLLBAR */
+/* SCROLLBAR CLEAN */
 .card::-webkit-scrollbar,
 #motivePanel::-webkit-scrollbar {
   width: 4px;
