@@ -1,159 +1,100 @@
-// ============================================================
-// OMNIFIT — DAY COUNT LOGIC
-// Start date: 13 May 2024
-// ============================================================
-
+// === DAY LOGIC ===
 function daysSinceOmnifitStart() {
-  const startDate = new Date("2024-05-13T00:00:00");
-  const today = new Date();
-  const diff = today - startDate;
-  return Math.floor(diff / (1000 * 60 * 60 * 24));
+  const start = new Date("2024-05-13");
+  const now = new Date();
+  return Math.floor((now - start) / 86400000);
 }
 
-// ============================================================
-// 31-DAY CYCLE LOGIC
-// ============================================================
+let offset = 0;
 
-function getCycleDay(rawDay) {
-  const cycleLength = 31;
-  const index = rawDay % cycleLength;
-  return index === 0 ? cycleLength : index;
+function cycleDay(raw) {
+  return ((raw - 1) % 31) + 1;
 }
 
-// ============================================================
-// GLOBAL OFFSET (Prev/Next navigation)
-// ============================================================
+// === LOAD DATA ===
+async function loadDay() {
+  const raw = daysSinceOmnifitStart() + offset;
+  const day = cycleDay(raw);
 
-let manualOffset = 0;
+  const res = await fetch("data-2.json");
+  const data = await res.json();
 
-// Wrapper function to reload with offset
-function refreshWithOffset() {
-  loadDailyExercise(manualOffset);
+  const item = data.find(d => d.day === day);
+
+  if (!item) {
+    fallback(raw);
+    return;
+  }
+
+  updateCard(item, raw);
+  updateMotivations(item);
+  drawHeatmap(day);
 }
 
-// ============================================================
-// MAIN DATA LOADER
-// ============================================================
+function fallback(raw) {
+  cardTitle.innerText = "Content Coming Soon";
+  cardSubtitle.innerText = `Day ${raw} | Coming Soon ⏳`;
+  motiveLabel.innerText = "Tap a motivation";
+}
 
-async function loadDailyExercise(offset = 0) {
-  try {
-    const response = await fetch("data-2.json");
-    const data = await response.json();
+// === UPDATE MAIN CARD ===
+function updateCard(entry, raw) {
+  cardTitle.innerText = entry.title;
+  cardSubtitle.innerText = `Day ${raw} | ${entry.category}`;
+  motiveLabel.innerText = entry.micro_exercise;
+}
 
-    const rawDay = daysSinceOmnifitStart() + offset;
-    const cycleDay = getCycleDay(rawDay);
+// === HEATMAP ===
+function drawHeatmap(activeDay) {
+  const hm = document.getElementById("heatmapRow");
+  hm.innerHTML = "";
 
-    const entry = data.find(d => d.day === cycleDay);
-
-    if (!entry) {
-      displayFallback(rawDay);
-      return;
-    }
-
-    updateMainCard(entry, rawDay);
-    setupMotivationButtons(entry);
-    generateHeatmap(rawDay);
-
-  } catch (err) {
-    console.error("JSON Load Error:", err);
-    displayFallback(daysSinceOmnifitStart());
+  for (let i = 1; i <= 31; i++) {
+    const p = document.createElement("div");
+    p.classList.add("hm-pill");
+    if (i === activeDay) p.classList.add("active");
+    hm.appendChild(p);
   }
 }
 
-// ============================================================
-// UPDATE MAIN CARD UI (TITLE, SUBTITLE, EXERCISE TEXT)
-// ============================================================
-
-function updateMainCard(entry, rawDay) {
-  // Title = workout title
-  document.getElementById("cardTitle").innerText = entry.title;
-
-  // Subtitle = Day XXX | Category
-  document.getElementById("cardSubtitle").innerText =
-    `Day ${rawDay} | ${entry.category}`;
-
-  // Exercise text = inside main card white area
-  document.getElementById("motiveLabel").innerText = entry.micro_exercise;
-}
-
-// ============================================================
-// MOTIVATION PANEL LOGIC
-// ============================================================
-
-function setupMotivationButtons(entry) {
+// === MOTIVATIONS PANEL ===
+function updateMotivations(entry) {
   const tiles = document.querySelectorAll(".tile");
   const panel = document.getElementById("motivePanel");
   const overlay = document.getElementById("dimOverlay");
-  const panelContent = document.getElementById("panelContent");
+  const content = document.getElementById("panelContent");
 
-  tiles.forEach(tile => {
-    tile.onclick = () => {
-      const key = tile.dataset.motive;
-      panelContent.innerText = entry.motivation[key] || "No motivation found.";
-      panel.style.display = "block";
-      overlay.style.display = "block";
+  tiles.forEach(t => {
+    t.onclick = () => {
+      const key = t.dataset.motive;
+      content.innerHTML =
+        `<h3>${key}</h3><p>${entry.motivation[key]}</p>`;
+      panel.classList.add("open");
+      overlay.classList.add("open");
     };
   });
 
-  // Close panel
-  document.getElementById("closePanel").onclick = closePanel;
-  overlay.onclick = closePanel;
+  document.getElementById("closePanel").onclick =
+    () => closePanel(panel, overlay);
 
-  function closePanel() {
-    panel.style.display = "none";
-    overlay.style.display = "none";
-  }
+  overlay.onclick = () => closePanel(panel, overlay);
 }
 
-// ============================================================
-// HEATMAP RENDERING
-// ============================================================
-
-function generateHeatmap(rawDay) {
-  const heatmap = document.getElementById("heatmapRow");
-  heatmap.innerHTML = "";
-
-  const cycleLength = 31;
-  const cycleIndex = getCycleDay(rawDay);
-
-  for (let i = 1; i <= cycleLength; i++) {
-    const cell = document.createElement("div");
-    cell.classList.add("hm-cell");
-    if (i === cycleIndex) {
-      cell.classList.add("active");
-    }
-    heatmap.appendChild(cell);
-  }
+function closePanel(panel, overlay) {
+  panel.classList.remove("open");
+  overlay.classList.remove("open");
 }
 
-// ============================================================
-// FALLBACK STATE
-// ============================================================
+// === DAY NAV ===
+document.getElementById("prevDay").onclick = () => {
+  offset--;
+  loadDay();
+};
 
-function displayFallback(rawDay) {
-  document.getElementById("cardTitle").innerText = "Content Coming Soon";
-  document.getElementById("cardSubtitle").innerText =
-    `Day ${rawDay} | Coming Soon ⏳`;
-  document.getElementById("motiveLabel").innerText =
-    "Tap a motivation to preview text.";
-}
+document.getElementById("nextDay").onclick = () => {
+  offset++;
+  loadDay();
+};
 
-// ============================================================
-// DAY NAVIGATION BUTTONS
-// ============================================================
-
-document.getElementById("prevDay").addEventListener("click", () => {
-  manualOffset -= 1;
-  refreshWithOffset();
-});
-
-document.getElementById("nextDay").addEventListener("click", () => {
-  manualOffset += 1;
-  refreshWithOffset();
-});
-
-// ============================================================
-// INITIAL LOAD
-// ============================================================
-
-loadDailyExercise();
+// === INIT ===
+loadDay();
