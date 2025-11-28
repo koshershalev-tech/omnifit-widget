@@ -42,41 +42,42 @@ body {
 
 /* CARD */
 .card {
-  position:absolute;
-  top:250px;
-  left:50%;
-  transform:translateX(-50%);
-  width:86%;
-  background:#ffffff;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 22px rgba(0,0,0,0.15);
+  position: relative;
+  width: 88%;
+  margin: 40px auto 0 auto;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.12);
+  border: 1px solid #e6e6e6;
 
-  display:flex;              /* NEW */
-  flex-direction:column;     /* NEW */
-  justify-content:flex-start; /* NEW */
-  gap:12px;                  /* NEW */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  max-height: 260px;    /* keeps layout stable */
+  overflow-y: auto;
 }
 
 /* FIX DAY NAV */
 .dayNav {
-  margin-top: 12px;
+  margin-top: auto;
+  padding-top: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  height: 48px;    /* FIX HEIGHT */
 }
 
 .dayNav button {
   background: #f4f4f4;
   border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: 0.2s ease;
-  min-width: 120px;  /* STATIC WIDTH */
-  height: 100%;      /* MATCH NAV HEIGHT */
+}
+
+.dayNav button:hover {
+  background: #e8e8e8;
 }
 
 /* HEATMAP FIX */
@@ -112,4 +113,12 @@ body {
   background: #7aaa65;
   border: 1px solid #5d8a47;
 }
+/* OPTIONAL – clean scrollbar inside card */
+.card::-webkit-scrollbar {
+  width: 4px;
+}
 
+.card::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
