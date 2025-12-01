@@ -14,6 +14,12 @@ body {
   margin: 0;
   padding: 16px;
   box-sizing: border-box;
+
+  /* NEW FEATURES */
+  background: #f6f8f3;       /* clean outer background */
+  border-radius: 24px;       /* full widget rounding */
+  overflow: hidden;          /* keeps all children inside rounded frame */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.10); /* optional premium look */
 }
 
 
@@ -72,12 +78,12 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #d9dfd9; /* light sage grey */
+  background: #d9dfd9;
   transition: 0.2s ease;
 }
 
 .week-pill.active {
-  background: #8bbf6f; /* Green pill */
+  background: #8bbf6f;
   box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
 
@@ -183,6 +189,8 @@ h2 {
   line-height: 1.55;
   white-space: pre-line;
 }
+
+
 /* ============================================================
    MOBILE OPTIMIZATION (max-width: 480px)
    ============================================================ */
