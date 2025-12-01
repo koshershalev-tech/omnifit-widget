@@ -26,12 +26,6 @@ function getCycleDay(rawDay) {
 
 let manualOffset = 0;
 
-// Wrapper function to reload UI with offset
-function refreshWithOffset() {
-  loadDailyExercise(manualOffset);
-  updateWeekPills(manualOffset);
-}
-
 // ============================================================
 // MAIN DATA LOADER
 // ============================================================
@@ -45,6 +39,9 @@ async function loadDailyExercise(offset = 0) {
     const cycleDay = getCycleDay(rawDay);
 
     const entry = data.find(d => d.day === cycleDay);
+
+    // update weekly bar pills
+    updateWeekPills(rawDay);
 
     if (!entry) {
       displayFallback(rawDay);
@@ -114,28 +111,27 @@ function setupMotivationButtons(entry) {
 // ============================================================
 // WEEK BAR (7 PILLS)
 // ============================================================
+// Weekly pill index = (rawDay % 7)
+// Green pill moves with Prev/Next Day
 
-function updateWeekPills(offset = 0) {
+function updateWeekPills(rawDay) {
   const pillsContainer = document.getElementById("weekPills");
   pillsContainer.innerHTML = "";
 
-  const today = new Date();
-  const todayWeekday = today.getDay(); // 0 = Sun ... 6 = Sat
-
-  // Apply offset from navigation
-  let displayed = (todayWeekday + offset) % 7;
-  if (displayed < 0) displayed += 7;
+  const weekIndex = rawDay % 7; // 0–6
 
   for (let i = 0; i < 7; i++) {
     const pill = document.createElement("div");
     pill.classList.add("week-pill");
-    if (i === displayed) pill.classList.add("active");
+    if (i === weekIndex) {
+      pill.classList.add("active");
+    }
     pillsContainer.appendChild(pill);
   }
 }
 
 // ============================================================
-// FALLBACK STATE (if data missing)
+// FALLBACK STATE
 // ============================================================
 
 function displayFallback(rawDay) {
@@ -152,12 +148,12 @@ function displayFallback(rawDay) {
 
 document.getElementById("prevDay").addEventListener("click", () => {
   manualOffset -= 1;
-  refreshWithOffset();
+  loadDailyExercise(manualOffset);
 });
 
 document.getElementById("nextDay").addEventListener("click", () => {
   manualOffset += 1;
-  refreshWithOffset();
+  loadDailyExercise(manualOffset);
 });
 
 // ============================================================
@@ -165,4 +161,3 @@ document.getElementById("nextDay").addEventListener("click", () => {
 // ============================================================
 
 loadDailyExercise();
-updateWeekPills(0);
