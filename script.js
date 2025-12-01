@@ -114,7 +114,6 @@ function setupMotivationButtons(entry) {
 // Weekly pill index = (rawDay % 7)
 // Green pill moves with Prev/Next Day
 
-
 function updateWeekPills(offset = 0) {
   const pillsContainer = document.getElementById("weekPills");
   pillsContainer.innerHTML = "";
@@ -137,6 +136,7 @@ function updateWeekPills(offset = 0) {
     pillsContainer.appendChild(pill);
   }
 }
+
 // ============================================================
 // FALLBACK STATE
 // ============================================================
