@@ -1,100 +1,168 @@
-// === DAY LOGIC ===
+// ============================================================
+// OMNIFIT — DAY COUNT LOGIC
+// Start date: 13 May 2024
+// ============================================================
+
 function daysSinceOmnifitStart() {
-  const start = new Date("2024-05-13");
-  const now = new Date();
-  return Math.floor((now - start) / 86400000);
+  const startDate = new Date("2024-05-13T00:00:00");
+  const today = new Date();
+  const diff = today - startDate;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
 }
 
-let offset = 0;
+// ============================================================
+// 31-DAY CYCLE LOGIC (for data lookup)
+// ============================================================
 
-function cycleDay(raw) {
-  return ((raw - 1) % 31) + 1;
+function getCycleDay(rawDay) {
+  const cycleLength = 31;
+  const index = rawDay % cycleLength;
+  return index === 0 ? cycleLength : index;
 }
 
-// === LOAD DATA ===
-async function loadDay() {
-  const raw = daysSinceOmnifitStart() + offset;
-  const day = cycleDay(raw);
+// ============================================================
+// GLOBAL OFFSET (Prev/Next navigation)
+// ============================================================
 
-  const res = await fetch("data-2.json");
-  const data = await res.json();
+let manualOffset = 0;
 
-  const item = data.find(d => d.day === day);
+// Wrapper function to reload UI with offset
+function refreshWithOffset() {
+  loadDailyExercise(manualOffset);
+  updateWeekPills(manualOffset);
+}
 
-  if (!item) {
-    fallback(raw);
-    return;
+// ============================================================
+// MAIN DATA LOADER
+// ============================================================
+
+async function loadDailyExercise(offset = 0) {
+  try {
+    const response = await fetch("data-2.json");
+    const data = await response.json();
+
+    const rawDay = daysSinceOmnifitStart() + offset;
+    const cycleDay = getCycleDay(rawDay);
+
+    const entry = data.find(d => d.day === cycleDay);
+
+    if (!entry) {
+      displayFallback(rawDay);
+      return;
+    }
+
+    updateMainCard(entry, rawDay);
+    setupMotivationButtons(entry);
+
+  } catch (err) {
+    console.error("JSON Load Error:", err);
+    displayFallback(daysSinceOmnifitStart());
   }
-
-  updateCard(item, raw);
-  updateMotivations(item);
-  drawHeatmap(day);
 }
 
-function fallback(raw) {
-  cardTitle.innerText = "Content Coming Soon";
-  cardSubtitle.innerText = `Day ${raw} | Coming Soon ⏳`;
-  motiveLabel.innerText = "Tap a motivation";
+// ============================================================
+// UPDATE MAIN CARD UI
+// ============================================================
+
+function updateMainCard(entry, rawDay) {
+
+  // Title
+  document.getElementById("cardTitle").innerText = entry.title;
+
+  // Subtitle
+  document.getElementById("cardSubtitle").innerText =
+    `Day ${rawDay} | ${entry.category}`;
+
+  // Exercise text
+  document.getElementById("motiveLabel").innerText = entry.micro_exercise;
 }
 
-// === UPDATE MAIN CARD ===
-function updateCard(entry, raw) {
-  cardTitle.innerText = entry.title;
-  cardSubtitle.innerText = `Day ${raw} | ${entry.category}`;
-  motiveLabel.innerText = entry.micro_exercise;
-}
+// ============================================================
+// MOTIVATION PANEL
+// ============================================================
 
-// === HEATMAP ===
-function drawHeatmap(activeDay) {
-  const hm = document.getElementById("heatmapRow");
-  hm.innerHTML = "";
-
-  for (let i = 1; i <= 31; i++) {
-    const p = document.createElement("div");
-    p.classList.add("hm-pill");
-    if (i === activeDay) p.classList.add("active");
-    hm.appendChild(p);
-  }
-}
-
-// === MOTIVATIONS PANEL ===
-function updateMotivations(entry) {
+function setupMotivationButtons(entry) {
   const tiles = document.querySelectorAll(".tile");
   const panel = document.getElementById("motivePanel");
   const overlay = document.getElementById("dimOverlay");
-  const content = document.getElementById("panelContent");
+  const panelContent = document.getElementById("panelContent");
 
-  tiles.forEach(t => {
-    t.onclick = () => {
-      const key = t.dataset.motive;
-      content.innerHTML =
-        `<h3>${key}</h3><p>${entry.motivation[key]}</p>`;
-      panel.classList.add("open");
-      overlay.classList.add("open");
+  tiles.forEach(tile => {
+    tile.onclick = () => {
+      const key = tile.dataset.motive;
+      panelContent.innerText = entry.motivation[key] || "No motivation found.";
+      openPanel();
     };
   });
 
-  document.getElementById("closePanel").onclick =
-    () => closePanel(panel, overlay);
+  document.getElementById("closePanel").onclick = closePanel;
+  overlay.onclick = closePanel;
 
-  overlay.onclick = () => closePanel(panel, overlay);
+  function openPanel() {
+    panel.classList.add("open");
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+  }
+
+  function closePanel() {
+    panel.classList.remove("open");
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+  }
 }
 
-function closePanel(panel, overlay) {
-  panel.classList.remove("open");
-  overlay.classList.remove("open");
+// ============================================================
+// WEEK BAR (7 PILLS)
+// ============================================================
+
+function updateWeekPills(offset = 0) {
+  const pillsContainer = document.getElementById("weekPills");
+  pillsContainer.innerHTML = "";
+
+  const today = new Date();
+  const todayWeekday = today.getDay(); // 0 = Sun ... 6 = Sat
+
+  // Apply offset from navigation
+  let displayed = (todayWeekday + offset) % 7;
+  if (displayed < 0) displayed += 7;
+
+  for (let i = 0; i < 7; i++) {
+    const pill = document.createElement("div");
+    pill.classList.add("week-pill");
+    if (i === displayed) pill.classList.add("active");
+    pillsContainer.appendChild(pill);
+  }
 }
 
-// === DAY NAV ===
-document.getElementById("prevDay").onclick = () => {
-  offset--;
-  loadDay();
-};
+// ============================================================
+// FALLBACK STATE (if data missing)
+// ============================================================
 
-document.getElementById("nextDay").onclick = () => {
-  offset++;
-  loadDay();
-};
+function displayFallback(rawDay) {
+  document.getElementById("cardTitle").innerText = "Content Coming Soon";
+  document.getElementById("cardSubtitle").innerText =
+    `Day ${rawDay} | Coming Soon ⏳`;
+  document.getElementById("motiveLabel").innerText =
+    "Tap a motivation to preview text.";
+}
 
-// === INIT ===
-loadDay();
+// ============================================================
+// DAY NAVIGATION BUTTONS
+// ============================================================
+
+document.getElementById("prevDay").addEventListener("click", () => {
+  manualOffset -= 1;
+  refreshWithOffset();
+});
+
+document.getElementById("nextDay").addEventListener("click", () => {
+  manualOffset += 1;
+  refreshWithOffset();
+});
+
+// ============================================================
+// INITIAL LOAD
+// ============================================================
+
+loadDailyExercise();
+updateWeekPills(0);
