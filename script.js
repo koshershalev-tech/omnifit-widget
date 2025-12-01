@@ -114,22 +114,29 @@ function setupMotivationButtons(entry) {
 // Weekly pill index = (rawDay % 7)
 // Green pill moves with Prev/Next Day
 
-function updateWeekPills(rawDay) {
+
+function updateWeekPills(offset = 0) {
   const pillsContainer = document.getElementById("weekPills");
   pillsContainer.innerHTML = "";
 
-  const weekIndex = rawDay % 7; // 0–6
+  // Start date of OMNIFIT system
+  const startDate = new Date("2024-05-13T00:00:00");
 
+  // Calculate the workout's actual date
+  const rawDay = daysSinceOmnifitStart() + offset;
+  const workoutDate = new Date(startDate.getTime() + rawDay * 24 * 60 * 60 * 1000);
+
+  // Real weekday of the displayed workout
+  const weekday = workoutDate.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+
+  // Build the 7 pills
   for (let i = 0; i < 7; i++) {
     const pill = document.createElement("div");
     pill.classList.add("week-pill");
-    if (i === weekIndex) {
-      pill.classList.add("active");
-    }
+    if (i === weekday) pill.classList.add("active");
     pillsContainer.appendChild(pill);
   }
 }
-
 // ============================================================
 // FALLBACK STATE
 // ============================================================
