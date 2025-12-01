@@ -1,160 +1,195 @@
-/* RESET */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: transparent;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+/* ============================================================
+   RESET
+============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* WRAPPER */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: #f6f8f4;
+}
+
+/* ============================================================
+   WRAPPER
+============================================================ */
 #omnifitWidget {
   width: 100%;
   max-width: 360px;
   height: 640px;
   margin: 0 auto;
+  border-radius: 24px;
+  border: 1px solid #e0e3de;
   background: #f6f8f4;
-  border-radius: 26px;
-  border: 1px solid #e1e4df;
-
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  gap: 16px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* TILES */
+/* ============================================================
+   MOTIVATION TILES
+============================================================ */
 .tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  padding: 20px 16px 10px;
 }
 
 .tile {
-  padding: 14px;
   background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e8e8e8;
-  text-align: center;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.15s;
-}
-.tile:hover { transform: scale(1.04); }
-
-/* HEATMAP */
-.heatmapContainer {
-  width: 100%;
-  padding-top: 2px;
-}
-
-.hm-week-labels {
-  display: flex;
-  justify-content: space-between;
-  opacity: 0.6;
-  font-size: 0.7rem;
-  margin-bottom: 6px;
-}
-
-.hm-row {
-  display: flex;
-  gap: 4px;
-  overflow: hidden;
-}
-
-.hm-pill {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: #d7dad5;
-}
-.hm-pill.active {
-  background: #7fb36a;
-}
-
-/* CARD */
-.card {
-  background: #fff;
-  border-radius: 22px;
+  border-radius: 14px;
   border: 1px solid #e6e6e6;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  padding: 14px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
 
-  padding: 22px;
+.tile:hover {
+  transform: scale(1.03);
+}
+
+/* Active highlight (optional) */
+.tile.active[data-motive="Educational"] { background: #E6F0D8; color: #245C2A; }
+.tile.active[data-motive="Direct"]      { background: #E3F2FD; color: #0F4C9A; }
+.tile.active[data-motive="Playful"]     { background: #FFF2D5; color: #A96300; }
+.tile.active[data-motive="Identity"]    { background: #FCE8E0; color: #9A3D21; }
+
+/* ============================================================
+   WEEK BAR (7 DOTS)
+============================================================ */
+.week-bar {
+  width: 100%;
+  padding: 10px 0 6px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+}
 
-  max-height: 300px;
-  overflow-y: auto;
+.week-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 75%;
+  max-width: 260px;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  opacity: 0.55;
+  margin-bottom: 4px;
+}
+
+#weekPills {
+  display: flex;
+  justify-content: space-between;
+  width: 75%;
+  max-width: 260px;
+}
+
+.week-pill {
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  background: #d9dcd8;
+  transition: 0.25s ease;
+}
+
+.week-pill.active {
+  background: #6da86a;
+  box-shadow: 0 0 6px rgba(80, 120, 80, 0.45);
+}
+
+/* ============================================================
+   MAIN CARD
+============================================================ */
+.card {
+  width: 88%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.13);
+  border: 1px solid #e1e1e1;
+
+  /* fixed spacing so content doesn't shift */
+  min-height: 280px;
+  margin-top: 14px;
 }
 
 .card h1 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  line-height: 1.25;
+  color: #222;
+  line-height: 1.2;
 }
 
 .card h2 {
-  font-size: 0.95rem;
-  opacity: 0.7;
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.85;
 }
 
-/* MOTIVE TEXT */
 .motive-tag {
-  font-size: 0.95rem;
+  margin-top: 14px;
   white-space: pre-line;
+  font-size: 1rem;
+  line-height: 1.4;
 }
 
-/* DAY NAV */
+/* ============================================================
+   NAV BUTTONS
+============================================================ */
 .dayNav {
-  margin-top: auto;
   display: flex;
-  gap: 10px;
-  padding-top: 14px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
 }
 
 .dayNav button {
-  flex: 1;
-  padding: 12px;
-  background: #f3f3f3;
-  border-radius: 14px;
+  padding: 12px 20px;
+  background: #f1f1f1;
   border: none;
-  font-size: 0.9rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: 0.15s;
-}
-.dayNav button:hover {
-  background: #e7e7e7;
+  transition: 0.2s ease;
 }
 
-/* PANEL */
+.dayNav button:hover {
+  background: #e5e5e5;
+}
+
+/* ============================================================
+   MOTIVATION PANEL (BOTTOM SHEET)
+============================================================ */
 #dimOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   opacity: 0;
   pointer-events: none;
-  transition: .3s;
-  z-index: 50;
-}
-
-#dimOverlay.open {
-  opacity: 1;
-  pointer-events: auto;
+  transition: 0.25s ease;
+  z-index: 40;
 }
 
 #motivePanel {
   position: fixed;
-  left: 0;
   bottom: -100%;
+  left: 0;
   width: 100%;
-  height: 55%;
+  height: 58%;
   background: #fff;
-  border-radius: 26px 26px 0 0;
-  border: 1px solid #e5e5e5;
-  padding: 26px;
-  transition: .35s ease-out;
+  border-radius: 24px 24px 0 0;
+  padding: 28px 24px;
+  border: 1px solid #e7e7e7;
+  transition: 0.4s ease;
+  z-index: 50;
   overflow-y: auto;
-  z-index: 60;
 }
 
 #motivePanel.open {
@@ -163,21 +198,21 @@ body {
 
 #closePanel {
   position: absolute;
+  right: 18px;
   top: 12px;
-  right: 16px;
   font-size: 32px;
   opacity: 0.7;
   cursor: pointer;
 }
 
-/* SCROLLBAR CLEAN */
-.card::-webkit-scrollbar,
-#motivePanel::-webkit-scrollbar {
-  width: 4px;
+#panelContent h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.card::-webkit-scrollbar-thumb,
-#motivePanel::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
-  border-radius: 10px;
+#panelContent p {
+  margin-top: 12px;
+  line-height: 1.45;
+  white-space: pre-line;
+  font-size: 1rem;
 }
