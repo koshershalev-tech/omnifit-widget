@@ -4,7 +4,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-  background: transparent;
+  background: transparent !important;
   color: #333;
 }
 
@@ -16,15 +16,16 @@ body {
   padding: 16px;
   box-sizing: border-box;
 
-  background: rgba(255, 255, 255, 0.12); /* glass-like faint tone */
-  border-radius: 24px;                   /* visible rounded frame */
-  border: 2px solid rgba(255, 255, 255, 0.45); /* soft light border */
-  backdrop-filter: blur(10px);           /* clean glass effect */
-  -webkit-backdrop-filter: blur(10px);   /* Safari support */
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08); /* subtle floating shadow */
+  /* Transparent interior */
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
   overflow: hidden;
-}
 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
 /* ============================================================
    MOTIVATION TILES
@@ -54,8 +55,14 @@ body {
 
 
 /* ============================================================
-   WEEK BAR
+   WEEK BAR — FULL TRANSPARENCY FIX
    ============================================================ */
+.week-bar,
+.week-labels,
+#weekPills {
+  background: transparent !important;
+}
+
 .week-bar {
   margin: 0 auto 20px;
   text-align: center;
@@ -217,4 +224,3 @@ h2 {
     padding: 12px 0;
   }
 }
-
