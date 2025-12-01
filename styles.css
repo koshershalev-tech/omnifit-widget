@@ -1,14 +1,17 @@
 /* ============================================================
-   GENERAL RESET
+   GLOBAL TRANSPARENCY FIX — REQUIRED
    ============================================================ */
-body {
+html, body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  padding: 0;
   background: transparent !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
   color: #333;
 }
 
-/* === TRANSPARENT BUT FRAMED VERSION === */
+/* ============================================================
+   TRANSPARENT BUT FRAMED WIDGET
+   ============================================================ */
 #omnifitWidget {
   width: 100%;
   max-width: 100%;
@@ -16,15 +19,16 @@ body {
   padding: 16px;
   box-sizing: border-box;
 
-  /* Transparent interior */
+  /* Transparent interior with a glass frame */
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   border: 2px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-  overflow: hidden;
 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  overflow: hidden;
 }
 
 /* ============================================================
@@ -52,7 +56,6 @@ body {
 .tile:hover {
   background: #f0f0f0;
 }
-
 
 /* ============================================================
    WEEK BAR — FULL TRANSPARENCY FIX
@@ -97,7 +100,6 @@ body {
   box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
 
-
 /* ============================================================
    MAIN EXERCISE CARD
    ============================================================ */
@@ -129,7 +131,6 @@ h2 {
   margin-bottom: 28px;
 }
 
-
 /* ============================================================
    PREV/NEXT BUTTONS
    ============================================================ */
@@ -155,7 +156,6 @@ h2 {
 .dayNav button:hover {
   background: #e5e5e5;
 }
-
 
 /* ============================================================
    MOTIVATION PANEL OVERLAY
@@ -199,7 +199,6 @@ h2 {
   line-height: 1.55;
   white-space: pre-line;
 }
-
 
 /* ============================================================
    MOBILE OPTIMIZATION (max-width: 480px)
